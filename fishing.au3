@@ -56,6 +56,8 @@ func _Fishing()
             if ($switchWakeup == 0) Then
                 Send('{SPACE}')
                 Sleep(1500)
+
+                $switchFirst = 1
             EndIf
         Else
             $switchWakeup = 0
@@ -66,7 +68,7 @@ func _Fishing()
         $found = false
         for $i = 1 to $failings
             Send('{' & $fishButton & '}')
-            Sleep(1000)
+            Sleep(1500)
 
             $boober = _FindBobber()
             if (@error) then
@@ -116,9 +118,7 @@ Func _FindBobber()
 
 
     Local $bobberSqare[] = [$firstCoorMatch[0] - 40, $firstCoorMatch[1] - 20, $firstCoorMatch[0] + 40, $firstCoorMatch[1] + 30]
-    ; MouseMove($bobberSqare[0], $bobberSqare[1], 5)
-    ; Sleep(500)
-    ; MouseMove($bobberSqare[2], $bobberSqare[3], 5)
+
 
     $found = false    
     For $i = 0 to UBound($secondColors) - 1
@@ -161,7 +161,7 @@ Func _FindBobber()
         return
     endif
 
-    return $highBoober
+    return $centerBoober
 EndFunc
 
 func _TrackBoober($coor)
@@ -173,7 +173,7 @@ func _TrackBoober($coor)
     ; 20 sec full time
     $fishingTime = 20
     $endTime = _Timestamp() + $fishingTime
-    local $square[] = [$coor[0] - 15, $coor[1] - 10, $coor[0] + 15, $coor[1] + 10]
+    local $square[] = [$coor[0] - 10, $coor[1] - 10, $coor[0] + 10, $coor[1] + 10]
 
 
     _Log('track started')
@@ -184,7 +184,7 @@ func _TrackBoober($coor)
             exitloop
         endif
 
-        PixelSearch($square[0], $square[1], $square[2], $square[3], $coor[2], 10, 1, $hwnd)
+        PixelSearch($square[0], $square[1], $square[2], $square[3], $coor[2], 4, 1, $hwnd)
         if (@error) then
             _Log('wow')
 
