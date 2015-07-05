@@ -13,7 +13,7 @@ Global $standartPitch = -0.25
 Global $xError = 0.1
 Global $yError = 0.1
 Global $azimythError = 0.1
-Global $pitchError = 0.05
+Global $pitchError = 0.02
 
 
 Opt("MouseCoordMode", 2)

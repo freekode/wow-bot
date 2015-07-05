@@ -40,7 +40,7 @@ Func _Main()
 
     _Fishing()
     if Number(@error) == 1 then
-        MsgBox(16, 'World of Warcraft Fishing', 'Oh sorry can not found the bobber five times')
+        MsgBox(16, 'World of Warcraft Fishing', 'Oh sorry can not found the bobber')
     endif
 EndFunc
 _Main()
@@ -90,9 +90,9 @@ func _Fishing()
 endfunc
 
 Func _FindBobber()
-    Local $firstColors[] = [0x463b4d, 0xA72C0B, 0x6B1F0C, 0xBB9B3D, 0x210B04]
+    Local $firstColors[] = [0xA72C0B, 0x6B1F0C, 0xBB9B3D, 0x210B04]
     local $secondColors[] = [0x334c48, 0x3f5958]
-    local $thirdColors[] = [0x426581]
+    local $thirdColors[] = [0x426581, 0x7d98c3, 0x4f749e]
 
     Local $searchSquare[] = [400, 110, 880, 500]
     
@@ -173,7 +173,7 @@ func _TrackBoober($coor)
     ; 20 sec full time
     $fishingTime = 20
     $endTime = _Timestamp() + $fishingTime
-    local $square[] = [$coor[0] - 10, $coor[1] - 10, $coor[0] + 10, $coor[1] + 10]
+    local $square[] = [$coor[0] - 13, $coor[1] - 13, $coor[0] + 13, $coor[1] + 13]
 
 
     _Log('track started')
@@ -184,7 +184,7 @@ func _TrackBoober($coor)
             exitloop
         endif
 
-        PixelSearch($square[0], $square[1], $square[2], $square[3], $coor[2], 4, 1, $hwnd)
+        PixelSearch($square[0], $square[1], $square[2], $square[3], $coor[2], 5, 1, $hwnd)
         if (@error) then
             _Log('wow')
 
