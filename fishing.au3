@@ -188,8 +188,11 @@ func _TrackBoober($coor)
         if (@error) then
             _Log('wow')
 
+            Send('{SHIFTDOWN}')
             MouseClick("left", $coor[0], $coor[1], 1, 1)
             Sleep(2000)
+            Send('{SHIFTUP}')
+            
             exitloop
         endif
 

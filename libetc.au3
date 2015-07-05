@@ -11,15 +11,15 @@ Func _FindWindow($title)
 EndFunc
 
 
-Func _PointAzimyth($x, $y, $xPoint, $yPoint)
-    Local $b = ($yPoint - $y) * -1
-    Local $c = _Distance($x, $y, $xPoint, $yPoint)
-    Local $rad = ACos($b / $c)
+Func _PointAzimyth($a, $b)
+    Local $bTr = ($b[1] - $a[1]) * -1
+    Local $cTr = _Distance($a, $b)
+    Local $rad = ACos($bTr / $cTr)
 
     Local $azimyth
 
     ;find half
-    if ($xPoint > $x) Then
+    if ($b[0] > $a[0]) Then
         $azimyth = ($PI * 2) - $rad
     Else
         $azimyth = $rad
@@ -30,8 +30,8 @@ Func _PointAzimyth($x, $y, $xPoint, $yPoint)
 EndFunc
 
 
-Func _Distance($x, $y, $xPoint, $yPoint)
-    Return Sqrt(($x - $xPoint)^2 + ($y - $yPoint)^2)
+Func _Distance($a, $b)
+    Return Sqrt(($a[0] - $b[0])^2 + ($a[1] - $b[1])^2)
 EndFunc
 
 

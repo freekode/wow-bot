@@ -10,37 +10,30 @@ Global $msOnePointDist = 357
 ;3ms need to rotate to 0.01 rad
 Global $msOnePointAzimyth = 3
 
-;5px need to change pitch to 0.04
-Global $msOnePointAzimyth = 5
+;5px change 0.02 rad
+Global $pxForAzimyth = 5
 
 
 
 
-Func _RotateKey($rad)
-    Local $rotation
+Func _Rotate($rad)
+    _RotateMouse(_CalcRotation($rad))
+EndFunc
+
+Func _CalcRotation($rad)
+    ConsoleWrite('rad ' & $rad & @lf)
     if ($rad < 0) Then
         if (Abs($rad) > $PI) Then
             $rad = ($PI * 2) - Abs($rad)
-            $rotation = 'right'
-        Else
-            $rad = Abs($rad)
-            $rotation = 'left'
         EndIf
     Else
-        if (Abs($rad) > $PI) Then
-            $rad = ($PI * 2) - Abs($rad)
-            $rotation = 'left'
-        Else
-            $rad = Abs($rad)
-            $rotation = 'right'
+        if ($rad > $PI) Then
+            $rad = (($PI * 2) - $rad) * -1
         EndIf
     EndIf
 
-    if ($rotation == 'right') Then
-        _RotateKeyRight($rad)
-    ElseIf ($rotation == 'left') Then
-        _RotateKeyLeft($rad)
-    EndIf
+
+    return $rad
 EndFunc
 
 Func _RotateKeyRight($rad)
@@ -59,6 +52,22 @@ Func _RotateKeyLeft($rad)
     Sleep($ms)
     Send('{a up}')
     Sleep($interfaceLagMs)
+EndFunc
+
+Func _RotateMouse($rad)
+    Local $times = $rad / 0.02
+
+    _RotateMouseMin($times)
+EndFunc
+
+Func _RotateMouseMin($times)
+    $px = int($pxForAzimyth * $times)
+
+    MouseDown("right")
+    Sleep(100)
+    MouseMove(MouseGetPos(0) + $px, MouseGetPos(1), 1)
+    MouseUp("right")
+    Sleep($interfaceLagMs + 100)
 EndFunc
 
 Func _Run($distance)

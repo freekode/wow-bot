@@ -5,14 +5,13 @@
 
 
 Global $winName = "World of Warcraft"
-Global $xAddon = 10
-Global $yAddon = 10
+Global $addon[] = [10, 10]
 ;standart pitch should be around -0.25
 Global $standartPitch = -0.25
 
 Global $xError = 0.1
 Global $yError = 0.1
-Global $azimythError = 0.1
+Global $azimythError = 0.008
 Global $pitchError = 0.02
 
 
@@ -29,62 +28,68 @@ Func _Main()
 
 
 
-    $x = _WowGetX()
-    $y = _WowGetY()
+    $player = _WowGetCoordinates()
     $pitch = _WowGetPitch()
     $azimyth = _WowGetAzimyth()
 
-;~  MsgBox(0, "", "x = " & $x & @CRLF & _
-;~                "y = " & $y & @CRLF & _
-;~                "pitch =  " & $pitch & @CRLF & _
-;~                "azimyth = " & $azimyth)
+    ; MsgBox(0, "", "x = " & $player[0] & @CRLF & _
+    ;               "y = " & $player[1] & @CRLF & _
+    ;               "pitch =  " & $pitch & @CRLF & _
+    ;               "azimyth = " & $azimyth)
 
 
-    $xPoint = 60
-    $yPoint = 20
-
+    local $point[] = [40.9, 53.7]
 
 
     _MouseCenterPosition()
-    _FPV()
-    _CorrectPitch($standartPitch)
+    ; _FPV()
+    ; _CorrectPitch($standartPitch)
+    _MoveTo($point)
+
 EndFunc
 _Main()
 
-Func _MoveTo($xPoint, $yPoint)
+Func _MoveTo($b)
     ;rotate to point
-    $xCharacter = _WowGetX()
-    $yCharacter = _WowGetY()
+    $player = _WowGetCoordinates()
 
     $currentAzimyth = _WowGetAzimyth()
-    $newAzimyth = _PointAzimyth($xCharacter, $yCharacter, $xPoint, $yPoint)
+    $newAzimyth = _PointAzimyth($player, $b)
     $diffRad = $currentAzimyth - $newAzimyth
-    _RotateKeyRight($diffRad)
+    
+    ; _Rotate($diffRad)
+    ; MsgBox(0, '', $newAzimyth & @lf & _WowGetAzimyth())
+
+    _CorrectAzimyth($b)
 
     ;move closely
-    $xCharacter = _WowGetX()
-    $yCharacter = _WowGetY()
-    $fullDistance = _Distance($xCharacter, $yCharacter, $xPoint, $yPoint)
-    if ($fullDistance <= 1) Then
+    ; $fullDistance = _Distance($player, $b)
+    ; if ($fullDistance <= 1) Then
+    ;     _CorrectAngle($player, $b)
+    ; EndIf
 
-    EndIf
-
-    _Run($fullDistance - 1)
+    ; _Run($fullDistance - 1)
+    ; _CorrectAngle($player, $b)
 EndFunc
 
-;~ Func _CorrectAngle($x, $y, $xPoint, $yPoint)
-;~  While True
-;~      Sleep(300)
-;~      $azimyth = getWowAzimyth(70, 10)
-;~      if Abs($azimyth - $newAzimyth) > $azimythError Then
-;~          Send('{d down}')
-;~          Sleep(300)
-;~          Send('{d up}')
-;~      Else
-;~          Break
-;~      EndIf
-;~  WEnd
-;~ EndFunc
+Func _CorrectAzimyth($b)
+    $player = _WowGetCoordinates()
+    $newAzimyth = _PointAzimyth($player, $b)
+
+    While True
+        $azimyth = _WowGetAzimyth()
+        $diffRad = $azimyth - $newAzimyth
+        if Abs($diffRad) > $azimythError Then
+            if _CalcRotation($diffRad) > 0 then
+                _RotateMouseMin(1)
+            else
+                _RotateMouseMin(-1)
+            endif
+        Else
+            exitloop
+        EndIf
+    WEnd
+EndFunc
 
 Func _CorrectPitch($newPitch)
     ; init pitch

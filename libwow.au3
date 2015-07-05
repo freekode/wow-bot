@@ -1,96 +1,96 @@
 #include-once
 #include <Color.au3>
 
-Global $hwnd, $xAddon, $yAddon
+Global $hwnd, $addon
 
 
-Func _WowGetX()
-	if (_CheckVars() == False) Then
-		Return Null
-	EndIf
+Func _WowGetCoordinates()
+    _CheckVars()
+    if @error then
+        SetError(Number(@error))
+        return
+    endif
 
-	Return _WowCoordinate($xAddon, $yAddon)
-EndFunc
 
-Func _WowGetY()
-	if (_CheckVars() == False) Then
-		Return Null
-	EndIf
+    local $coor[2]
+    $coor[0] = _WowCoordinate($addon[0], $addon[1])
+    $coor[1] = _WowCoordinate($addon[0] + 20, $addon[1])
 
-	Return _WowCoordinate($xAddon + 20, $yAddon)
+    return $coor
 EndFunc
 
 Func _WowGetPitch()
-	if (_CheckVars() == False) Then
-		Return Null
-	EndIf
+    _CheckVars()
+    if @error then
+        SetError(Number(@error))
+        return
+    endif
 
-	Return _WowPitch($xAddon + 40, $yAddon)
+
+    Return _WowPitch($addon[0] + 40, $addon[1])
 EndFunc
 
 Func _WowGetAzimyth()
-	if (_CheckVars() == False) Then
-		Return Null
-	EndIf
+    _CheckVars()
+    if @error then
+        SetError(Number(@error))
+        return
+    endif
 
-	Return _WowAzimyth($xAddon + 60, $yAddon)
+
+    Return _WowAzimyth($addon[0] + 60, $addon[1])
 EndFunc
 
 
 
 Func _CheckVars()
-	Local $status = true
-	if $hwnd == '' Then
-		$status = False
-	EndIf
-	if $xAddon == '' Then
-		$status = False
-	EndIf
-	if $yAddon == '' Then
-		$status = False
-	EndIf
-
-
-	Return $status
+    if $hwnd == '' Then
+        SetError(2)
+        return
+    EndIf
+    if UBound($addon) < 2 Then
+        SetError(3)
+        return
+    EndIf
 EndFunc
 
 Func _WowCoordinate($x, $y)
-	Local $color, $part0, $part1, $part2, $coordinate
-	$color = _ColorGetRGB(PixelGetColor($x, $y, $hwnd))
+    Local $color, $part0, $part1, $part2, $coordinate
+    $color = _ColorGetRGB(PixelGetColor($x, $y, $hwnd))
 
-	$part0 = StringReplace(StringFormat("%.2f", Round($color[0] / 255, 2)), "0.", "")
-	$part1 = StringReplace(StringFormat("%.2f", Round($color[1] / 255, 2)), "0.", "")
-	$part2 = StringReplace(StringFormat("%.2f", Round($color[2] / 255, 2)), "0.", "")
-	$coordinate = Number($part0 & $part1 & $part2) / 10000
+    $part0 = StringReplace(StringFormat("%.2f", Round($color[0] / 255, 2)), "0.", "")
+    $part1 = StringReplace(StringFormat("%.2f", Round($color[1] / 255, 2)), "0.", "")
+    $part2 = StringReplace(StringFormat("%.2f", Round($color[2] / 255, 2)), "0.", "")
+    $coordinate = Number($part0 & $part1 & $part2) / 10000
 
    Return $coordinate
 EndFunc
 
 Func _WowPitch($x, $y)
-	Local $color, $part0, $part1, $part2, $pitch
-	$color = _ColorGetRGB(PixelGetColor($x, $y, $hwnd))
+    Local $color, $part0, $part1, $part2, $pitch
+    $color = _ColorGetRGB(PixelGetColor($x, $y, $hwnd))
 
-	$part0 = Number(StringFormat("%.2f", Round($color[0] / 255, 2)))
-	$part1 = StringReplace(StringFormat("%.2f", Round($color[1] / 255, 2)), "0.", "")
-	$part2 = StringReplace(StringFormat("%.2f", Round($color[2] / 255, 2)), "0.", "")
+    $part0 = Number(StringFormat("%.2f", Round($color[0] / 255, 2)))
+    $part1 = StringReplace(StringFormat("%.2f", Round($color[1] / 255, 2)), "0.", "")
+    $part2 = StringReplace(StringFormat("%.2f", Round($color[2] / 255, 2)), "0.", "")
 
-	$pitch = Number($part1 & $part2) / 1000
+    $pitch = Number($part1 & $part2) / 1000
 
-	if $part0 > 0 Then
-		$pitch = $pitch * -1
-	EndIf
+    if $part0 > 0 Then
+        $pitch = $pitch * -1
+    EndIf
 
-	Return $pitch
+    Return $pitch
 EndFunc
 
 Func _WowAzimyth($x, $y)
-	Local $color, $part0, $part1, $part2, $pitch
-	$color = _ColorGetRGB(PixelGetColor($x, $y, $hwnd))
+    Local $color, $part0, $part1, $part2, $pitch
+    $color = _ColorGetRGB(PixelGetColor($x, $y, $hwnd))
 
-	$part0 = StringReplace(StringFormat("%.2f", Round($color[0] / 255, 2)), "0.", "")
-	$part1 = StringReplace(StringFormat("%.2f", Round($color[1] / 255, 2)), "0.", "")
-	$part2 = StringReplace(StringFormat("%.2f", Round($color[2] / 255, 2)), "0.", "")
-	$azimyth = Number($part0 & $part1 & $part2) / 100000
+    $part0 = StringReplace(StringFormat("%.2f", Round($color[0] / 255, 2)), "0.", "")
+    $part1 = StringReplace(StringFormat("%.2f", Round($color[1] / 255, 2)), "0.", "")
+    $part2 = StringReplace(StringFormat("%.2f", Round($color[2] / 255, 2)), "0.", "")
+    $azimyth = Number($part0 & $part1 & $part2) / 100000
 
-	Return $azimyth
+    Return $azimyth
 EndFunc
