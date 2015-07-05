@@ -10,8 +10,8 @@
 
 Global $winName = "World of Warcraft"
 Global $fishButton = '='
-Global $xAddon = 10
-Global $yAddon = 10
+Global $addon[] = [10, 10]
+
 ; try fish with this pitch
 Global $standartPitch = -0.25
 Global $pitchError = 0.05
@@ -90,9 +90,12 @@ func _Fishing()
 endfunc
 
 Func _FindBobber()
+    ; red
     Local $firstColors[] = [0xA72C0B, 0x6B1F0C, 0xBB9B3D, 0x210B04]
-    local $secondColors[] = [0x334c48, 0x3f5958]
-    local $thirdColors[] = [0x426581, 0x7d98c3, 0x4f749e]
+    ; the main boober
+    local $secondColors[] = [0x334c48, 0x3f5958, 0x60493b]
+    ; high metal stck
+    local $thirdColors[] = [0x426581, 0x7d98c3, 0x4f749e, 0x575062]
 
     Local $searchSquare[] = [400, 110, 880, 500]
     
@@ -115,6 +118,8 @@ Func _FindBobber()
         SetError(1)
         return
     endif
+
+    ; MouseMove($firstCoorMatch[0], $firstCoorMatch[1])
 
 
     Local $bobberSqare[] = [$firstCoorMatch[0] - 40, $firstCoorMatch[1] - 20, $firstCoorMatch[0] + 40, $firstCoorMatch[1] + 30]
@@ -208,6 +213,7 @@ Func _CorrectPitch($newPitch)
 
     While True
         $currentPitch = _WowGetPitch()
+        ConsoleWrite($currentPitch & @lf)
         $side = $currentPitch - $newPitch
 
         if (abs($currentPitch - $newPitch) <= $pitchError) Then
