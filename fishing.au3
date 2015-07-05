@@ -148,7 +148,7 @@ Func _FindBobber()
 
     $found = false
     For $i = 0 to UBound($thirdColors) - 1
-        $highBoober = PixelSearch($bobberSqare[0], $bobberSqare[1], $bobberSqare[2], $bobberSqare[3], $thirdColors[$i], 10, 1, $hwnd)
+        $highBoober = PixelSearch($bobberSqare[0], $bobberSqare[1], $bobberSqare[2], $bobberSqare[3], $thirdColors[$i], 9, 1, $hwnd)
         if @error == 0 Then
             _Log('third color ok = ' & hex($thirdColors[$i]))
 

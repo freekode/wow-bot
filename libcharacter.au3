@@ -21,7 +21,6 @@ Func _Rotate($rad)
 EndFunc
 
 Func _CalcRotation($rad)
-    ConsoleWrite('rad ' & $rad & @lf)
     if ($rad < 0) Then
         if (Abs($rad) > $PI) Then
             $rad = ($PI * 2) - Abs($rad)

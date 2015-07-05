@@ -11,8 +11,9 @@ Global $standartPitch = -0.25
 
 Global $xError = 0.1
 Global $yError = 0.1
-Global $azimythError = 0.008
+Global $azimythError = 0.01
 Global $pitchError = 0.02
+Global $distanceError = 0.05
 
 
 Opt("MouseCoordMode", 2)
@@ -38,43 +39,54 @@ Func _Main()
     ;               "azimyth = " & $azimyth)
 
 
-    local $point[] = [40.9, 53.7]
-
+    local $point0[] = [68.2, 72.6]
+    local $point1[] = [69.4, 71.2]
+    local $point2[] = [71.0, 71.1]
 
     _MouseCenterPosition()
     ; _FPV()
-    ; _CorrectPitch($standartPitch)
-    _MoveTo($point)
+    _CorrectPitch($standartPitch)
+
+    _MoveTo($point0)
+    _MoveTo($point1)
+    _MoveTo($point2)
 
 EndFunc
 _Main()
 
 Func _MoveTo($b)
-    ;rotate to point
-    $player = _WowGetCoordinates()
+    while true
+        $player = _WowGetCoordinates()
+        $azimyth = _WowGetAzimyth()
 
-    $currentAzimyth = _WowGetAzimyth()
-    $newAzimyth = _PointAzimyth($player, $b)
-    $diffRad = $currentAzimyth - $newAzimyth
-    
-    ; _Rotate($diffRad)
-    ; MsgBox(0, '', $newAzimyth & @lf & _WowGetAzimyth())
+        $newAzimyth = _PointAzimyth($player, $b)
+        $distance = _Distance($player, $b)
+        if ($distance <= $distanceError) then
+            return
+        endif
 
-    _CorrectAzimyth($b)
 
-    ;move closely
-    ; $fullDistance = _Distance($player, $b)
-    ; if ($fullDistance <= 1) Then
-    ;     _CorrectAngle($player, $b)
-    ; EndIf
+        $angle = $azimyth - $newAzimyth
+        if ($distance > 1)  then
+            _RotateMouse(_CalcRotation($angle))
+            _Run($distance - 1)
+        else
+            if (abs($angle) <= 0.5) then
+                _CorrectAzimyth($newAzimyth)
+            else
+                _RotateMouse(_CalcRotation($angle))
+            endif
 
-    ; _Run($fullDistance - 1)
-    ; _CorrectAngle($player, $b)
+            _Run($distance)
+        endif
+    wend
 EndFunc
 
-Func _CorrectAzimyth($b)
+Func _FindAzimyht()
+EndFunc
+
+Func _CorrectAzimyth($newAzimyth)
     $player = _WowGetCoordinates()
-    $newAzimyth = _PointAzimyth($player, $b)
 
     While True
         $azimyth = _WowGetAzimyth()
