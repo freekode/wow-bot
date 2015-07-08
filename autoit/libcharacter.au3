@@ -1,8 +1,9 @@
 #include-once
 
 Global $PI = 3.1415926535897932384626433832795028
-Global $interfaceLagMs = 300
+Global $interfaceLagMs = 200
 Global $running = false
+Global $center[] = [640, 360]
 
 ; 357ms need to run 0.1 distance on a floor
 Global $msOnePointDist = 357
@@ -107,6 +108,4 @@ Func _FPV()
     Sleep(1000)
 EndFunc
 
-Func _MouseCenterPosition()
-    MouseMove(640, 360, 1)
-EndFunc
+

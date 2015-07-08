@@ -1,5 +1,3 @@
-#include <Color.au3>
-#include <Date.au3>
 #include <Array.au3>
 #include "libkey.au3"
 #include "libwow.au3"

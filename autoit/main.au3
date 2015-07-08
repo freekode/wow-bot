@@ -1,7 +1,9 @@
+#include <Array.au3>
 #include "libkey.au3"
 #include "libwow.au3"
 #include "libcharacter.au3"
 #include "libetc.au3"
+
 
 
 Global $winName = "World of Warcraft"
@@ -39,22 +41,47 @@ Func _Main()
     ;               "azimyth = " & $azimyth)
 
 
-    local $point0[] = [68.2, 72.6]
-    local $point1[] = [69.4, 71.2]
-    local $point2[] = [71.0, 71.1]
+    ;  local $points[][] = [ _
+    ;     [75.8, 72.3], _
+    ;     [74.6, 72.4], _
+    ;     [72.8, 72.7], _
+    ;     [72.8, 72.7], _
+    ;     [70.9, 71.0], _
+    ;     [72.8, 72.7], _
+    ;     [69.5, 71.1], _
+    ;     [68.5, 72.1], _
+    ;     [67.5, 73.7] _
+    ; ]
 
-    _MouseCenterPosition()
-    ; _FPV()
+
+    local $points[][] = [[47.0, 81.0]]
+
+
+    ; _MouseCenterPosition()
+    MouseMove(640, 640, 1)
+    ; _GatherHerb()
+    _FPV()
     _CorrectPitch($standartPitch)
 
-    _MoveTo($point0)
-    _MoveTo($point1)
-    _MoveTo($point2)
+    For $i = 0 to UBound($points, 1) - 1
+        local $point[] = [$points[$i][0], $points[$i][1]]
+        ConsoleWrite('point [' &  $point[0] & '; ' &  $point[1] & ']'  & @lf)
+        _MoveTo($point)
+        _GatherHerb()
+    Next
 
+    ; _MoveTo($point0)
+    ; _MoveTo($point1)
+    ; _MoveTo($point2)
+    ; _WowIsInCombat()
 EndFunc
 _Main()
 
+
 Func _MoveTo($b)
+    _Log('move ' & $b[0] & ' ' & $b[1])
+
+
     while true
         $player = _WowGetCoordinates()
         $azimyth = _WowGetAzimyth()
@@ -82,10 +109,10 @@ Func _MoveTo($b)
     wend
 EndFunc
 
-Func _FindAzimyht()
-EndFunc
 
 Func _CorrectAzimyth($newAzimyth)
+    _Log('rotate ' & $newAzimyth)
+
     $player = _WowGetCoordinates()
 
     While True
@@ -103,6 +130,7 @@ Func _CorrectAzimyth($newAzimyth)
     WEnd
 EndFunc
 
+
 Func _CorrectPitch($newPitch)
     ; init pitch
     _ChangePitchLittle(1)
@@ -119,4 +147,35 @@ Func _CorrectPitch($newPitch)
 
         _ChangePitchLittle($side)
     WEnd
+EndFunc
+
+
+Func _GatherHerb()
+    _Log('gather')
+
+    $azimyth = _WowGetAzimyth()
+
+    ; _MouseCenterPosition()
+
+    While $azimyth 
+        $currentAzimyth = _WowGetAzimyth()
+
+        if ($currentAzimyth - $azimyth) > $azimythError
+
+        elseif _WowIsItHerb() == False Then
+            _RotateMouseMin(20)
+        Else
+            exitloop
+        EndIf
+    WEnd
+
+    Send('{SHIFTDOWN}')
+    MouseClick("right")
+    Sleep(2000)
+    Send('{SHIFTUP}')
+EndFunc
+
+
+Func _MouseCenterPosition()
+    MouseMove($winsize[0] / 2, $winsize[1] / 2, 1)
 EndFunc

@@ -1,4 +1,6 @@
 #include-once
+#include <Date.au3>
+
 
 Func _FindWindow($title)
     if WinExists($title) == 0 Then

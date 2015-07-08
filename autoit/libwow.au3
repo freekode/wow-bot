@@ -19,6 +19,7 @@ Func _WowGetCoordinates()
     return $coor
 EndFunc
 
+
 Func _WowGetPitch()
     _CheckVars()
     if @error then
@@ -30,6 +31,7 @@ Func _WowGetPitch()
     Return _WowPitch($addon[0] + 40, $addon[1])
 EndFunc
 
+
 Func _WowGetAzimyth()
     _CheckVars()
     if @error then
@@ -40,6 +42,32 @@ Func _WowGetAzimyth()
 
     Return _WowAzimyth($addon[0] + 60, $addon[1])
 EndFunc
+
+
+Func _WowIsInCombat()
+    _CheckVars()
+    if @error then
+        SetError(Number(@error))
+        return
+    endif
+
+
+    return _WowBoolean($addon[0], $addon[1] + 20)
+EndFunc
+
+
+Func _WowIsItHerb()
+    _CheckVars()
+    if @error then
+        SetError(Number(@error))
+        return
+    endif
+
+
+    return _WowBoolean($addon[0], $addon[1] + 40)
+EndFunc
+
+
 
 
 
@@ -54,6 +82,7 @@ Func _CheckVars()
     EndIf
 EndFunc
 
+
 Func _WowCoordinate($x, $y)
     Local $color, $part0, $part1, $part2, $coordinate
     $color = _ColorGetRGB(PixelGetColor($x, $y, $hwnd))
@@ -65,6 +94,7 @@ Func _WowCoordinate($x, $y)
 
    Return $coordinate
 EndFunc
+
 
 Func _WowPitch($x, $y)
     Local $color, $part0, $part1, $part2, $pitch
@@ -83,6 +113,7 @@ Func _WowPitch($x, $y)
     Return $pitch
 EndFunc
 
+
 Func _WowAzimyth($x, $y)
     Local $color, $part0, $part1, $part2, $pitch
     $color = _ColorGetRGB(PixelGetColor($x, $y, $hwnd))
@@ -93,4 +124,18 @@ Func _WowAzimyth($x, $y)
     $azimyth = Number($part0 & $part1 & $part2) / 100000
 
     Return $azimyth
+EndFunc
+
+
+Func _WowBoolean($x, $y)
+    $color = _ColorGetRGB(PixelGetColor($x, $y, $hwnd))
+
+
+    if $color[0] == 255 and $color[1] == 255 and $color[2]  == 255 then
+        return true
+    elseif $color[0] == 0 and $color[1] == 0 and $color[2]  == 0 then
+        return false
+    else
+        SetError(1)
+    endif
 EndFunc
