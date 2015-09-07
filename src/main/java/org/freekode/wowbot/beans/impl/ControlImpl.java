@@ -36,6 +36,7 @@ public class ControlImpl implements Control {
         try {
             robot = new Robot();
             robot.setAutoDelay(50);
+            robot.setAutoWaitForIdle(true);
         } catch (AWTException ignore) {
         }
     }
@@ -118,6 +119,25 @@ public class ControlImpl implements Control {
 
     @Override
     public void fpv() {
-        robot.mouseWheel(40);
+        robot.keyPress(KeyEvent.VK_HOME);
+        robot.keyRelease(KeyEvent.VK_HOME);
+
+        robot.keyPress(KeyEvent.VK_HOME);
+        robot.keyRelease(KeyEvent.VK_HOME);
+
+        robot.keyPress(KeyEvent.VK_HOME);
+        robot.keyRelease(KeyEvent.VK_HOME);
+
+        robot.keyPress(KeyEvent.VK_HOME);
+        robot.keyRelease(KeyEvent.VK_HOME);
+
+        robot.delay(800);
+    }
+
+    @Override
+    public void fish(int keyCode) {
+        robot.keyPress(keyCode);
+        robot.keyRelease(keyCode);
+        robot.delay(300);
     }
 }

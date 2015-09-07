@@ -16,4 +16,6 @@ public interface Control {
     void mousePitch(double rad);
 
     void fpv();
+
+    void fish(int keyCode);
 }

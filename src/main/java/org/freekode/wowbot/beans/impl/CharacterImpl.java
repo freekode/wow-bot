@@ -3,8 +3,7 @@ package org.freekode.wowbot.beans.impl;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.freekode.wowbot.beans.interfaces.AddonApi;
 import org.freekode.wowbot.beans.interfaces.Control;
-import org.freekode.wowbot.beans.interfaces.Intelligence;
-import org.freekode.wowbot.tools.StaticFunctions;
+import org.freekode.wowbot.tools.StaticFunc;
 import org.freekode.wowbot.beans.interfaces.Character;
 
 import java.math.BigDecimal;
@@ -77,7 +76,7 @@ public class CharacterImpl implements Character {
                 return;
             }
 
-            azimuth(StaticFunctions.getAzimuth(getCoordinates(), point));
+            azimuth(StaticFunc.getAzimuth(getCoordinates(), point));
 
             if (distance > 1) {
                 distance -= 1;
@@ -88,6 +87,11 @@ public class CharacterImpl implements Character {
     }
 
     @Override
+    public void fpv() {
+        control.fpv();
+    }
+
+    @Override
     public boolean isOre() {
         return api.isOre(true);
     }
@@ -95,6 +99,11 @@ public class CharacterImpl implements Character {
     @Override
     public boolean isInCombat() {
         return api.isInCombat(true);
+    }
+
+    @Override
+    public void fish(int keyCode) {
+        control.fish(keyCode);
     }
 
     @Override

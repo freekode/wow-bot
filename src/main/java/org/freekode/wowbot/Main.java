@@ -1,17 +1,12 @@
 package org.freekode.wowbot;
 
 import com.sun.jna.platform.win32.WinUser;
-import org.freekode.wowbot.beans.impl.CharacterImpl;
-import org.freekode.wowbot.beans.impl.ControlImpl;
-import org.freekode.wowbot.beans.impl.MovingAI;
-import org.freekode.wowbot.beans.impl.WoWAddonApi;
+import org.freekode.wowbot.beans.impl.*;
 import org.freekode.wowbot.beans.interfaces.AddonApi;
 import org.freekode.wowbot.beans.interfaces.Character;
 import org.freekode.wowbot.beans.interfaces.Control;
 import org.freekode.wowbot.beans.interfaces.Intelligence;
-import org.freekode.wowbot.tools.StaticFunctions;
-
-import java.util.ArrayList;
+import org.freekode.wowbot.tools.StaticFunc;
 
 public class Main {
     public static final String WINDOW_CLASS = "GxWindowClass";
@@ -21,7 +16,7 @@ public class Main {
 
 
     public static void main(String[] args) throws InterruptedException {
-        WinUser.WINDOWINFO windowCoordinates = StaticFunctions.upWindow(WINDOW_CLASS, WINDOW_NAME);
+        WinUser.WINDOWINFO windowCoordinates = StaticFunc.upWindow(WINDOW_CLASS, WINDOW_NAME);
 
         if (windowCoordinates == null) {
             System.out.println("there is no window");
@@ -34,7 +29,10 @@ public class Main {
 
         Character character = new CharacterImpl(addonApi, control);
 
-        Intelligence move = new MovingAI(new ArrayList<>(), character);
-        move.run();
+//        Intelligence move = new MovingAI(new ArrayList<>(), character);
+//        move.run();
+
+        Intelligence fishing = new FishingAI(character, windowCoordinates.rcClient.toRectangle());
+        fishing.run();
     }
 }

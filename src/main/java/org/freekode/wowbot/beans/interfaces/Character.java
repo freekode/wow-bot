@@ -15,7 +15,11 @@ public interface Character {
 
     void moveTo(Vector3D point);
 
+    void fpv();
+
     boolean isOre();
 
     boolean isInCombat();
+
+    void fish(int keyCode);
 }
