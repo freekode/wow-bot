@@ -21,11 +21,18 @@ public class FishingAI implements Intelligence {
     // red colors
     public static final Color[] FIRST_COLORS = {
             Color.decode("#591f0a"),
-            Color.decode("#571f0a"),
             Color.decode("#481607"),
             Color.decode("#3f1510"),
+            Color.decode("#4a190a"),
+            Color.decode("#4e1b0a"),
+    };
 
-            Color.decode("#4c4a47"),
+    // blue colors
+    public static final Color[] SECOND_COLORS = {
+            Color.decode("#2b323e"),
+            Color.decode("#272d3c"),
+            Color.decode("#1a1c2b"),
+            Color.decode("#1f202d"),
     };
 
 
@@ -60,7 +67,10 @@ public class FishingAI implements Intelligence {
             BufferedImage image = cutImage(calculateCutSquare(windowArea, SEARCH_SQUARE));
             int[] bobberPoint = findColor(image, FIRST_COLORS);
             if (bobberPoint != null) {
-                System.out.println("bobberPoint = " + Arrays.toString(bobberPoint));
+                BufferedImage bobberImage = cutImage(calculateCutSquare(windowArea, calculateCutSquare(SEARCH_SQUARE, new Rectangle(bobberPoint[0] - 30, bobberPoint[1] - 20, 80, 50))));
+                if (findColor(bobberImage, SECOND_COLORS) != null) {
+                    System.out.println("second");
+                }
             }
             robot.delay(500);
         }
@@ -82,17 +92,14 @@ public class FishingAI implements Intelligence {
     public int[] findColor(BufferedImage image, Color[] colors) {
         int[][] result = StaticFunc.convertTo2DWithoutUsingGetRGB(image);
 
+
         for (int y = 0; y < result.length; y++) {
             for (int x = 0; x < result[y].length; x++) {
-                Color imageColor = new Color(x);
+                Color imageColor = new Color(result[y][x]);
                 for (Color color : colors) {
-                    if (imageColor.equals(color)) {
-                        System.out.println("nya");
+                    if (StaticFunc.isSimilarColor(imageColor, color, 11)) {
+                        return new int[]{x, y};
                     }
-//                    if (StaticFunc.isSimilarColor(imageColor, color, 50)) {
-//                        System.out.println("good");
-//                        return new int[]{x, y};
-//                    }
                 }
             }
         }
@@ -107,7 +114,5 @@ public class FishingAI implements Intelligence {
         int height = (int) sub.getHeight();
 
         return new Rectangle(startX, startY, width, height);
-
-//        Local $bobberSqare[] = [$firstCoorMatch[0] - 40, $firstCoorMatch[1] - 20, $firstCoorMatch[0] + 40, $firstCoorMatch[1] + 30]
     }
 }
