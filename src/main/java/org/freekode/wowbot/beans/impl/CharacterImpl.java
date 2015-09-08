@@ -102,8 +102,8 @@ public class CharacterImpl implements Character {
     }
 
     @Override
-    public void fish(int keyCode) {
-        control.fish(keyCode);
+    public Control getControl() {
+        return control;
     }
 
     @Override

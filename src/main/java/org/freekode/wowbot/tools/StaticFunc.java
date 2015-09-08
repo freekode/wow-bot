@@ -5,9 +5,12 @@ import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.io.File;
+import java.io.IOException;
 
 public class StaticFunc {
     public static double getAzimuth(Vector3D a, Vector3D b) {
@@ -97,5 +100,49 @@ public class StaticFunc {
             return true;
         }
         return false;
+    }
+
+    public static Rectangle calculateCutSquare(Rectangle main, Rectangle sub) {
+        int startX = (int) (main.getX() + sub.getX());
+        int startY = (int) (main.getY() + sub.getY());
+        int width = (int) sub.getWidth();
+        int height = (int) sub.getHeight();
+
+        return new Rectangle(startX, startY, width, height);
+    }
+
+    public static int[] findColor(BufferedImage image, Color[] colors, int similarity) {
+        int[][] result = convertTo2DWithoutUsingGetRGB(image);
+
+        for (int y = 0; y < result.length; y++) {
+            for (int x = 0; x < result[y].length; x++) {
+                Color imageColor = new Color(result[y][x]);
+                for (Color color : colors) {
+                    if (StaticFunc.isSimilarColor(imageColor, color, similarity)) {
+                        return new int[]{x, y, imageColor.getRGB()};
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public static BufferedImage cutImage(Rectangle rectangle, boolean writeImage) {
+        try {
+            Robot robot = new Robot();
+            BufferedImage image = robot.createScreenCapture(rectangle);
+
+            if (writeImage) {
+                File file = new File("test.png");
+                ImageIO.write(image, "png", file);
+            }
+
+            return image;
+        } catch (AWTException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

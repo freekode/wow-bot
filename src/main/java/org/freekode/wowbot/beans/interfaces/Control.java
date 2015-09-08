@@ -3,6 +3,8 @@ package org.freekode.wowbot.beans.interfaces;
 public interface Control {
     void centerMouse();
 
+    void mouse(int x, int y);
+
     void run(double distance);
 
     void keyRotateRight(double rad);
@@ -17,5 +19,5 @@ public interface Control {
 
     void fpv();
 
-    void fish(int keyCode);
+    void pressKey(int keyCode);
 }

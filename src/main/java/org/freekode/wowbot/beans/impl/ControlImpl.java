@@ -45,7 +45,12 @@ public class ControlImpl implements Control {
     public void centerMouse() {
         int centerX = (int) (rect.getX() + rect.getWidth() / 2);
         int centerY = (int) (rect.getY() + rect.getHeight() / 2) - 11;
-        robot.mouseMove(centerX, centerY);
+        mouse(centerX, centerY);
+    }
+
+    @Override
+    public void mouse(int x, int y) {
+        robot.mouseMove(x, y);
     }
 
     @Override
@@ -135,9 +140,8 @@ public class ControlImpl implements Control {
     }
 
     @Override
-    public void fish(int keyCode) {
+    public void pressKey(int keyCode) {
         robot.keyPress(keyCode);
         robot.keyRelease(keyCode);
-        robot.delay(300);
     }
 }

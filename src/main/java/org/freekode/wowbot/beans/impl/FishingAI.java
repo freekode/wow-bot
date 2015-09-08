@@ -4,18 +4,16 @@ import org.freekode.wowbot.beans.interfaces.Character;
 import org.freekode.wowbot.beans.interfaces.Intelligence;
 import org.freekode.wowbot.tools.StaticFunc;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
 public class FishingAI implements Intelligence {
     public static final double STANDARD_PITCH = -0.25;
     public static final int FISH_BUTTON = KeyEvent.VK_EQUALS;
-    public static final int FAIL_TRYINGS = 1;
+    public static final int FISHING_TIME_SEC = 20;
+    public static final int FAIL_TRYINGS = 10;
     public static final Rectangle SEARCH_SQUARE = new Rectangle(400, 110, 440, 390);
 
     // red colors
@@ -33,6 +31,21 @@ public class FishingAI implements Intelligence {
             Color.decode("#272d3c"),
             Color.decode("#1a1c2b"),
             Color.decode("#1f202d"),
+    };
+
+    // white-yellow colors
+    public static final Color[] THIRD_COLORS = {
+            Color.decode("#837056"),
+            Color.decode("#454033"),
+            Color.decode("#9d805d"),
+            Color.decode("#886847"),
+    };
+
+    // metal stick of bobber
+    public static final Color[] FOURTH_COLORS = {
+            Color.decode("#4b5054"),
+            Color.decode("#6e6865"),
+            Color.decode("#62696e"),
     };
 
 
@@ -59,60 +72,67 @@ public class FishingAI implements Intelligence {
         character.pitch(STANDARD_PITCH);
         character.fpv();
 
-        System.out.println("get square");
-
+        System.out.println("start fishing");
         for (int i = 0; i < FAIL_TRYINGS; i++) {
-            character.fish(FISH_BUTTON);
             System.out.println("try = " + i);
-            BufferedImage image = cutImage(calculateCutSquare(windowArea, SEARCH_SQUARE));
-            int[] bobberPoint = findColor(image, FIRST_COLORS);
+            fish();
+
+            BufferedImage image = StaticFunc.cutImage(StaticFunc.calculateCutSquare(windowArea, SEARCH_SQUARE), false);
+            int[] bobberPoint = StaticFunc.findColor(image, FIRST_COLORS, 6);
             if (bobberPoint != null) {
-                BufferedImage bobberImage = cutImage(calculateCutSquare(windowArea, calculateCutSquare(SEARCH_SQUARE, new Rectangle(bobberPoint[0] - 30, bobberPoint[1] - 20, 80, 50))));
-                if (findColor(bobberImage, SECOND_COLORS) != null) {
-                    System.out.println("second");
+                System.out.println("first color");
+                Rectangle bobberSquare = new Rectangle(bobberPoint[0] - 30, bobberPoint[1] - 20, 80, 50);
+                BufferedImage bobberImage = StaticFunc.cutImage(StaticFunc.calculateCutSquare(windowArea,
+                        StaticFunc.calculateCutSquare(SEARCH_SQUARE, bobberSquare)), false);
+
+                if (StaticFunc.findColor(bobberImage, SECOND_COLORS, 5) != null) {
+                    System.out.println("second color");
+                    if (StaticFunc.findColor(bobberImage, THIRD_COLORS, 5) != null) {
+                        System.out.println("third color");
+                        int[] stickCoordinates = StaticFunc.findColor(bobberImage, FOURTH_COLORS, 5);
+                        if (stickCoordinates != null) {
+                            System.out.println("fourth = " + Arrays.toString(stickCoordinates));
+
+                            Rectangle stickSquare = new Rectangle(stickCoordinates[0] - 13, stickCoordinates[1] - 13, 26, 26);
+                            Rectangle trackSquare = StaticFunc.calculateCutSquare(windowArea,
+                                    StaticFunc.calculateCutSquare(SEARCH_SQUARE,
+                                            StaticFunc.calculateCutSquare(bobberSquare, stickSquare)));
+
+                            System.out.println(new Color(stickCoordinates[2]).toString());
+                            trackingSquare(trackSquare, new Color(stickCoordinates[2]));
+
+                            break;
+                        }
+                    }
                 }
             }
+
             robot.delay(500);
         }
     }
 
-    public BufferedImage cutImage(Rectangle rectangle) {
-        BufferedImage image = robot.createScreenCapture(rectangle);
+    public void trackingSquare(Rectangle rectangle, Color color) {
+        System.out.println("start tracking");
+        long endTime = System.currentTimeMillis() / 1000 + FISHING_TIME_SEC;
 
-        File file = new File("test.png");
-        try {
-            ImageIO.write(image, "png", file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return image;
-    }
-
-    public int[] findColor(BufferedImage image, Color[] colors) {
-        int[][] result = StaticFunc.convertTo2DWithoutUsingGetRGB(image);
-
-
-        for (int y = 0; y < result.length; y++) {
-            for (int x = 0; x < result[y].length; x++) {
-                Color imageColor = new Color(result[y][x]);
-                for (Color color : colors) {
-                    if (StaticFunc.isSimilarColor(imageColor, color, 11)) {
-                        return new int[]{x, y};
-                    }
+        while ((System.currentTimeMillis() / 1000) <= endTime) {
+            try {
+                BufferedImage trackImage = StaticFunc.cutImage(rectangle, false);
+                int[] trackCoordinates = StaticFunc.findColor(trackImage, new Color[]{color}, 8);
+                if (trackCoordinates == null) {
+                    StaticFunc.cutImage(rectangle, true);
+                    System.out.println("wow!!!");
+                    break;
                 }
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
-
-        return null;
     }
 
-    public Rectangle calculateCutSquare(Rectangle main, Rectangle sub) {
-        int startX = (int) (main.getX() + sub.getX());
-        int startY = (int) (main.getY() + sub.getY());
-        int width = (int) sub.getWidth();
-        int height = (int) sub.getHeight();
-
-        return new Rectangle(startX, startY, width, height);
+    public void fish() {
+        character.getControl().pressKey(FISH_BUTTON);
+        robot.delay(1000);
     }
 }

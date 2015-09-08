@@ -21,5 +21,5 @@ public interface Character {
 
     boolean isInCombat();
 
-    void fish(int keyCode);
+    Control getControl();
 }
