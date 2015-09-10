@@ -91,15 +91,26 @@ public class StaticFunc {
         return result;
     }
 
+    public static int[][] convertTo2DUsingGetRGB(BufferedImage image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+        int[][] result = new int[height][width];
+
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                result[row][col] = image.getRGB(col, row);
+            }
+        }
+
+        return result;
+    }
+
     public static boolean isSimilarColor(Color first, Color second, double similarity) {
         Vector3D firstVector = new Vector3D(first.getRed(), first.getGreen(), first.getBlue());
         Vector3D secondVector = new Vector3D(second.getRed(), second.getGreen(), second.getBlue());
 
         double distance = Vector3D.distance(firstVector, secondVector);
-        if (distance <= similarity) {
-            return true;
-        }
-        return false;
+        return distance <= similarity;
     }
 
     public static Rectangle calculateCutSquare(Rectangle main, Rectangle sub) {
@@ -111,15 +122,15 @@ public class StaticFunc {
         return new Rectangle(startX, startY, width, height);
     }
 
-    public static int[] findColor(BufferedImage image, Color[] colors, int similarity) {
-        int[][] result = convertTo2DWithoutUsingGetRGB(image);
+    public static int[] findColor(int[][] pixels, Color[] colors, double similarity) {
+//        int[][] pixels = convertTo2DWithoutUsingGetRGB(image);
 
-        for (int y = 0; y < result.length; y++) {
-            for (int x = 0; x < result[y].length; x++) {
-                Color imageColor = new Color(result[y][x]);
+        for (int y = 0; y < pixels.length; y++) {
+            for (int x = 0; x < pixels[y].length; x++) {
+                Color imageColor = new Color(pixels[y][x]);
                 for (Color color : colors) {
                     if (StaticFunc.isSimilarColor(imageColor, color, similarity)) {
-                        return new int[]{x, y, imageColor.getRGB()};
+                        return new int[]{x, y, color.getRGB()};
                     }
                 }
             }
@@ -128,13 +139,13 @@ public class StaticFunc {
         return null;
     }
 
-    public static BufferedImage cutImage(Rectangle rectangle, boolean writeImage) {
+    public static BufferedImage cutImage(Rectangle rectangle, boolean writeImage, String fileName) {
         try {
             Robot robot = new Robot();
             BufferedImage image = robot.createScreenCapture(rectangle);
 
             if (writeImage) {
-                File file = new File("test.png");
+                File file = new File("images/" + fileName + ".png");
                 ImageIO.write(image, "png", file);
             }
 

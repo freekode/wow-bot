@@ -18,53 +18,64 @@ public class FishingAI implements Intelligence {
 
     // red colors
     public static final Color[] FIRST_COLORS = {
-            Color.decode("#591f0a"),
-            Color.decode("#481607"),
-            Color.decode("#3f1510"),
-            Color.decode("#4a190a"),
-            Color.decode("#4e1b0a"),
+            Color.decode("#6b240e"),
+            Color.decode("#4d160e"),
+
+            Color.decode("#c62f12"),
+            Color.decode("#94260b"),
+
+//            Color.decode("#591f0a"),
+//            Color.decode("#481607"),
+//            Color.decode("#3f1510"),
+//            Color.decode("#4a190a"),
+//            Color.decode("#4e1b0a"),
     };
 
     // blue colors
     public static final Color[] SECOND_COLORS = {
-            Color.decode("#2b323e"),
-            Color.decode("#272d3c"),
-            Color.decode("#1a1c2b"),
-            Color.decode("#1f202d"),
+            Color.decode("#353c59"),
+            Color.decode("#2f3756"),
+
+            Color.decode("#4d5363"),
+            Color.decode("#626574"),
+
+//            Color.decode("#2b323e"),
+//            Color.decode("#272d3c"),
+//            Color.decode("#1a1c2b"),
+//            Color.decode("#1f202d"),
     };
 
     // white-yellow colors
     public static final Color[] THIRD_COLORS = {
-            Color.decode("#837056"),
-            Color.decode("#454033"),
-            Color.decode("#9d805d"),
-            Color.decode("#886847"),
+            Color.decode("#6a5344"),
+            Color.decode("#756051"),
+
+            Color.decode("#4d4030"),
+            Color.decode("#624d38"),
+
+//            Color.decode("#837056"),
+//            Color.decode("#454033"),
+//            Color.decode("#9d805d"),
+//            Color.decode("#886847"),
     };
 
     // metal stick of bobber
     public static final Color[] FOURTH_COLORS = {
-            Color.decode("#4b5054"),
-            Color.decode("#6e6865"),
-            Color.decode("#62696e"),
+            Color.decode("#5c5d6c"),
+            Color.decode("#656776"),
+
+            Color.decode("#626367"),
+            Color.decode("#404445"),
     };
 
 
     private Character character;
     private Rectangle windowArea;
-    private Robot robot;
 
 
     public FishingAI(Character character, Rectangle windowArea) {
         this.character = character;
         this.windowArea = windowArea;
-
-
-        try {
-            robot = new Robot();
-            robot.setAutoDelay(30);
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -77,37 +88,40 @@ public class FishingAI implements Intelligence {
             System.out.println("try = " + i);
             fish();
 
-            BufferedImage image = StaticFunc.cutImage(StaticFunc.calculateCutSquare(windowArea, SEARCH_SQUARE), false);
-            int[] bobberPoint = StaticFunc.findColor(image, FIRST_COLORS, 6);
+            BufferedImage image = StaticFunc.cutImage(StaticFunc.calculateCutSquare(windowArea, SEARCH_SQUARE), true, "search");
+            int[] bobberPoint = findColor(image, FIRST_COLORS, 7);
             if (bobberPoint != null) {
                 System.out.println("first color");
                 Rectangle bobberSquare = new Rectangle(bobberPoint[0] - 30, bobberPoint[1] - 20, 80, 50);
                 BufferedImage bobberImage = StaticFunc.cutImage(StaticFunc.calculateCutSquare(windowArea,
-                        StaticFunc.calculateCutSquare(SEARCH_SQUARE, bobberSquare)), false);
+                        StaticFunc.calculateCutSquare(SEARCH_SQUARE, bobberSquare)), true, "bobber");
 
-                if (StaticFunc.findColor(bobberImage, SECOND_COLORS, 5) != null) {
+                if (findColor(bobberImage, SECOND_COLORS, 7) != null) {
                     System.out.println("second color");
-                    if (StaticFunc.findColor(bobberImage, THIRD_COLORS, 5) != null) {
+                    if (findColor(bobberImage, THIRD_COLORS, 5) != null) {
                         System.out.println("third color");
-                        int[] stickCoordinates = StaticFunc.findColor(bobberImage, FOURTH_COLORS, 5);
+                        int[] stickCoordinates = findColor(bobberImage, FOURTH_COLORS, 4);
                         if (stickCoordinates != null) {
                             System.out.println("fourth = " + Arrays.toString(stickCoordinates));
 
-                            Rectangle stickSquare = new Rectangle(stickCoordinates[0] - 13, stickCoordinates[1] - 13, 26, 26);
+                            Rectangle stickSquare = new Rectangle(stickCoordinates[0] - 10, stickCoordinates[1] - 10, 22, 22);
                             Rectangle trackSquare = StaticFunc.calculateCutSquare(windowArea,
                                     StaticFunc.calculateCutSquare(SEARCH_SQUARE,
                                             StaticFunc.calculateCutSquare(bobberSquare, stickSquare)));
 
-                            System.out.println(new Color(stickCoordinates[2]).toString());
+                            StaticFunc.cutImage(trackSquare, true, "tracking");
                             trackingSquare(trackSquare, new Color(stickCoordinates[2]));
-
                             break;
                         }
                     }
                 }
             }
 
-            robot.delay(500);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -117,10 +131,13 @@ public class FishingAI implements Intelligence {
 
         while ((System.currentTimeMillis() / 1000) <= endTime) {
             try {
-                BufferedImage trackImage = StaticFunc.cutImage(rectangle, false);
-                int[] trackCoordinates = StaticFunc.findColor(trackImage, new Color[]{color}, 8);
+                BufferedImage image = StaticFunc.cutImage(rectangle, false, null);
+                int[] trackCoordinates = findColor(image, new Color[]{color}, 8);
                 if (trackCoordinates == null) {
-                    StaticFunc.cutImage(rectangle, true);
+                    StaticFunc.cutImage(rectangle, true, "wtf");
+                    int x = (int) (rectangle.getX() + (rectangle.getWidth() / 2));
+                    int y = (int) (rectangle.getY() + (rectangle.getHeight() / 2));
+                    loot(x, y);
                     System.out.println("wow!!!");
                     break;
                 }
@@ -132,7 +149,22 @@ public class FishingAI implements Intelligence {
     }
 
     public void fish() {
-        character.getControl().pressKey(FISH_BUTTON);
-        robot.delay(1000);
+        try {
+            character.getControl().pressKey(FISH_BUTTON);
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int[] findColor(BufferedImage image, Color[] colors, double similarity) {
+//        int[][] pixels = StaticFunc.convertTo2DWithoutUsingGetRGB(image);
+        int[][] pixels = StaticFunc.convertTo2DUsingGetRGB(image);
+
+        return StaticFunc.findColor(pixels, colors, similarity);
+    }
+
+    public void loot(int x, int y) {
+        character.getControl().mouse(x, y);
     }
 }

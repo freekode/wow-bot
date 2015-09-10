@@ -36,7 +36,6 @@ public class ControlImpl implements Control {
         try {
             robot = new Robot();
             robot.setAutoDelay(50);
-            robot.setAutoWaitForIdle(true);
         } catch (AWTException ignore) {
         }
     }
@@ -136,7 +135,11 @@ public class ControlImpl implements Control {
         robot.keyPress(KeyEvent.VK_HOME);
         robot.keyRelease(KeyEvent.VK_HOME);
 
-        robot.delay(800);
+        try {
+            Thread.sleep(800);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
