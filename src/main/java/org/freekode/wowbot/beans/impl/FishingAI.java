@@ -24,6 +24,9 @@ public class FishingAI implements Intelligence {
             Color.decode("#c62f12"),
             Color.decode("#94260b"),
 
+            Color.decode("#49150a"),
+            Color.decode("#341209"),
+
 //            Color.decode("#591f0a"),
 //            Color.decode("#481607"),
 //            Color.decode("#3f1510"),
@@ -39,6 +42,9 @@ public class FishingAI implements Intelligence {
             Color.decode("#4d5363"),
             Color.decode("#626574"),
 
+            Color.decode("#1e2d4a"),
+            Color.decode("#17263d"),
+
 //            Color.decode("#2b323e"),
 //            Color.decode("#272d3c"),
 //            Color.decode("#1a1c2b"),
@@ -53,6 +59,8 @@ public class FishingAI implements Intelligence {
             Color.decode("#4d4030"),
             Color.decode("#624d38"),
 
+            Color.decode("#504d3e"),
+            Color.decode("#42453a"),
 //            Color.decode("#837056"),
 //            Color.decode("#454033"),
 //            Color.decode("#9d805d"),
@@ -66,6 +74,9 @@ public class FishingAI implements Intelligence {
 
             Color.decode("#626367"),
             Color.decode("#404445"),
+
+            Color.decode("#5a6e79"),
+            Color.decode("#50626c"),
     };
 
 
@@ -98,14 +109,14 @@ public class FishingAI implements Intelligence {
 
                 if (findColor(bobberImage, SECOND_COLORS, 7) != null) {
                     System.out.println("second color");
-                    int[] bobberCoordinates = findColor(bobberImage, THIRD_COLORS, 5);
+                    int[] bobberCoordinates = findColor(bobberImage, THIRD_COLORS, 6);
                     if (bobberCoordinates != null) {
                         System.out.println("third color");
-                        int[] stickCoordinates = findColor(bobberImage, FOURTH_COLORS, 4);
+                        int[] stickCoordinates = findColor(bobberImage, FOURTH_COLORS, 10);
                         if (stickCoordinates != null) {
                             System.out.println("fourth = " + Arrays.toString(bobberCoordinates));
 
-                            Rectangle stickSquare = new Rectangle(bobberCoordinates[0] - 5, bobberCoordinates[1] - 30, 22, 22);
+                            Rectangle stickSquare = new Rectangle(bobberCoordinates[0] - 5, bobberCoordinates[1] - 10, 20, 20);
                             Rectangle trackSquare = StaticFunc.calculateCutSquare(windowArea,
                                     StaticFunc.calculateCutSquare(SEARCH_SQUARE,
                                             StaticFunc.calculateCutSquare(bobberSquare, stickSquare)));
