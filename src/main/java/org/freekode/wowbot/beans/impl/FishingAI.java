@@ -98,19 +98,20 @@ public class FishingAI implements Intelligence {
 
                 if (findColor(bobberImage, SECOND_COLORS, 7) != null) {
                     System.out.println("second color");
-                    if (findColor(bobberImage, THIRD_COLORS, 5) != null) {
+                    int[] bobberCoordinates = findColor(bobberImage, THIRD_COLORS, 5);
+                    if (bobberCoordinates != null) {
                         System.out.println("third color");
                         int[] stickCoordinates = findColor(bobberImage, FOURTH_COLORS, 4);
                         if (stickCoordinates != null) {
-                            System.out.println("fourth = " + Arrays.toString(stickCoordinates));
+                            System.out.println("fourth = " + Arrays.toString(bobberCoordinates));
 
-                            Rectangle stickSquare = new Rectangle(stickCoordinates[0] - 10, stickCoordinates[1] - 10, 22, 22);
+                            Rectangle stickSquare = new Rectangle(bobberCoordinates[0] - 5, bobberCoordinates[1] - 30, 22, 22);
                             Rectangle trackSquare = StaticFunc.calculateCutSquare(windowArea,
                                     StaticFunc.calculateCutSquare(SEARCH_SQUARE,
                                             StaticFunc.calculateCutSquare(bobberSquare, stickSquare)));
 
                             StaticFunc.cutImage(trackSquare, true, "tracking");
-                            trackingSquare(trackSquare, new Color(stickCoordinates[2]));
+                            trackingSquare(trackSquare, new Color(bobberCoordinates[2]));
                             break;
                         }
                     }
