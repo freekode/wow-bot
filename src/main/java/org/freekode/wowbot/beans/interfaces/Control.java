@@ -1,5 +1,7 @@
 package org.freekode.wowbot.beans.interfaces;
 
+import java.awt.*;
+
 public interface Control {
     void centerMouse();
 
@@ -20,4 +22,6 @@ public interface Control {
     void fpv();
 
     void pressKey(int keyCode);
+
+    Robot getRobot();
 }

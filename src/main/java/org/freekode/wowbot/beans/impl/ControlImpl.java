@@ -147,4 +147,9 @@ public class ControlImpl implements Control {
         robot.keyPress(keyCode);
         robot.keyRelease(keyCode);
     }
+
+    @Override
+    public Robot getRobot() {
+        return robot;
+    }
 }
