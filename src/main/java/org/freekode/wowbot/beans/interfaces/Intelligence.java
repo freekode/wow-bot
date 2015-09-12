@@ -1,5 +1,5 @@
 package org.freekode.wowbot.beans.interfaces;
 
-public interface Intelligence {
-    void run();
+public interface Intelligence extends Runnable {
+//    void run();
 }

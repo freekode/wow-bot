@@ -71,32 +71,38 @@ public class FishingAI implements Intelligence {
             mouseOut();
             fish();
 
-            BufferedImage image = StaticFunc.cutImage(StaticFunc.calculateCutSquare(windowArea, SEARCH_SQUARE), true, "search");
+            Rectangle imageRect = StaticFunc.calculateCutSquare(windowArea, SEARCH_SQUARE);
+            BufferedImage image = StaticFunc.cutImage(imageRect, true, "search");
             int[] bobberPoint = findColor(image, FIRST_COLORS, 7);
-            if (bobberPoint != null) {
-                logger.info("first color found = " + new Color(bobberPoint[2]).toString());
-                Rectangle bobberSquare = new Rectangle(bobberPoint[0] - 30, bobberPoint[1] - 20, 80, 50);
-                BufferedImage bobberImage = StaticFunc.cutImage(StaticFunc.calculateCutSquare(windowArea,
-                        StaticFunc.calculateCutSquare(SEARCH_SQUARE, bobberSquare)), true, "bobber");
-
-                int[] bobberPart = findColor(bobberImage, SECOND_COLORS, 6);
-                if (bobberPart != null) {
-                    logger.info("second color found = " + new Color(bobberPart[2]).toString());
-                    int[] bobberCoordinates = findColor(bobberImage, THIRD_COLORS, 5);
-                    if (bobberCoordinates != null) {
-                        logger.info("third color found = " + new Color(bobberCoordinates[2]).toString());
-
-                        Rectangle stickSquare = new Rectangle(bobberCoordinates[0] - 10, bobberCoordinates[1] - 5, 22, 22);
-                        Rectangle trackSquare = StaticFunc.calculateCutSquare(windowArea,
-                                StaticFunc.calculateCutSquare(SEARCH_SQUARE,
-                                        StaticFunc.calculateCutSquare(bobberSquare, stickSquare)));
-
-                        StaticFunc.cutImage(trackSquare, true, "tracking");
-                        trackingSquare(trackSquare, new Color(bobberCoordinates[2]));
-                        i = 0;
-                    }
-                }
+            if (bobberPoint == null) {
+                continue;
             }
+
+            logger.info("first color found = " + new Color(bobberPoint[2]).toString());
+            Rectangle bobberSquare = new Rectangle(bobberPoint[0] - 30, bobberPoint[1] - 20, 80, 50);
+            Rectangle bobberRect = StaticFunc.calculateCutSquare(windowArea,
+                    StaticFunc.calculateCutSquare(SEARCH_SQUARE, bobberSquare));
+            BufferedImage bobberImage = StaticFunc.cutImage(bobberRect, true, "bobber");
+            int[] bobberPart = findColor(bobberImage, SECOND_COLORS, 6);
+            if (bobberPart == null) {
+                continue;
+            }
+
+            logger.info("second color found = " + new Color(bobberPart[2]).toString());
+            int[] bobberCoordinates = findColor(bobberImage, THIRD_COLORS, 5);
+            if (bobberCoordinates == null) {
+                continue;
+            }
+
+            logger.info("third color found = " + new Color(bobberCoordinates[2]).toString());
+            Rectangle stickSquare = new Rectangle(bobberCoordinates[0] - 10, bobberCoordinates[1] - 5, 22, 22);
+            Rectangle trackRect = StaticFunc.calculateCutSquare(windowArea,
+                    StaticFunc.calculateCutSquare(SEARCH_SQUARE,
+                            StaticFunc.calculateCutSquare(bobberSquare, stickSquare)));
+
+            StaticFunc.cutImage(trackRect, true, "tracking");
+            trackingSquare(trackRect, new Color(bobberCoordinates[2]));
+            i = 0;
 
             try {
                 Thread.sleep(500);
@@ -145,11 +151,18 @@ public class FishingAI implements Intelligence {
     }
 
     public void loot(int x, int y) {
-        character.getControl().mouse(x, y);
-        character.getControl().getRobot().keyPress(KeyEvent.VK_SHIFT);
-        character.getControl().getRobot().mousePress(InputEvent.BUTTON1_DOWN_MASK);
-        character.getControl().getRobot().mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-        character.getControl().getRobot().keyRelease(KeyEvent.VK_SHIFT);
+        try {
+            character.getControl().mouse(x, y);
+            character.getControl().getRobot().keyPress(KeyEvent.VK_SHIFT);
+            Thread.sleep(100);
+            character.getControl().getRobot().mousePress(InputEvent.BUTTON1_DOWN_MASK);
+            Thread.sleep(200);
+            character.getControl().getRobot().mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+            character.getControl().getRobot().keyRelease(KeyEvent.VK_SHIFT);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void mouseOut() {
