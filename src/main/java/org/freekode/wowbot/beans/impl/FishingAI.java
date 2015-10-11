@@ -2,7 +2,6 @@ package org.freekode.wowbot.beans.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.beans.interfaces.Character;
 import org.freekode.wowbot.beans.interfaces.Intelligence;
 import org.freekode.wowbot.tools.StaticFunc;
 
@@ -11,7 +10,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
-public class FishingAI implements Intelligence {
+public class FishingAI extends Intelligence {
+    private static final Logger logger = LogManager.getLogger(FishingAI.class);
     public static final double STANDARD_PITCH = -0.25;
     public static final int FISH_BUTTON = KeyEvent.VK_EQUALS;
     public static final int FISHING_TIME_SEC = 20;
@@ -50,20 +50,12 @@ public class FishingAI implements Intelligence {
             Color.decode("#504d3e"),
             Color.decode("#42453a"),
     };
-    private static final Logger logger = LogManager.getLogger(FishingAI.class);
-    private Character character;
-    private Rectangle windowArea;
 
-
-    public FishingAI(Character character, Rectangle windowArea) {
-        this.character = character;
-        this.windowArea = windowArea;
-    }
 
     @Override
-    public void run() {
-        character.pitch(STANDARD_PITCH);
-        character.fpv();
+    public void processing() {
+        getCharacter().pitch(STANDARD_PITCH);
+        getCharacter().fpv();
 
         logger.info("start fishing");
         for (int i = 0; i < FAIL_TRYINGS; i++) {
@@ -71,7 +63,7 @@ public class FishingAI implements Intelligence {
             mouseOut();
             fish();
 
-            Rectangle imageRect = StaticFunc.calculateCutSquare(windowArea, SEARCH_SQUARE);
+            Rectangle imageRect = StaticFunc.calculateCutSquare(getWindowArea(), SEARCH_SQUARE);
             BufferedImage image = StaticFunc.cutImage(imageRect, true, "search");
             int[] bobberPoint = findColor(image, FIRST_COLORS, 7);
             if (bobberPoint == null) {
@@ -80,7 +72,7 @@ public class FishingAI implements Intelligence {
 
             logger.info("first color found = " + new Color(bobberPoint[2]).toString());
             Rectangle bobberSquare = new Rectangle(bobberPoint[0] - 30, bobberPoint[1] - 20, 80, 50);
-            Rectangle bobberRect = StaticFunc.calculateCutSquare(windowArea,
+            Rectangle bobberRect = StaticFunc.calculateCutSquare(getWindowArea(),
                     StaticFunc.calculateCutSquare(SEARCH_SQUARE, bobberSquare));
             BufferedImage bobberImage = StaticFunc.cutImage(bobberRect, true, "bobber");
             int[] bobberPart = findColor(bobberImage, SECOND_COLORS, 6);
@@ -96,7 +88,7 @@ public class FishingAI implements Intelligence {
 
             logger.info("third color found = " + new Color(bobberCoordinates[2]).toString());
             Rectangle stickSquare = new Rectangle(bobberCoordinates[0] - 10, bobberCoordinates[1] - 5, 22, 22);
-            Rectangle trackRect = StaticFunc.calculateCutSquare(windowArea,
+            Rectangle trackRect = StaticFunc.calculateCutSquare(getWindowArea(),
                     StaticFunc.calculateCutSquare(SEARCH_SQUARE,
                             StaticFunc.calculateCutSquare(bobberSquare, stickSquare)));
 
@@ -136,7 +128,7 @@ public class FishingAI implements Intelligence {
 
     public void fish() {
         try {
-            character.getControl().pressKey(FISH_BUTTON);
+            getCharacter().getControl().pressKey(FISH_BUTTON);
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -152,13 +144,13 @@ public class FishingAI implements Intelligence {
 
     public void loot(int x, int y) {
         try {
-            character.getControl().mouse(x, y);
-            character.getControl().getRobot().keyPress(KeyEvent.VK_SHIFT);
+            getCharacter().getControl().mouse(x, y);
+            getCharacter().getControl().getRobot().keyPress(KeyEvent.VK_SHIFT);
             Thread.sleep(100);
-            character.getControl().getRobot().mousePress(InputEvent.BUTTON1_DOWN_MASK);
+            getCharacter().getControl().getRobot().mousePress(InputEvent.BUTTON1_DOWN_MASK);
             Thread.sleep(200);
-            character.getControl().getRobot().mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-            character.getControl().getRobot().keyRelease(KeyEvent.VK_SHIFT);
+            getCharacter().getControl().getRobot().mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+            getCharacter().getControl().getRobot().keyRelease(KeyEvent.VK_SHIFT);
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -167,9 +159,9 @@ public class FishingAI implements Intelligence {
 
     public void mouseOut() {
         try {
-            int x = (int) (windowArea.getX() + SEARCH_SQUARE.getX() + SEARCH_SQUARE.getWidth() + 20);
-            int y = (int) (windowArea.getY() + SEARCH_SQUARE.getY());
-            character.getControl().mouse(x, y);
+            int x = (int) (getWindowArea().getX() + SEARCH_SQUARE.getX() + SEARCH_SQUARE.getWidth() + 20);
+            int y = (int) (getWindowArea().getY() + SEARCH_SQUARE.getY());
+            getCharacter().getControl().mouse(x, y);
             Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();

@@ -6,7 +6,7 @@ import org.freekode.wowbot.beans.interfaces.Intelligence;
 
 import java.util.List;
 
-public class MovingAI implements Intelligence {
+public class MovingAI extends Intelligence {
     private List<Vector3D> points;
     private Character character;
 
@@ -17,7 +17,7 @@ public class MovingAI implements Intelligence {
     }
 
     @Override
-    public void run() {
+    public void processing() {
         for (Vector3D point : points) {
             System.out.println("move = " + point);
             character.moveTo(point);
