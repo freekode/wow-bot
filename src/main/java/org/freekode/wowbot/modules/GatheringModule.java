@@ -1,16 +1,11 @@
-package org.freekode.wowbot.ui;
+package org.freekode.wowbot.modules;
 
-import org.freekode.wowbot.beans.interfaces.Intelligence;
+import org.freekode.wowbot.beans.ai.Intelligence;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class GatheringModule extends Module {
-    public GatheringModule() {
-        super("Gathering");
-
-    }
-
     @Override
     public Component getUI() {
         JPanel panel = new JPanel(new GridBagLayout());

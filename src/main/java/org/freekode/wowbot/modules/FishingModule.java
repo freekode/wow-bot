@@ -1,16 +1,12 @@
-package org.freekode.wowbot.ui;
+package org.freekode.wowbot.modules;
 
-import org.freekode.wowbot.beans.interfaces.Intelligence;
+import org.freekode.wowbot.beans.ai.FishingAI;
+import org.freekode.wowbot.beans.ai.Intelligence;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class FishingModule extends Module {
-    public FishingModule() {
-        super("Fishing");
-
-    }
-
     @Override
     public Component getUI() {
         JPanel panel = new JPanel(new GridBagLayout());
@@ -22,6 +18,6 @@ public class FishingModule extends Module {
 
     @Override
     public Intelligence getAi() {
-        return null;
+        return new FishingAI();
     }
 }

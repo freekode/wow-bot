@@ -1,8 +1,7 @@
-package org.freekode.wowbot.beans.impl;
+package org.freekode.wowbot.beans.ai;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.beans.interfaces.Intelligence;
 import org.freekode.wowbot.tools.StaticFunc;
 
 import java.awt.*;
@@ -11,12 +10,6 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 public class FishingAI extends Intelligence {
-    private static final Logger logger = LogManager.getLogger(FishingAI.class);
-    public static final double STANDARD_PITCH = -0.25;
-    public static final int FISH_BUTTON = KeyEvent.VK_EQUALS;
-    public static final int FISHING_TIME_SEC = 20;
-    public static final int FAIL_TRYINGS = 5;
-    public static final Rectangle SEARCH_SQUARE = new Rectangle(400, 110, 440, 390);
     // red colors
     public static final Color[] FIRST_COLORS = {
             Color.decode("#6b240e"),
@@ -50,10 +43,25 @@ public class FishingAI extends Intelligence {
             Color.decode("#504d3e"),
             Color.decode("#42453a"),
     };
+    private static final Logger logger = LogManager.getLogger(FishingAI.class);
+    private static final double STANDARD_PITCH = -0.25;
+    private static final int FISHING_TIME_SEC = 20;
+    private static final Rectangle SEARCH_SQUARE = new Rectangle(400, 110, 440, 390);
+    private static int FISH_BUTTON;
+    private static int FAIL_TRYINGS;
 
+    public FishingAI() {
+        FISH_BUTTON = KeyEvent.VK_EQUALS;
+        FAIL_TRYINGS = 5;
+    }
+
+    public FishingAI(int fishButton, int failTryings) {
+        FISH_BUTTON = fishButton;
+        FAIL_TRYINGS = failTryings;
+    }
 
     @Override
-    public void processing() {
+    public void processing() throws InterruptedException {
         getCharacter().pitch(STANDARD_PITCH);
         getCharacter().fpv();
 
@@ -96,43 +104,31 @@ public class FishingAI extends Intelligence {
             trackingSquare(trackRect, new Color(bobberCoordinates[2]));
             i = 0;
 
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Thread.sleep(500);
         }
     }
 
-    public void trackingSquare(Rectangle rectangle, Color color) {
+    public void trackingSquare(Rectangle rectangle, Color color) throws InterruptedException {
         long endTime = System.currentTimeMillis() / 1000 + FISHING_TIME_SEC;
 
         while ((System.currentTimeMillis() / 1000) <= endTime) {
-            try {
-                BufferedImage image = StaticFunc.cutImage(rectangle, false, null);
-                int[] trackCoordinates = findColor(image, new Color[]{color}, 8);
-                if (trackCoordinates == null) {
-                    StaticFunc.cutImage(rectangle, true, "wtf");
-                    int x = (int) (rectangle.getX() + (rectangle.getWidth() / 2));
-                    int y = (int) (rectangle.getY() + (rectangle.getHeight() / 2));
-                    loot(x, y);
-                    logger.info("take!");
-                    break;
-                }
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            BufferedImage image = StaticFunc.cutImage(rectangle, false, null);
+            int[] trackCoordinates = findColor(image, new Color[]{color}, 8);
+            if (trackCoordinates == null) {
+                StaticFunc.cutImage(rectangle, true, "wtf");
+                int x = (int) (rectangle.getX() + (rectangle.getWidth() / 2));
+                int y = (int) (rectangle.getY() + (rectangle.getHeight() / 2));
+                loot(x, y);
+                logger.info("take!");
+                break;
             }
+            Thread.sleep(100);
         }
     }
 
-    public void fish() {
-        try {
-            getCharacter().getControl().pressKey(FISH_BUTTON);
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    public void fish() throws InterruptedException {
+        getCharacter().getControl().pressKey(FISH_BUTTON);
+        Thread.sleep(2000);
     }
 
     public int[] findColor(BufferedImage image, Color[] colors, double similarity) {
@@ -142,29 +138,25 @@ public class FishingAI extends Intelligence {
         return StaticFunc.findColor(pixels, colors, similarity);
     }
 
-    public void loot(int x, int y) {
-        try {
-            getCharacter().getControl().mouse(x, y);
-            getCharacter().getControl().getRobot().keyPress(KeyEvent.VK_SHIFT);
-            Thread.sleep(100);
-            getCharacter().getControl().getRobot().mousePress(InputEvent.BUTTON1_DOWN_MASK);
-            Thread.sleep(200);
-            getCharacter().getControl().getRobot().mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-            getCharacter().getControl().getRobot().keyRelease(KeyEvent.VK_SHIFT);
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    public void loot(int x, int y) throws InterruptedException {
+        getCharacter().getControl().mouse(x, y);
+        getCharacter().getControl().getRobot().keyPress(KeyEvent.VK_SHIFT);
+        Thread.sleep(100);
+        getCharacter().getControl().getRobot().mousePress(InputEvent.BUTTON1_DOWN_MASK);
+        Thread.sleep(200);
+        getCharacter().getControl().getRobot().mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        getCharacter().getControl().getRobot().keyRelease(KeyEvent.VK_SHIFT);
     }
 
-    public void mouseOut() {
-        try {
-            int x = (int) (getWindowArea().getX() + SEARCH_SQUARE.getX() + SEARCH_SQUARE.getWidth() + 20);
-            int y = (int) (getWindowArea().getY() + SEARCH_SQUARE.getY());
-            getCharacter().getControl().mouse(x, y);
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    public void mouseOut() throws InterruptedException {
+        int x = (int) (getWindowArea().getX() + SEARCH_SQUARE.getX() + SEARCH_SQUARE.getWidth() + 20);
+        int y = (int) (getWindowArea().getY() + SEARCH_SQUARE.getY());
+        getCharacter().getControl().mouse(x, y);
+        Thread.sleep(100);
+    }
+
+    @Override
+    public Intelligence getInstance() {
+        return new FishingAI();
     }
 }

@@ -1,12 +1,10 @@
-package org.freekode.wowbot.beans.impl;
-
-import org.freekode.wowbot.beans.interfaces.Control;
+package org.freekode.wowbot.beans;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
-public class ControlImpl implements Control {
+public class Control {
     /**
      * how many ms need to run approximately 0.1 distance
      */
@@ -30,7 +28,7 @@ public class ControlImpl implements Control {
     private Robot robot;
 
 
-    public ControlImpl(Rectangle rect) {
+    public Control(Rectangle rect) {
         this.rect = rect;
 
         try {
@@ -40,19 +38,16 @@ public class ControlImpl implements Control {
         }
     }
 
-    @Override
     public void centerMouse() {
         int centerX = (int) (rect.getX() + rect.getWidth() / 2);
         int centerY = (int) (rect.getY() + rect.getHeight() / 2) - 11;
         mouse(centerX, centerY);
     }
 
-    @Override
     public void mouse(int x, int y) {
         robot.mouseMove(x, y);
     }
 
-    @Override
     public void run(double distance) {
         int runMs = (int) (distance / 0.1 * RUN_POINT_ONE);
         try {
@@ -65,7 +60,6 @@ public class ControlImpl implements Control {
         }
     }
 
-    @Override
     public void keyRotateRight(double rad) {
         long runMs = ((long) (rad / 0.01)) * KEY_YAW_DOUBLE_O_ONE;
         try {
@@ -78,7 +72,6 @@ public class ControlImpl implements Control {
         }
     }
 
-    @Override
     public void keyRotateLeft(double rad) {
         long runMs = ((long) (rad / 0.01)) * KEY_YAW_DOUBLE_O_ONE;
         try {
@@ -91,7 +84,6 @@ public class ControlImpl implements Control {
         }
     }
 
-    @Override
     public void mouseYaw(double rad) {
         int interval = ((int) (rad / 0.02)) * MOUSE_YAW_DOUBLE_O_TWO;
 
@@ -103,13 +95,11 @@ public class ControlImpl implements Control {
         robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
     }
 
-    @Override
     public void pitchInit() {
         mousePitch(-0.01);
         mousePitch(0.01);
     }
 
-    @Override
     public void mousePitch(double rad) {
         int interval = ((int) (rad / 0.01)) * MOUSE_PITCH_DOUBLE_O_TWO;
 
@@ -121,7 +111,6 @@ public class ControlImpl implements Control {
         robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
     }
 
-    @Override
     public void fpv() {
         robot.keyPress(KeyEvent.VK_HOME);
         robot.keyRelease(KeyEvent.VK_HOME);
@@ -142,13 +131,11 @@ public class ControlImpl implements Control {
         }
     }
 
-    @Override
     public void pressKey(int keyCode) {
         robot.keyPress(keyCode);
         robot.keyRelease(keyCode);
     }
 
-    @Override
     public Robot getRobot() {
         return robot;
     }

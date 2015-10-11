@@ -1,26 +1,31 @@
-package org.freekode.wowbot.beans.impl;
+package org.freekode.wowbot.beans.ai;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.freekode.wowbot.beans.interfaces.Character;
-import org.freekode.wowbot.beans.interfaces.Intelligence;
+import org.freekode.wowbot.beans.Character;
 
 import java.util.List;
 
 public class MovingAI extends Intelligence {
     private List<Vector3D> points;
-    private Character character;
 
 
-    public MovingAI(List<Vector3D> points, Character character) {
+    public MovingAI() {
+    }
+
+    public MovingAI(List<Vector3D> points) {
         this.points = points;
-        this.character = character;
     }
 
     @Override
     public void processing() {
         for (Vector3D point : points) {
             System.out.println("move = " + point);
-            character.moveTo(point);
+            getCharacter().moveTo(point);
         }
+    }
+
+    @Override
+    public Intelligence getInstance() {
+        return new MovingAI();
     }
 }

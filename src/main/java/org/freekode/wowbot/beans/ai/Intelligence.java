@@ -1,12 +1,11 @@
-package org.freekode.wowbot.beans.interfaces;
+package org.freekode.wowbot.beans.ai;
 
 import com.sun.jna.platform.win32.WinUser;
-import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.beans.impl.CharacterImpl;
-import org.freekode.wowbot.beans.impl.ControlImpl;
-import org.freekode.wowbot.beans.impl.WoWAddonApi;
+import org.freekode.wowbot.beans.Character;
+import org.freekode.wowbot.beans.Control;
+import org.freekode.wowbot.beans.WoWAddonApi;
 import org.freekode.wowbot.tools.StaticFunc;
 
 import java.awt.*;
@@ -32,10 +31,11 @@ public abstract class Intelligence extends Thread {
     }
 
     public void init(Rectangle windowRectangle) {
-        AddonApi addonApi = new WoWAddonApi((int) (windowRectangle.getX() + offsetX), (int) (windowRectangle.getY() + offsetY), 10, 4, 3);
-        Control control = new ControlImpl(windowRectangle);
+        WoWAddonApi addonApi = new WoWAddonApi((int) (windowRectangle.getX() + offsetX), (int) (windowRectangle.getY() + offsetY), 10, 4, 3);
+        Control control = new Control(windowRectangle);
 
-        character = new CharacterImpl(addonApi, control);
+        character = new Character(addonApi, control);
+        character.init();
     }
 
     @Override
@@ -57,5 +57,7 @@ public abstract class Intelligence extends Thread {
         return character;
     }
 
-    public abstract void processing();
+    public abstract void processing() throws InterruptedException;
+
+    public abstract Intelligence getInstance();
 }

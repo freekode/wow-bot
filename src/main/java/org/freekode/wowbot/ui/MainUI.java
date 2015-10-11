@@ -2,6 +2,8 @@ package org.freekode.wowbot.ui;
 
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
+import org.freekode.wowbot.beans.ai.Intelligence;
+import org.freekode.wowbot.modules.Module;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,24 +11,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainUI implements ActionListener, HotkeyListener, ItemListener {
-    private static TestThread aiThread;
-    private JFrame frame;
+    private static Intelligence aiThread;
     private JPanel cards;
-    private List<Module> modules = new ArrayList<>();
+    private HashMap<String, Module> modules = new HashMap<>();
 
 
     public void start() {
-        SwingUtilities.invokeLater(() -> {
-            init();
-        });
+        SwingUtilities.invokeLater(this::init);
     }
 
     public void init() {
-        frame = new JFrame();
+        JFrame frame = new JFrame();
         frame.setTitle("WoW Bot");
         frame.setSize(300, 400);
         frame.setLocationRelativeTo(null);
@@ -34,6 +33,7 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         frame.setLocation(100, 100);
 
         buildInterface(frame);
+        registerHotKeys();
 
         frame.pack();
         frame.setVisible(true);
@@ -69,14 +69,13 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         pane.add(stopButton, c);
 
 
-
         cards = new JPanel(new CardLayout());
         JComboBox<String> aiSelect = new JComboBox<>();
-        for (Module module : modules) {
-            aiSelect.addItem(module.getName());
-            cards.add(module.getUI(), module.getName());
-        }
         aiSelect.addItemListener(this);
+        for (Map.Entry<String, Module> entry : modules.entrySet()) {
+            aiSelect.addItem(entry.getKey());
+            cards.add(entry.getValue().getUI(), entry.getKey());
+        }
         c.anchor = GridBagConstraints.PAGE_START;
         c.insets = new Insets(0, 10, 10, 10);
         c.gridx = 0;
@@ -91,18 +90,22 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
 
     public void registerHotKeys() {
         JIntellitype.getInstance();
-        JIntellitype.getInstance().registerSwingHotKey(1, Event.CTRL_MASK, Event.F10);
+        JIntellitype.getInstance().registerSwingHotKey(1, Event.CTRL_MASK + Event.ALT_MASK, (int) 'G');
+        JIntellitype.getInstance().registerSwingHotKey(2, Event.CTRL_MASK + Event.ALT_MASK, (int) 'K');
         JIntellitype.getInstance().addHotKeyListener(this);
     }
 
-    public void addModule(Module module) {
-        modules.add(module);
+    public void addModule(String name, Module module) {
+        modules.put(name, module);
     }
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-        CardLayout cl = (CardLayout) (cards.getLayout());
-        cl.show(cards, (String) e.getItem());
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+            CardLayout cl = (CardLayout) (cards.getLayout());
+            cl.show(cards, (String) e.getItem());
+            aiThread = modules.get(e.getItem()).getAi().getInstance();
+        }
     }
 
     @Override
@@ -116,16 +119,22 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
 
     @Override
     public void onHotKey(int i) {
-
+        if (i == 1) {
+            startThread();
+        } else if (i == 2) {
+            stopThread();
+        }
     }
 
     public void startThread() {
-        aiThread = new TestThread();
-        aiThread.start();
+        if (!aiThread.isAlive()) {
+            aiThread.start();
+        }
     }
 
     public void stopThread() {
         aiThread.interrupt();
+        aiThread = aiThread.getInstance();
     }
 }
 

@@ -1,13 +1,11 @@
-package org.freekode.wowbot.beans.impl;
-
-import org.freekode.wowbot.beans.interfaces.AddonApi;
+package org.freekode.wowbot.beans;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class WoWAddonApi implements AddonApi {
+public class WoWAddonApi {
     public static final int UPDATE_INTERVAL = 100;
 
     public static long lastUpdate = 0;
