@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainUI implements ActionListener, HotkeyListener, ItemListener {
+    private StatusBar statusBar;
     private static Intelligence aiThread;
     private JPanel cards;
     private HashMap<String, Module> modules = new HashMap<>();
@@ -84,8 +85,21 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         pane.add(aiSelect, c);
 
         c.anchor = GridBagConstraints.CENTER;
+        c.gridx = 0;
         c.gridy = 2;
+        c.gridwidth = 2;
         pane.add(cards, c);
+
+
+        statusBar = new StatusBar();
+        statusBar.setText("started");
+        c.gridx = 0;
+        c.gridy = 3;
+        c.gridwidth = 2;
+        c.insets = new Insets(0, 0, 0, 0);
+        c.anchor = GridBagConstraints.LAST_LINE_START;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        pane.add(statusBar, c);
     }
 
     public void registerHotKeys() {

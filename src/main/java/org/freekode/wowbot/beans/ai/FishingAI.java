@@ -51,6 +51,7 @@ public class FishingAI extends Intelligence {
     private static int FAIL_TRYINGS;
 
     public FishingAI() {
+        setName("Fishing");
         FISH_BUTTON = KeyEvent.VK_EQUALS;
         FAIL_TRYINGS = 5;
     }
