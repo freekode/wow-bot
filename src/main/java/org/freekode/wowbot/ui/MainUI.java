@@ -2,6 +2,8 @@ package org.freekode.wowbot.ui;
 
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.modules.Module;
 
@@ -15,8 +17,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainUI implements ActionListener, HotkeyListener, ItemListener {
+    private static final Logger logger = LogManager.getLogger(MainUI.class);
+    private Module currentModule;
+    private Intelligence aiThread;
     private StatusBar statusBar;
-    private static Intelligence aiThread;
     private JPanel cards;
     private HashMap<String, Module> modules = new HashMap<>();
 
@@ -85,6 +89,7 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         pane.add(aiSelect, c);
 
         c.anchor = GridBagConstraints.CENTER;
+        c.insets = new Insets(0, 10, 10, 10);
         c.gridx = 0;
         c.gridy = 2;
         c.gridwidth = 2;
@@ -118,7 +123,7 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         if (e.getStateChange() == ItemEvent.SELECTED) {
             CardLayout cl = (CardLayout) (cards.getLayout());
             cl.show(cards, (String) e.getItem());
-            aiThread = modules.get(e.getItem()).getAi().getInstance();
+            currentModule = modules.get(e.getItem());
         }
     }
 
@@ -126,6 +131,8 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     public void actionPerformed(ActionEvent e) {
         if ("startThread".equals(e.getActionCommand())) {
             startThread();
+        } else if ("pauseThread".equals(e.getActionCommand())) {
+            pauseThread();
         } else if ("stopThread".equals(e.getActionCommand())) {
             stopThread();
         }
@@ -141,14 +148,29 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     }
 
     public void startThread() {
+        if (aiThread == null) {
+            aiThread = currentModule.getAi();
+        }
+
         if (!aiThread.isAlive()) {
+            statusBar.setText("thread = " + aiThread);
             aiThread.start();
+        }
+    }
+
+    public void pauseThread() {
+        if (!aiThread.isAlive()) {
+            try {
+                aiThread.wait();
+            } catch (InterruptedException e) {
+                logger.info(e);
+            }
         }
     }
 
     public void stopThread() {
         aiThread.interrupt();
-        aiThread = aiThread.getInstance();
+        aiThread = null;
     }
 }
 

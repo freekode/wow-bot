@@ -20,6 +20,17 @@ public abstract class Intelligence extends Thread {
     private Character character;
 
 
+    @Override
+    public void run() {
+        try {
+            windowArea = findWindow();
+            init(windowArea);
+            processing();
+        } catch (Exception e) {
+            logger.warn(e);
+        }
+    }
+
     public Rectangle findWindow() throws Exception {
         WinUser.WINDOWINFO windowCoordinates = StaticFunc.upWindow(WINDOW_CLASS, WINDOW_NAME);
 
@@ -34,19 +45,8 @@ public abstract class Intelligence extends Thread {
         WoWAddonApi addonApi = new WoWAddonApi((int) (windowRectangle.getX() + offsetX), (int) (windowRectangle.getY() + offsetY), 10, 4, 3);
         Control control = new Control(windowRectangle);
 
-        character = new Character(addonApi, control);
+        character = Character.getInstance(addonApi, control);
         character.init();
-    }
-
-    @Override
-    public void run() {
-        try {
-            windowArea = findWindow();
-            init(windowArea);
-            processing();
-        } catch (Exception e) {
-            logger.warn(e);
-        }
     }
 
     public Rectangle getWindowArea() {
@@ -58,6 +58,4 @@ public abstract class Intelligence extends Thread {
     }
 
     public abstract void processing() throws InterruptedException;
-
-    public abstract Intelligence getInstance();
 }

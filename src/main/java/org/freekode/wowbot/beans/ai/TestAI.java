@@ -14,9 +14,4 @@ public class TestAI extends Intelligence {
             Thread.sleep(500);
         }
     }
-
-    @Override
-    public Intelligence getInstance() {
-        return new TestAI();
-    }
 }

@@ -23,9 +23,4 @@ public class MovingAI extends Intelligence {
             getCharacter().moveTo(point);
         }
     }
-
-    @Override
-    public Intelligence getInstance() {
-        return new MovingAI();
-    }
 }

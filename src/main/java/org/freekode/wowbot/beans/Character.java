@@ -6,6 +6,7 @@ import org.freekode.wowbot.tools.StaticFunc;
 import java.math.BigDecimal;
 
 public class Character {
+    private static Character INSTANCE;
     public static final double STANDARD_PITCH = -0.25;
     public static final double PITCH_TOLERANCE = 0.02;
     public static final double AZIMUTH_TOLERANCE = 0.02;
@@ -14,9 +15,17 @@ public class Character {
     private Control control;
 
 
-    public Character(WoWAddonApi api, Control control) {
+    private Character(WoWAddonApi api, Control control) {
         this.api = api;
         this.control = control;
+    }
+
+    public static Character getInstance(WoWAddonApi api, Control control) {
+        if (INSTANCE == null) {
+            INSTANCE = new Character(api, control);
+        }
+
+        return INSTANCE;
     }
 
     public void init() {

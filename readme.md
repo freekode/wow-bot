@@ -1,5 +1,5 @@
 # 0.1 version
-* gui interface with start, pause, stop buttons
-* selecting AI
-* movement AI
-* fishing AI
+ * ai settings
+ * info in window    
+ * pause button
+ * movement AI

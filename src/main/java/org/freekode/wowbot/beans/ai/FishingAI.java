@@ -10,8 +10,11 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 public class FishingAI extends Intelligence {
+    private static final Logger logger = LogManager.getLogger(FishingAI.class);
+    private static final double STANDARD_PITCH = -0.25;
+    private static final int FISHING_TIME_SEC = 20;
     // red colors
-    public static final Color[] FIRST_COLORS = {
+    public final Color[] FIRST_COLORS = {
             Color.decode("#6b240e"),
             Color.decode("#4d160e"),
 
@@ -22,7 +25,7 @@ public class FishingAI extends Intelligence {
             Color.decode("#341209"),
     };
     // blue colors
-    public static final Color[] SECOND_COLORS = {
+    public final Color[] SECOND_COLORS = {
             Color.decode("#353c59"),
             Color.decode("#2f3756"),
 
@@ -33,7 +36,7 @@ public class FishingAI extends Intelligence {
             Color.decode("#17263d"),
     };
     // white-yellow colors
-    public static final Color[] THIRD_COLORS = {
+    public final Color[] THIRD_COLORS = {
             Color.decode("#6a5344"),
             Color.decode("#756051"),
 
@@ -43,20 +46,13 @@ public class FishingAI extends Intelligence {
             Color.decode("#504d3e"),
             Color.decode("#42453a"),
     };
-    private static final Logger logger = LogManager.getLogger(FishingAI.class);
-    private static final double STANDARD_PITCH = -0.25;
-    private static final int FISHING_TIME_SEC = 20;
-    private static final Rectangle SEARCH_SQUARE = new Rectangle(400, 110, 440, 390);
-    private static int FISH_BUTTON;
-    private static int FAIL_TRYINGS;
-
-    public FishingAI() {
-        setName("Fishing");
-        FISH_BUTTON = KeyEvent.VK_EQUALS;
-        FAIL_TRYINGS = 5;
-    }
+    private final Rectangle SEARCH_SQUARE = new Rectangle(400, 110, 440, 390);
+    private int FISH_BUTTON;
+    private int FAIL_TRYINGS;
 
     public FishingAI(int fishButton, int failTryings) {
+        setName("Fishing");
+
         FISH_BUTTON = fishButton;
         FAIL_TRYINGS = failTryings;
     }
@@ -73,7 +69,7 @@ public class FishingAI extends Intelligence {
             fish();
 
             Rectangle imageRect = StaticFunc.calculateCutSquare(getWindowArea(), SEARCH_SQUARE);
-            BufferedImage image = StaticFunc.cutImage(imageRect, true, "search");
+            BufferedImage image = StaticFunc.cutImage(imageRect);
             int[] bobberPoint = findColor(image, FIRST_COLORS, 7);
             if (bobberPoint == null) {
                 continue;
@@ -83,7 +79,7 @@ public class FishingAI extends Intelligence {
             Rectangle bobberSquare = new Rectangle(bobberPoint[0] - 30, bobberPoint[1] - 20, 80, 50);
             Rectangle bobberRect = StaticFunc.calculateCutSquare(getWindowArea(),
                     StaticFunc.calculateCutSquare(SEARCH_SQUARE, bobberSquare));
-            BufferedImage bobberImage = StaticFunc.cutImage(bobberRect, true, "bobber");
+            BufferedImage bobberImage = StaticFunc.cutImage(bobberRect);
             int[] bobberPart = findColor(bobberImage, SECOND_COLORS, 6);
             if (bobberPart == null) {
                 continue;
@@ -101,7 +97,7 @@ public class FishingAI extends Intelligence {
                     StaticFunc.calculateCutSquare(SEARCH_SQUARE,
                             StaticFunc.calculateCutSquare(bobberSquare, stickSquare)));
 
-            StaticFunc.cutImage(trackRect, true, "tracking");
+            StaticFunc.cutImage(trackRect);
             trackingSquare(trackRect, new Color(bobberCoordinates[2]));
             i = 0;
 
@@ -113,10 +109,10 @@ public class FishingAI extends Intelligence {
         long endTime = System.currentTimeMillis() / 1000 + FISHING_TIME_SEC;
 
         while ((System.currentTimeMillis() / 1000) <= endTime) {
-            BufferedImage image = StaticFunc.cutImage(rectangle, false, null);
+            BufferedImage image = StaticFunc.cutImage(rectangle);
             int[] trackCoordinates = findColor(image, new Color[]{color}, 8);
             if (trackCoordinates == null) {
-                StaticFunc.cutImage(rectangle, true, "wtf");
+                StaticFunc.cutImage(rectangle);
                 int x = (int) (rectangle.getX() + (rectangle.getWidth() / 2));
                 int y = (int) (rectangle.getY() + (rectangle.getHeight() / 2));
                 loot(x, y);
@@ -154,10 +150,5 @@ public class FishingAI extends Intelligence {
         int y = (int) (getWindowArea().getY() + SEARCH_SQUARE.getY());
         getCharacter().getControl().mouse(x, y);
         Thread.sleep(100);
-    }
-
-    @Override
-    public Intelligence getInstance() {
-        return new FishingAI();
     }
 }

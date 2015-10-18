@@ -139,18 +139,29 @@ public class StaticFunc {
         return null;
     }
 
-    public static BufferedImage cutImage(Rectangle rectangle, boolean writeImage, String fileName) {
+    public static BufferedImage cutImage(Rectangle rectangle) {
         try {
             Robot robot = new Robot();
-            BufferedImage image = robot.createScreenCapture(rectangle);
 
-            if (writeImage) {
+            return robot.createScreenCapture(rectangle);
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static BufferedImage cutImage(Rectangle rectangle, Boolean writeImage, String fileName) {
+        try {
+            BufferedImage image = cutImage(rectangle);
+
+            if (writeImage && image != null) {
                 File file = new File("images/" + fileName + ".png");
                 ImageIO.write(image, "png", file);
             }
 
             return image;
-        } catch (AWTException | IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
