@@ -10,7 +10,7 @@ public class TestModule extends Module {
     @Override
     public Component getUI() {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.add(new JButton("Test"));
+        panel.add(new JLabel("Test"));
 
         return panel;
     }

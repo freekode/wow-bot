@@ -14,4 +14,9 @@ public class TestAI extends Intelligence {
             Thread.sleep(500);
         }
     }
+
+    @Override
+    public void terminating() {
+
+    }
 }

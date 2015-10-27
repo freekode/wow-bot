@@ -8,6 +8,7 @@ import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.modules.Module;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -75,6 +76,8 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
 
 
         cards = new JPanel(new CardLayout());
+//        cards.setBorder(new BevelBorder(BevelBorder.LOWERED));
+
         JComboBox<String> aiSelect = new JComboBox<>();
         aiSelect.addItemListener(this);
         for (Map.Entry<String, Module> entry : modules.entrySet()) {
@@ -93,6 +96,9 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         c.gridx = 0;
         c.gridy = 2;
         c.gridwidth = 2;
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 1;
+        c.weighty = 1;
         pane.add(cards, c);
 
 
@@ -104,6 +110,8 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         c.insets = new Insets(0, 0, 0, 0);
         c.anchor = GridBagConstraints.LAST_LINE_START;
         c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 0;
+        c.weighty = 0;
         pane.add(statusBar, c);
     }
 
@@ -148,9 +156,7 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     }
 
     public void startThread() {
-        if (aiThread == null) {
-            aiThread = currentModule.getAi();
-        }
+        aiThread = currentModule.getAi();
 
         if (!aiThread.isAlive()) {
             statusBar.setText("thread = " + aiThread);
@@ -169,8 +175,8 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     }
 
     public void stopThread() {
-        aiThread.interrupt();
-        aiThread = null;
+        aiThread.kill();
+        statusBar.setText("thread alive = " + aiThread.isAlive());
     }
 }
 

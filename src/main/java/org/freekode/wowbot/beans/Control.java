@@ -1,5 +1,8 @@
 package org.freekode.wowbot.beans;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -9,21 +12,19 @@ public class Control {
      * how many ms need to run approximately 0.1 distance
      */
     public static final int RUN_POINT_ONE = 357;
-
     /**
      * how many ms need to change yaw using keyboard
      */
     public static final int KEY_YAW_DOUBLE_O_ONE = 3;
-
     /**
      * how many px need to change yaw to 0.02 rad by mouse
      */
     public static final int MOUSE_YAW_DOUBLE_O_TWO = 5;
-
     /**
      * how many px need to change pitch to 0.02 rad by mouse
      */
     public static final int MOUSE_PITCH_DOUBLE_O_TWO = 5;
+    private static final Logger logger = LogManager.getLogger(Control.class);
     private Rectangle rect;
     private Robot robot;
 
@@ -50,38 +51,23 @@ public class Control {
 
     public void run(double distance) {
         int runMs = (int) (distance / 0.1 * RUN_POINT_ONE);
-        try {
-            Robot robot = new Robot();
-            robot.keyPress(KeyEvent.VK_W);
-            robot.delay(runMs);
-            robot.keyRelease(KeyEvent.VK_W);
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
+        robot.keyPress(KeyEvent.VK_W);
+        robot.delay(runMs);
+        robot.keyRelease(KeyEvent.VK_W);
     }
 
-    public void keyRotateRight(double rad) {
+    public void keyRotateRight(double rad) throws InterruptedException {
         long runMs = ((long) (rad / 0.01)) * KEY_YAW_DOUBLE_O_ONE;
-        try {
-            Robot robot = new Robot();
-            robot.keyPress(KeyEvent.VK_D);
-            Thread.sleep(runMs);
-            robot.keyRelease(KeyEvent.VK_D);
-        } catch (AWTException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        robot.keyPress(KeyEvent.VK_D);
+        Thread.sleep(runMs);
+        robot.keyRelease(KeyEvent.VK_D);
     }
 
-    public void keyRotateLeft(double rad) {
+    public void keyRotateLeft(double rad) throws InterruptedException {
         long runMs = ((long) (rad / 0.01)) * KEY_YAW_DOUBLE_O_ONE;
-        try {
-            Robot robot = new Robot();
-            robot.keyPress(KeyEvent.VK_A);
-            Thread.sleep(runMs);
-            robot.keyRelease(KeyEvent.VK_A);
-        } catch (AWTException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        robot.keyPress(KeyEvent.VK_A);
+        Thread.sleep(runMs);
+        robot.keyRelease(KeyEvent.VK_A);
     }
 
     public void mouseYaw(double rad) {
@@ -111,9 +97,9 @@ public class Control {
         robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
     }
 
-    public void fpv() {
-        robot.keyPress(KeyEvent.VK_HOME);
-        robot.keyRelease(KeyEvent.VK_HOME);
+    public void fpv() throws InterruptedException {
+        robot.keyPress(KeyEvent.VK_END);
+        robot.keyRelease(KeyEvent.VK_END);
 
         robot.keyPress(KeyEvent.VK_HOME);
         robot.keyRelease(KeyEvent.VK_HOME);
@@ -124,11 +110,10 @@ public class Control {
         robot.keyPress(KeyEvent.VK_HOME);
         robot.keyRelease(KeyEvent.VK_HOME);
 
-        try {
-            Thread.sleep(800);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        robot.keyPress(KeyEvent.VK_HOME);
+        robot.keyRelease(KeyEvent.VK_HOME);
+
+        Thread.sleep(2000);
     }
 
     public void pressKey(int keyCode) {

@@ -55,12 +55,14 @@ public class FishingAI extends Intelligence {
 
         FISH_BUTTON = fishButton;
         FAIL_TRYINGS = failTryings;
+
+        logger.info("fish button = " + fishButton + "; fail tryings = " + failTryings);
     }
 
     @Override
     public void processing() throws InterruptedException {
-        getCharacter().pitch(STANDARD_PITCH);
-        getCharacter().fpv();
+        getCharacter().init();
+
 
         logger.info("start fishing");
         for (int i = 0; i < FAIL_TRYINGS; i++) {
@@ -105,6 +107,11 @@ public class FishingAI extends Intelligence {
         }
     }
 
+    @Override
+    public void terminating() {
+
+    }
+
     public void trackingSquare(Rectangle rectangle, Color color) throws InterruptedException {
         long endTime = System.currentTimeMillis() / 1000 + FISHING_TIME_SEC;
 
@@ -138,11 +145,12 @@ public class FishingAI extends Intelligence {
     public void loot(int x, int y) throws InterruptedException {
         getCharacter().getControl().mouse(x, y);
         getCharacter().getControl().getRobot().keyPress(KeyEvent.VK_SHIFT);
-        Thread.sleep(100);
+        Thread.sleep(300);
         getCharacter().getControl().getRobot().mousePress(InputEvent.BUTTON1_DOWN_MASK);
-        Thread.sleep(200);
+        Thread.sleep(300);
         getCharacter().getControl().getRobot().mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
         getCharacter().getControl().getRobot().keyRelease(KeyEvent.VK_SHIFT);
+        Thread.sleep(500);
     }
 
     public void mouseOut() throws InterruptedException {

@@ -27,6 +27,7 @@ public abstract class Intelligence extends Thread {
             init(windowArea);
             processing();
         } catch (Exception e) {
+            terminating();
             logger.warn(e);
         }
     }
@@ -41,12 +42,11 @@ public abstract class Intelligence extends Thread {
         return windowCoordinates.rcClient.toRectangle();
     }
 
-    public void init(Rectangle windowRectangle) {
+    public void init(Rectangle windowRectangle) throws InterruptedException {
         WoWAddonApi addonApi = new WoWAddonApi((int) (windowRectangle.getX() + offsetX), (int) (windowRectangle.getY() + offsetY), 10, 4, 3);
         Control control = new Control(windowRectangle);
 
         character = Character.getInstance(addonApi, control);
-        character.init();
     }
 
     public Rectangle getWindowArea() {
@@ -58,4 +58,10 @@ public abstract class Intelligence extends Thread {
     }
 
     public abstract void processing() throws InterruptedException;
+
+    public abstract void terminating();
+
+    public void kill() {
+        Thread.currentThread().interrupt();
+    }
 }

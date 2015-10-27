@@ -28,9 +28,8 @@ public class Character {
         return INSTANCE;
     }
 
-    public void init() {
+    public void init() throws InterruptedException {
         control.pitchInit();
-        control.fpv();
         pitch(STANDARD_PITCH);
     }
 
@@ -88,7 +87,7 @@ public class Character {
         }
     }
 
-    public void fpv() {
+    public void fpv() throws InterruptedException {
         control.fpv();
     }
 

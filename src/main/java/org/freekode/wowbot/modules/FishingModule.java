@@ -4,54 +4,52 @@ import org.freekode.wowbot.beans.ai.FishingAI;
 import org.freekode.wowbot.beans.ai.Intelligence;
 
 import javax.swing.*;
+import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.text.NumberFormat;
+import java.text.ParseException;
 
 public class FishingModule extends Module {
     private JFormattedTextField fishButton;
     private JFormattedTextField failTryings;
 
 
-
     @Override
     public Component getUI() {
-        JPanel panel = new JPanel(new SpringLayout());
-
+        JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
         JLabel fishBtnLabel = new JLabel("Fish button");
-        fishBtnLabel.setVerticalAlignment(SwingConstants.CENTER);
-        c.anchor = GridBagConstraints.PAGE_END;
-        c.insets = new Insets(0, 0, 10, 10);
         c.gridx = 0;
         c.gridy = 0;
+        c.insets = new Insets(0, 0, 0, 10);
         panel.add(fishBtnLabel, c);
 
-        fishButton = new JFormattedTextField(NumberFormat.getNumberInstance());
-        fishButton.setValue(61);
-        fishButton.setColumns(4);
-        c.anchor = GridBagConstraints.CENTER;
-        c.insets = new Insets(0, 0, 0, 0);
-        c.gridx = 1;
-        c.gridy = 0;
-        panel.add(fishButton, c);
-
-
         JLabel failLabel = new JLabel("Fail tryings");
-        failLabel.setVerticalAlignment(SwingConstants.CENTER);
-        c.anchor = GridBagConstraints.PAGE_END;
-        c.insets = new Insets(0, 0, 10, 10);
         c.gridx = 0;
         c.gridy = 1;
+        c.insets = new Insets(0, 0, 0, 10);
         panel.add(failLabel, c);
+
+
+        try {
+            fishButton = new JFormattedTextField(new MaskFormatter("*"));
+            fishButton.setValue("=");
+            fishButton.setColumns(4);
+            c.gridx = 1;
+            c.gridy = 0;
+            c.insets = new Insets(0, 0, 0, 0);
+            panel.add(fishButton, c);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         failTryings = new JFormattedTextField(NumberFormat.getNumberInstance());
         failTryings.setValue(5);
         failTryings.setColumns(4);
-        c.anchor = GridBagConstraints.CENTER;
-        c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 1;
         c.gridy = 1;
+        c.insets = new Insets(0, 0, 0, 0);
         panel.add(failTryings, c);
 
 
@@ -60,7 +58,7 @@ public class FishingModule extends Module {
 
     @Override
     public Intelligence getAi() {
-        int fishButtonValue = Integer.valueOf(fishButton.getText());
+        int fishButtonValue = KeyStroke.getKeyStroke(fishButton.getText().charAt(0), 0).getKeyCode();
         int failTryingsValue = Integer.valueOf(failTryings.getText());
         return new FishingAI(fishButtonValue, failTryingsValue);
     }
