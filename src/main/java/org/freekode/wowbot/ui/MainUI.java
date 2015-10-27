@@ -39,7 +39,6 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         frame.setLocation(100, 100);
 
         buildInterface(frame);
-        registerHotKeys();
 
         frame.pack();
         frame.setVisible(true);
