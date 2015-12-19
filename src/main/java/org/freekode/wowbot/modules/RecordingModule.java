@@ -1,6 +1,6 @@
 package org.freekode.wowbot.modules;
 
-import org.freekode.wowbot.beans.ai.Intelligence;
+import org.freekode.wowbot.beans.ai.IntelligenceOld;
 import org.freekode.wowbot.beans.ai.RecordingAI;
 
 import javax.swing.*;
@@ -33,7 +33,7 @@ public class RecordingModule extends Module {
     }
 
     @Override
-    public Intelligence getAi() {
+    public IntelligenceOld getAi() {
         return new RecordingAI(recordsModel);
     }
 }

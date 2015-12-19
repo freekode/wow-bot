@@ -1,7 +1,7 @@
 package org.freekode.wowbot.modules;
 
 import org.freekode.wowbot.beans.ai.FishingAI;
-import org.freekode.wowbot.beans.ai.Intelligence;
+import org.freekode.wowbot.beans.ai.IntelligenceOld;
 
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
@@ -57,7 +57,7 @@ public class FishingModule extends Module {
     }
 
     @Override
-    public Intelligence getAi() {
+    public IntelligenceOld getAi() {
         int fishButtonValue = KeyStroke.getKeyStroke(fishButton.getText().charAt(0), 0).getKeyCode();
         int failTryingsValue = Integer.valueOf(failTryings.getText());
         return new FishingAI(fishButtonValue, failTryingsValue);

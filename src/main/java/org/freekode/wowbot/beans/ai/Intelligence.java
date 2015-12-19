@@ -3,9 +3,11 @@ package org.freekode.wowbot.beans.ai;
 import com.sun.jna.platform.win32.WinUser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.beans.Character;
-import org.freekode.wowbot.beans.Control;
 import org.freekode.wowbot.beans.AddonReceiver;
+import org.freekode.wowbot.beans.CharacterDriver;
+import org.freekode.wowbot.beans.MainController;
+import org.freekode.wowbot.beans.interfaces.Driver;
+import org.freekode.wowbot.beans.interfaces.Receiver;
 import org.freekode.wowbot.tools.StaticFunc;
 
 import java.awt.*;
@@ -17,18 +19,19 @@ public abstract class Intelligence extends Thread {
     private static final Integer offsetX = 0;
     private static final Integer offsetY = 0;
     private Rectangle windowArea;
-    private Character character;
+    private MainController controller;
 
 
     @Override
     public void run() {
         try {
             windowArea = findWindow();
-            init(windowArea);
+            init();
+
             processing();
         } catch (Exception e) {
             terminating();
-            logger.warn(e);
+            logger.info("Intelligence exception", e);
         }
     }
 
@@ -42,26 +45,26 @@ public abstract class Intelligence extends Thread {
         return windowCoordinates.rcClient.toRectangle();
     }
 
-    public void init(Rectangle windowRectangle) throws InterruptedException {
-        AddonReceiver addonApi = new AddonReceiver((int) (windowRectangle.getX() + offsetX), (int) (windowRectangle.getY() + offsetY), 10, 4, 3);
-        Control control = new Control(windowRectangle);
+    public void init() throws InterruptedException {
+        Receiver receiver = new AddonReceiver((int) (windowArea.getX() + offsetX), (int) (windowArea.getY() + offsetY), 10, 4, 3);
+        Driver driver = new CharacterDriver(windowArea);
 
-        character = Character.getInstance(addonApi, control);
+        MainController controller = new MainController(driver, receiver);
     }
 
     public Rectangle getWindowArea() {
         return windowArea;
     }
 
-    public Character getCharacter() {
-        return character;
+    public MainController getController() {
+        return controller;
+    }
+
+    public void kill() {
+        Thread.currentThread().interrupt();
     }
 
     public abstract void processing() throws InterruptedException;
 
     public abstract void terminating();
-
-    public void kill() {
-        Thread.currentThread().interrupt();
-    }
 }

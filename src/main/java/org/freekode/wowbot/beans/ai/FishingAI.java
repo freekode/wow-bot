@@ -61,7 +61,7 @@ public class FishingAI extends Intelligence {
 
     @Override
     public void processing() throws InterruptedException {
-        getCharacter().init();
+        getController().init();
 
 
         logger.info("start fishing");
@@ -131,7 +131,7 @@ public class FishingAI extends Intelligence {
     }
 
     public void fish() throws InterruptedException {
-        getCharacter().getControl().pressKey(FISH_BUTTON);
+        getController().getDriver().pressKey(FISH_BUTTON);
         Thread.sleep(2000);
     }
 
@@ -143,20 +143,20 @@ public class FishingAI extends Intelligence {
     }
 
     public void loot(int x, int y) throws InterruptedException {
-        getCharacter().getControl().mouse(x, y);
-        getCharacter().getControl().getRobot().keyPress(KeyEvent.VK_SHIFT);
+        getController().getDriver().mouse(x, y);
+        getController().getDriver().getRobot().keyPress(KeyEvent.VK_SHIFT);
         Thread.sleep(300);
-        getCharacter().getControl().getRobot().mousePress(InputEvent.BUTTON1_DOWN_MASK);
+        getController().getDriver().getRobot().mousePress(InputEvent.BUTTON1_DOWN_MASK);
         Thread.sleep(300);
-        getCharacter().getControl().getRobot().mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-        getCharacter().getControl().getRobot().keyRelease(KeyEvent.VK_SHIFT);
+        getController().getDriver().getRobot().mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        getController().getDriver().getRobot().keyRelease(KeyEvent.VK_SHIFT);
         Thread.sleep(500);
     }
 
     public void mouseOut() throws InterruptedException {
         int x = (int) (getWindowArea().getX() + SEARCH_SQUARE.getX() + SEARCH_SQUARE.getWidth() + 20);
         int y = (int) (getWindowArea().getY() + SEARCH_SQUARE.getY());
-        getCharacter().getControl().mouse(x, y);
+        getController().getDriver().mouse(x, y);
         Thread.sleep(100);
     }
 }

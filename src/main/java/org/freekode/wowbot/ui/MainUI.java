@@ -4,11 +4,10 @@ import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.beans.ai.Intelligence;
+import org.freekode.wowbot.beans.ai.IntelligenceOld;
 import org.freekode.wowbot.modules.Module;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,7 +19,7 @@ import java.util.Map;
 public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     private static final Logger logger = LogManager.getLogger(MainUI.class);
     private Module currentModule;
-    private Intelligence aiThread;
+    private IntelligenceOld aiThread;
     private StatusBar statusBar;
     private JPanel cards;
     private HashMap<String, Module> modules = new HashMap<>();

@@ -1,6 +1,6 @@
 package org.freekode.wowbot.modules;
 
-import org.freekode.wowbot.beans.ai.Intelligence;
+import org.freekode.wowbot.beans.ai.IntelligenceOld;
 import org.freekode.wowbot.beans.ai.TestAI;
 
 import javax.swing.*;
@@ -16,7 +16,7 @@ public class TestModule extends Module {
     }
 
     @Override
-    public Intelligence getAi() {
+    public IntelligenceOld getAi() {
         return new TestAI();
     }
 }

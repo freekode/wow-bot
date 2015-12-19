@@ -1,5 +1,7 @@
 package org.freekode.wowbot.beans.interfaces;
 
+import java.awt.*;
+
 public interface Driver {
     void centerMouse();
 
@@ -20,4 +22,6 @@ public interface Driver {
     void fpv() throws InterruptedException;
 
     void pressKey(int keyCode);
+
+    Robot getRobot();
 }

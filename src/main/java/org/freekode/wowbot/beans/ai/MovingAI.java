@@ -1,11 +1,10 @@
 package org.freekode.wowbot.beans.ai;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.freekode.wowbot.beans.Character;
 
 import java.util.List;
 
-public class MovingAI extends Intelligence {
+public class MovingAI extends IntelligenceOld {
     private List<Vector3D> points;
 
 

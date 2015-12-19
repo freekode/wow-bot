@@ -4,7 +4,6 @@ import com.sun.jna.platform.win32.WinUser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.AddonReceiver;
-import org.freekode.wowbot.beans.Character;
 import org.freekode.wowbot.beans.CharacterDriver;
 import org.freekode.wowbot.beans.MainController;
 import org.freekode.wowbot.beans.interfaces.Driver;

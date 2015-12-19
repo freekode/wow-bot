@@ -9,14 +9,14 @@ public class TestAI extends Intelligence {
 
     @Override
     public void processing() throws InterruptedException {
-        while (true) {
+        for (int i = 0; i < 5; i++) {
             logger.info("test passed");
-            Thread.sleep(500);
+            Thread.sleep(1000);
         }
     }
 
     @Override
     public void terminating() {
-
+        logger.info("Test AI terminating");
     }
 }

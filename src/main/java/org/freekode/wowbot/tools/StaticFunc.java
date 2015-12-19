@@ -4,6 +4,8 @@ import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -13,6 +15,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class StaticFunc {
+    private static final Logger logger = LogManager.getLogger(StaticFunc.class);
+
+
     public static double getAzimuth(Vector3D a, Vector3D b) {
         double bCt = (b.getY() - a.getY()) * -1;
         double cCt = Vector3D.distance(a, b);
@@ -38,7 +43,7 @@ public class StaticFunc {
             User32.INSTANCE.SetForegroundWindow(hwnd);
             return info;
         } else {
-            throw new Exception("there is no window " + windowClass + ":" + windowName);
+            return null;
         }
     }
 
@@ -138,6 +143,10 @@ public class StaticFunc {
         return null;
     }
 
+    public static BufferedImage cutImage(Rectangle rectangle) {
+        return cutImage(rectangle, false, null);
+    }
+
     public static BufferedImage cutImage(Rectangle rectangle, boolean writeImage, String fileName) {
         try {
             Robot robot = new Robot();
@@ -150,7 +159,7 @@ public class StaticFunc {
 
             return image;
         } catch (AWTException | IOException e) {
-            e.printStackTrace();
+            logger.error("cutImage exception", e);
         }
 
         return null;

@@ -17,11 +17,25 @@ the colors and produce understandable numbers
 provide many methods to control not only the character but also to control the mouse and keyboard. Ideally only Driver (
 and Receiver) can use Robot class, another classes should use robot methods over the Driver class.
 * Controller - combine previous two to provide more appropriate methods to control the character (go to coordinate, set azimuth and etc.)
-
-This is mainly enough to control the character. But to make more complicated things we need more intellectual methods
-and for that you can create custom AI. Each AI can be combined with another to make much more complicated processes.
+Actually it is no an interface, it is abstract class, in which Driver and Receiver must be placed in the constructor.
 
 
+### AI
+Interface which explained in previous part was mostly enough for base steps. But to perform more complicated processes,
+we need intellectual methods and for that you can create custom AI.
+AI is a Thread which started and can be stopped at any time (actually there is many problems about killing the thread).
+Each AI extends main abstract class Intelligence. That class created for more easy way to make your own AIs.
+Intelligence perform main operations for starting and stopping and provide everything what needed to your AI.
+
+Intelligence children must implement two methods:
+
+* processing - main methods for AI, it is performing all main operations in your AI
+* terminating - calling when exception occurs and Intelligence will stop the thread
+Simple example is TestAI, it print "test passed" each second five times.
+
+Main problem is killing the process. There is many places in the code where Thread.sleep() uses. And some where
+InterruptedException is ignored, if so it just can not be interrupted, or stopped appropriately. To solve this bug,
+you have to DO NOT CATCH InterruptedException. Please simply throw it to higher level.
 
 
 ## 0.1 version

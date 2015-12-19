@@ -1,8 +1,8 @@
 package org.freekode.wowbot.beans;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.freekode.wowbot.beans.interfaces.Driver;
 import org.freekode.wowbot.beans.interfaces.Controller;
+import org.freekode.wowbot.beans.interfaces.Driver;
 import org.freekode.wowbot.beans.interfaces.Receiver;
 import org.freekode.wowbot.tools.StaticFunc;
 
@@ -21,6 +21,11 @@ public class MainController extends Controller {
 
     public Vector3D getCoordinates() {
         return new Vector3D(getReceiver().getX(), getReceiver().getY(), 0);
+    }
+
+    public void init() throws InterruptedException {
+        getDriver().pitchInit();
+        pitch(STANDARD_PITCH);
     }
 
     public void moveTo(Vector3D point) {
@@ -63,5 +68,9 @@ public class MainController extends Controller {
                 break;
             }
         }
+    }
+
+    public void fpv() throws InterruptedException {
+        getDriver().fpv();
     }
 }

@@ -6,9 +6,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
-import java.awt.*;
 
-public class RecordingAI extends Intelligence implements HotkeyListener {
+public class RecordingAI extends IntelligenceOld implements HotkeyListener {
     private static final Logger logger = LogManager.getLogger(RecordingAI.class);
     private DefaultListModel<String> listModelUi;
 
