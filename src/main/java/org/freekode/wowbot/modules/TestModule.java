@@ -10,14 +10,16 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-public class TestModule extends Module implements PropertyChangeListener {
+public class TestModule extends Module {
     private static final Logger logger = LogManager.getLogger(TestModule.class);
+    private JLabel testLabel;
     private Component ui;
-    private Intelligence<Void> ai;
+    private Intelligence<String> ai;
 
 
     public TestModule() {
         ui = buildInterface();
+
         ai = new TestAI();
         ai.addPropertyChangeListener(this);
     }
@@ -25,7 +27,7 @@ public class TestModule extends Module implements PropertyChangeListener {
     public Component buildInterface() {
         JPanel panel = new JPanel(new GridBagLayout());
 
-        JLabel testLabel = new JLabel("Test ready");
+        testLabel = new JLabel("Test ready");
         panel.add(testLabel);
 
         return panel;
@@ -42,24 +44,7 @@ public class TestModule extends Module implements PropertyChangeListener {
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent e) {
-        switch (e.getPropertyName()) {
-            case "progress":
-                logger.info("progress");
-                break;
-            case "state":
-                switch ((SwingWorker.StateValue) e.getNewValue()) {
-                    case DONE:
-                        logger.info("done");
-                        break;
-                    case STARTED:
-                        logger.info("done");
-                        break;
-                    case PENDING:
-                        logger.info("done");
-                        break;
-                }
-                break;
-        }
+    public void progress(PropertyChangeEvent e) {
+        testLabel.setText(e.getNewValue().toString());
     }
 }

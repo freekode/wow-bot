@@ -26,8 +26,8 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, V> {
     @Override
     public Boolean doInBackground() {
         try {
-            windowArea = findWindow();
-            init();
+//            windowArea = findWindow();
+//            init();
 
             return processing();
         } catch (Exception e) {

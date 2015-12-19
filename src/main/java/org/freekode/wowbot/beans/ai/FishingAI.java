@@ -9,7 +9,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
-public class FishingAI extends IntelligenceThread {
+public class FishingAI extends Intelligence<Void> {
     private static final Logger logger = LogManager.getLogger(FishingAI.class);
     private static final double STANDARD_PITCH = -0.25;
     private static final int FISHING_TIME_SEC = 20;
@@ -51,8 +51,6 @@ public class FishingAI extends IntelligenceThread {
     private int FAIL_TRYINGS;
 
     public FishingAI(int fishButton, int failTryings) {
-        setName("Fishing");
-
         FISH_BUTTON = fishButton;
         FAIL_TRYINGS = failTryings;
 
@@ -60,7 +58,7 @@ public class FishingAI extends IntelligenceThread {
     }
 
     @Override
-    public void processing() throws InterruptedException {
+    public Boolean processing() throws InterruptedException {
         getController().init();
 
 
@@ -105,11 +103,8 @@ public class FishingAI extends IntelligenceThread {
 
             Thread.sleep(500);
         }
-    }
 
-    @Override
-    public void terminating() {
-
+        return true;
     }
 
     public void trackingSquare(Rectangle rectangle, Color color) throws InterruptedException {
