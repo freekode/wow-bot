@@ -31,10 +31,9 @@ public class StaticFunc {
     public static WinUser.WINDOWINFO upWindow(String windowClass, String windowName) {
         WinDef.HWND hwnd = User32.INSTANCE.FindWindow(windowClass, windowName);
 
-        WinUser.WINDOWINFO info = new WinUser.WINDOWINFO();
-        User32.INSTANCE.GetWindowInfo(hwnd, info);
-
         if (hwnd != null) {
+            WinUser.WINDOWINFO info = new WinUser.WINDOWINFO();
+            User32.INSTANCE.GetWindowInfo(hwnd, info);
             User32.INSTANCE.ShowWindow(hwnd, 9);
             User32.INSTANCE.SetForegroundWindow(hwnd);
             return info;
@@ -139,29 +138,18 @@ public class StaticFunc {
         return null;
     }
 
-    public static BufferedImage cutImage(Rectangle rectangle) {
+    public static BufferedImage cutImage(Rectangle rectangle, boolean writeImage, String fileName) {
         try {
             Robot robot = new Robot();
+            BufferedImage image = robot.createScreenCapture(rectangle);
 
-            return robot.createScreenCapture(rectangle);
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public static BufferedImage cutImage(Rectangle rectangle, Boolean writeImage, String fileName) {
-        try {
-            BufferedImage image = cutImage(rectangle);
-
-            if (writeImage && image != null) {
+            if (writeImage) {
                 File file = new File("images/" + fileName + ".png");
                 ImageIO.write(image, "png", file);
             }
 
             return image;
-        } catch (IOException e) {
+        } catch (AWTException | IOException e) {
             e.printStackTrace();
         }
 

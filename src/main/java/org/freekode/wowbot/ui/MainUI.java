@@ -50,6 +50,15 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         pane.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
+
+        c.anchor = GridBagConstraints.CENTER;
+        c.insets = new Insets(10, 10, 10, 10);
+        c.gridx = 0;
+        c.gridy = -1;
+        c.gridwidth = 2;
+        pane.add(new InfoPanel(), c);
+
+
         JButton startButton = new JButton("Start process");
         startButton.setActionCommand("startThread");
         startButton.addActionListener(this);

@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.Character;
 import org.freekode.wowbot.beans.Control;
-import org.freekode.wowbot.beans.WoWAddonApi;
+import org.freekode.wowbot.beans.AddonReceiver;
 import org.freekode.wowbot.tools.StaticFunc;
 
 import java.awt.*;
@@ -43,7 +43,7 @@ public abstract class Intelligence extends Thread {
     }
 
     public void init(Rectangle windowRectangle) throws InterruptedException {
-        WoWAddonApi addonApi = new WoWAddonApi((int) (windowRectangle.getX() + offsetX), (int) (windowRectangle.getY() + offsetY), 10, 4, 3);
+        AddonReceiver addonApi = new AddonReceiver((int) (windowRectangle.getX() + offsetX), (int) (windowRectangle.getY() + offsetY), 10, 4, 3);
         Control control = new Control(windowRectangle);
 
         character = Character.getInstance(addonApi, control);

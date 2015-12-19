@@ -1,13 +1,17 @@
 package org.freekode.wowbot.beans;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.freekode.wowbot.beans.interfaces.Receiver;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class WoWAddonApi {
+public class AddonReceiver implements Receiver {
     public static final int UPDATE_INTERVAL = 100;
-
+    private static final Logger logger = LogManager.getLogger(AddonReceiver.class);
     public static long lastUpdate = 0;
 
     private Integer startX;
@@ -18,8 +22,13 @@ public class WoWAddonApi {
 
     private Color[][] colors;
 
+    /**
+     * wait next colors update, or get instant info
+     */
+    private boolean wait;
 
-    public WoWAddonApi(Integer startX, Integer startY, Integer sidePx, Integer columns, Integer rows) {
+
+    public AddonReceiver(Integer startX, Integer startY, Integer sidePx, Integer columns, Integer rows) {
         this.startX = startX;
         this.startY = startY;
         this.sidePx = sidePx;
@@ -28,6 +37,10 @@ public class WoWAddonApi {
 
         colors = new Color[rows][columns];
         updateColors(true);
+    }
+
+    public void setWait(boolean wait) {
+        this.wait = wait;
     }
 
     public void updateColors(boolean wait) {
@@ -51,12 +64,6 @@ public class WoWAddonApi {
             BufferedImage image = robot.createScreenCapture(rect);
 
 
-//            File file = new File("test.png");
-//            ImageIO.write(image, "png", file);
-//            Color color = new Color(image.getRGB(5, 15));
-//            System.out.println("color = " + color.getRed() + ";" + color.getGreen() + ";" + color.getBlue());
-
-
             Integer pointX = sidePx / 2;
             Integer pointY = sidePx / 2;
 
@@ -69,11 +76,12 @@ public class WoWAddonApi {
                 pointX = sidePx / 2;
             }
         } catch (AWTException | InterruptedException e) {
-            e.printStackTrace();
+            logger.error("during updating the colors was an exception ", e);
         }
     }
 
-    public Double getX(boolean wait) {
+    @Override
+    public Double getX() {
         updateColors(wait);
 
         Color xColor = colors[0][0];
@@ -85,7 +93,8 @@ public class WoWAddonApi {
         return new Integer(fullString.toString()) / 10000d;
     }
 
-    public Double getY(boolean wait) {
+    @Override
+    public Double getY() {
         updateColors(wait);
         Color yColor = colors[0][1];
 
@@ -97,7 +106,8 @@ public class WoWAddonApi {
         return new Integer(fullString.toString()) / 10000d;
     }
 
-    public Double getPitch(boolean wait) {
+    @Override
+    public Double getPitch() {
         updateColors(wait);
 
         Color pitchColor = colors[0][2];
@@ -112,7 +122,8 @@ public class WoWAddonApi {
         return value;
     }
 
-    public Double getAzimuth(boolean wait) {
+    @Override
+    public Double getAzimuth() {
         updateColors(wait);
 
         Color azimuthColor = colors[0][3];
@@ -124,21 +135,24 @@ public class WoWAddonApi {
         return new Integer(fullString.toString()) / 100000d;
     }
 
-    public Boolean isOre(boolean wait) {
+    @Override
+    public Boolean isOre() {
         updateColors(wait);
 
         Color oreColor = colors[2][1];
         return oreColor.equals(Color.WHITE);
     }
 
-    public Boolean isHerb(boolean wait) {
+    @Override
+    public Boolean isHerb() {
         updateColors(wait);
 
         Color color = colors[2][0];
         return color.equals(Color.WHITE);
     }
 
-    public Boolean isInCombat(boolean wait) {
+    @Override
+    public Boolean isInCombat() {
         updateColors(wait);
 
         Color color = colors[1][0];

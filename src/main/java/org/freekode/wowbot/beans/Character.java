@@ -11,16 +11,16 @@ public class Character {
     public static final double PITCH_TOLERANCE = 0.02;
     public static final double AZIMUTH_TOLERANCE = 0.02;
     public static final double DISTANCE_TOLERANCE = 0.05;
-    private WoWAddonApi api;
+    private AddonReceiver api;
     private Control control;
 
 
-    private Character(WoWAddonApi api, Control control) {
+    private Character(AddonReceiver api, Control control) {
         this.api = api;
         this.control = control;
     }
 
-    public static Character getInstance(WoWAddonApi api, Control control) {
+    public static Character getInstance(AddonReceiver api, Control control) {
         if (INSTANCE == null) {
             INSTANCE = new Character(api, control);
         }
