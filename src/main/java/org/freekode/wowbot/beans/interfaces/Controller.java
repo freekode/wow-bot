@@ -1,23 +1,27 @@
 package org.freekode.wowbot.beans.interfaces;
 
-public interface Controller {
-    void centerMouse();
+public abstract class Controller {
+    /**
+     * to control the character
+     */
+    private Driver driver;
 
-    void mouse(int x, int y);
+    /**
+     * to receive the information
+     */
+    private Receiver receiver;
 
-    void run(double distance);
 
-    void keyRotateRight(double rad) throws InterruptedException;
+    public Controller(Driver driver, Receiver receiver) {
+        this.driver = driver;
+        this.receiver = receiver;
+    }
 
-    void keyRotateLeft(double rad) throws InterruptedException;
+    public Driver getDriver() {
+        return driver;
+    }
 
-    void mouseYaw(double rad);
-
-    void pitchInit();
-
-    void mousePitch(double rad);
-
-    void fpv() throws InterruptedException;
-
-    void pressKey(int keyCode);
+    public Receiver getReceiver() {
+        return receiver;
+    }
 }

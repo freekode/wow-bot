@@ -2,12 +2,13 @@ package org.freekode.wowbot.beans;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.freekode.wowbot.beans.interfaces.Driver;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
-public class Control {
+public class CharacterDriver implements Driver {
     /**
      * how many ms need to run approximately 0.1 distance
      */
@@ -24,24 +25,34 @@ public class Control {
      * how many px need to change pitch to 0.02 rad by mouse
      */
     public static final int MOUSE_PITCH_DOUBLE_O_TWO = 5;
-    private static final Logger logger = LogManager.getLogger(Control.class);
-    private Rectangle rect;
+
+    private static final Logger logger = LogManager.getLogger(CharacterDriver.class);
+
+    /**
+     * operated rectangle of window
+     */
+    private Rectangle window;
+
+    /**
+     * robot to use keyboard and mouse
+     */
     private Robot robot;
 
 
-    public Control(Rectangle rect) {
-        this.rect = rect;
+    public CharacterDriver(Rectangle window) {
+        this.window = window;
 
         try {
             robot = new Robot();
             robot.setAutoDelay(50);
-        } catch (AWTException ignore) {
+        } catch (AWTException e) {
+            logger.error("exception during creating of robot", e);
         }
     }
 
     public void centerMouse() {
-        int centerX = (int) (rect.getX() + rect.getWidth() / 2);
-        int centerY = (int) (rect.getY() + rect.getHeight() / 2) - 11;
+        int centerX = (int) (window.getX() + window.getWidth() / 2);
+        int centerY = (int) (window.getY() + window.getHeight() / 2) - 11;
         mouse(centerX, centerY);
     }
 

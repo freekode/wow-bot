@@ -158,4 +158,10 @@ public class AddonReceiver implements Receiver {
         Color color = colors[1][0];
         return color.equals(Color.WHITE);
     }
+
+    @Override
+    public String toString() {
+        return "Receiver[x=" + getX() + "; y=" + getY() + "; azimuth=" + getAzimuth() + "; pitch=" + getPitch() +
+                "; isOre=" + isOre() + "; isHerb=" + isHerb() + "; isInCombat=" + isInCombat() + "]";
+    }
 }

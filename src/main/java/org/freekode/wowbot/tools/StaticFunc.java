@@ -28,7 +28,7 @@ public class StaticFunc {
         return azimuth;
     }
 
-    public static WinUser.WINDOWINFO upWindow(String windowClass, String windowName) {
+    public static WinUser.WINDOWINFO upWindow(String windowClass, String windowName) throws Exception {
         WinDef.HWND hwnd = User32.INSTANCE.FindWindow(windowClass, windowName);
 
         if (hwnd != null) {
@@ -38,7 +38,7 @@ public class StaticFunc {
             User32.INSTANCE.SetForegroundWindow(hwnd);
             return info;
         } else {
-            return null;
+            throw new Exception("there is no window " + windowClass + ":" + windowName);
         }
     }
 
