@@ -18,6 +18,9 @@ public abstract class Module implements PropertyChangeListener {
             case "progress":
                 progress(e);
                 break;
+            case "custom":
+                property(e);
+                break;
             case "state":
                 switch ((SwingWorker.StateValue) e.getNewValue()) {
                     case STARTED:
@@ -36,6 +39,9 @@ public abstract class Module implements PropertyChangeListener {
     }
 
     public void progress(PropertyChangeEvent e) {
+    }
+
+    public void property(PropertyChangeEvent e) {
     }
 
     public void started(PropertyChangeEvent e) {

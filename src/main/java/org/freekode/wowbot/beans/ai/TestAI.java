@@ -4,8 +4,7 @@ public class TestAI extends Intelligence<String> {
     @Override
     public Boolean processing() throws InterruptedException {
         for (int i = 0; i < 100; i++) {
-            publish("k");
-            setProgress(i);
+            send(i);
             Thread.sleep(500);
         }
 

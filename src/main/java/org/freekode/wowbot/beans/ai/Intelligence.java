@@ -55,6 +55,10 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, V> {
 
     public abstract Boolean processing() throws InterruptedException;
 
+    public void send(Object object) {
+        firePropertyChange("custom", null, object);
+    }
+
     public Rectangle getWindowArea() {
         return windowArea;
     }

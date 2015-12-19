@@ -44,7 +44,7 @@ public class TestModule extends Module {
     }
 
     @Override
-    public void progress(PropertyChangeEvent e) {
+    public void property(PropertyChangeEvent e) {
         testLabel.setText(e.getNewValue().toString());
     }
 }
