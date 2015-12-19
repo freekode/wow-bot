@@ -10,11 +10,10 @@ import org.freekode.wowbot.beans.interfaces.Driver;
 import org.freekode.wowbot.beans.interfaces.Receiver;
 import org.freekode.wowbot.tools.StaticFunc;
 
-import javax.swing.*;
 import java.awt.*;
 
-public abstract class Intelligence<V> extends SwingWorker<Boolean, V> {
-    private static final Logger logger = LogManager.getLogger(Intelligence.class);
+public abstract class IntelligenceThread extends Thread {
+    private static final Logger logger = LogManager.getLogger(IntelligenceThread.class);
     private static final String WINDOW_CLASS = "GxWindowClass";
     private static final String WINDOW_NAME = "World of Warcraft";
     private static final Integer offsetX = 0;
@@ -24,15 +23,15 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, V> {
 
 
     @Override
-    public Boolean doInBackground() {
+    public void run() {
         try {
             windowArea = findWindow();
             init();
 
-            return processing();
+            processing();
         } catch (Exception e) {
+            terminating();
             logger.info("Intelligence exception", e);
-            return null;
         }
     }
 
@@ -50,10 +49,8 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, V> {
         Receiver receiver = new AddonReceiver((int) (windowArea.getX() + offsetX), (int) (windowArea.getY() + offsetY), 10, 4, 3);
         Driver driver = new CharacterDriver(windowArea);
 
-        controller = new MainController(driver, receiver);
+        MainController controller = new MainController(driver, receiver);
     }
-
-    public abstract Boolean processing() throws InterruptedException;
 
     public Rectangle getWindowArea() {
         return windowArea;
@@ -64,6 +61,10 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, V> {
     }
 
     public void kill() {
-        cancel(true);
+        Thread.currentThread().interrupt();
     }
+
+    public abstract void processing() throws InterruptedException;
+
+    public abstract void terminating();
 }

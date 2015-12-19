@@ -9,7 +9,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
-public class FishingAI extends Intelligence {
+public class FishingAI extends IntelligenceThread {
     private static final Logger logger = LogManager.getLogger(FishingAI.class);
     private static final double STANDARD_PITCH = -0.25;
     private static final int FISHING_TIME_SEC = 20;

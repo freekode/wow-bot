@@ -4,7 +4,7 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.List;
 
-public class MovingAI extends IntelligenceOld {
+public class MovingAI extends IntelligenceThread {
     private List<Vector3D> points;
 
 
@@ -19,7 +19,7 @@ public class MovingAI extends IntelligenceOld {
     public void processing() {
         for (Vector3D point : points) {
             System.out.println("move = " + point);
-            getCharacter().moveTo(point);
+            getController().moveTo(point);
         }
     }
 

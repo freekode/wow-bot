@@ -4,7 +4,7 @@ import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.beans.ai.IntelligenceOld;
+import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.modules.Module;
 
 import javax.swing.*;
@@ -18,8 +18,9 @@ import java.util.Map;
 
 public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     private static final Logger logger = LogManager.getLogger(MainUI.class);
+
     private Module currentModule;
-    private IntelligenceOld aiThread;
+    private Intelligence currentAI;
     private StatusBar statusBar;
     private JPanel cards;
     private HashMap<String, Module> modules = new HashMap<>();
@@ -50,27 +51,22 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         GridBagConstraints c = new GridBagConstraints();
 
 
-        c.anchor = GridBagConstraints.CENTER;
-        c.insets = new Insets(10, 10, 10, 10);
-        c.gridx = 0;
-        c.gridy = -1;
-        c.gridwidth = 2;
-        pane.add(new InfoPanel(), c);
+//        c.anchor = GridBagConstraints.CENTER;
+//        c.insets = new Insets(10, 10, 10, 10);
+//        c.gridx = 0;
+//        c.gridy = -1;
+//        c.gridwidth = 2;
+//        pane.add(new InfoPanel(), c);
 
 
         JButton startButton = new JButton("Start process");
         startButton.setActionCommand("startThread");
         startButton.addActionListener(this);
-
-        JButton pauseButton = new JButton("Pause process");
-        pauseButton.setActionCommand("pauseThread");
-        pauseButton.setVisible(false);
         c.anchor = GridBagConstraints.LINE_START;
         c.insets = new Insets(10, 10, 10, 5);
         c.gridx = 0;
         c.gridy = 0;
         pane.add(startButton, c);
-        pane.add(pauseButton, c);
 
         JButton stopButton = new JButton("Stop process");
         stopButton.setActionCommand("stopThread");
@@ -146,8 +142,6 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     public void actionPerformed(ActionEvent e) {
         if ("startThread".equals(e.getActionCommand())) {
             startThread();
-        } else if ("pauseThread".equals(e.getActionCommand())) {
-            pauseThread();
         } else if ("stopThread".equals(e.getActionCommand())) {
             stopThread();
         }
@@ -163,27 +157,17 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     }
 
     public void startThread() {
-        aiThread = currentModule.getAi();
+        currentAI = currentModule.getAi();
 
-        if (!aiThread.isAlive()) {
-            statusBar.setText("thread = " + aiThread);
-            aiThread.start();
-        }
-    }
-
-    public void pauseThread() {
-        if (!aiThread.isAlive()) {
-            try {
-                aiThread.wait();
-            } catch (InterruptedException e) {
-                logger.info(e);
-            }
+        if (!currentAI.isDone()) {
+            statusBar.setText("thread ops");
+            currentAI.execute();
         }
     }
 
     public void stopThread() {
-        aiThread.kill();
-        statusBar.setText("thread alive = " + aiThread.isAlive());
+        currentAI.kill();
+        statusBar.setText("thread alive = " + currentAI.isDone());
     }
 }
 

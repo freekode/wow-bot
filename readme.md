@@ -37,6 +37,11 @@ Main problem is killing the process. There is many places in the code where Thre
 InterruptedException is ignored, if so it just can not be interrupted, or stopped appropriately. To solve this bug,
 you have to DO NOT CATCH InterruptedException. Please simply throw it to higher level.
 
+*New version of Intelligence*
+Our bot will be controlled over swing application. Swing library have special class to run long term processes, it is
+SwingWorker<T, V>. So in new version Intelligence will extends SwingWorker. It give us some benefits to update UI from
+processes and to kill the processes.
+
 
 ## 0.1 version
  * ai settings

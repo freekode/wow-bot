@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 
-public class RecordingAI extends IntelligenceOld implements HotkeyListener {
+public class RecordingAI extends IntelligenceThread implements HotkeyListener {
     private static final Logger logger = LogManager.getLogger(RecordingAI.class);
     private DefaultListModel<String> listModelUi;
 
@@ -41,7 +41,7 @@ public class RecordingAI extends IntelligenceOld implements HotkeyListener {
     }
 
     public void addRecord() {
-        String record = getCharacter().getCoordinates().getX() + "; " + getCharacter().getCoordinates().getY();
+        String record = getController().getCoordinates().getX() + "; " + getController().getCoordinates().getY();
         listModelUi.addElement(record);
     }
 }
