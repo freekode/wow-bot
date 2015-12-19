@@ -9,7 +9,7 @@ import java.awt.*;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
-public class FishingModuleOld extends Module {
+public class FishingModule extends Module {
     private JFormattedTextField fishButton;
     private JFormattedTextField failTryings;
 

@@ -1,12 +1,12 @@
 package org.freekode.wowbot.modules;
 
-import org.freekode.wowbot.beans.ai.IntelligenceThread;
+import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.beans.ai.RecordingAI;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class RecordingModuleOld extends ModuleOld {
+public class RecordingModule extends Module {
     private DefaultListModel<String> recordsModel;
 
 
@@ -33,7 +33,7 @@ public class RecordingModuleOld extends ModuleOld {
     }
 
     @Override
-    public IntelligenceThread getAi() {
+    public Intelligence getAi() {
         return new RecordingAI(recordsModel);
     }
 }
