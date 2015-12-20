@@ -6,8 +6,11 @@ public class TestMovingAI extends Intelligence<String> {
         return true;
     }
 
-
     public void setAzimuth(Double value) {
         getController().azimuth(value);
+    }
+
+    public void setPitch(Double value) {
+        getController().pitch(value);
     }
 }

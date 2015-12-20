@@ -1,22 +1,30 @@
 package org.freekode.wowbot.beans.service;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.freekode.wowbot.beans.interfaces.Controller;
-import org.freekode.wowbot.beans.interfaces.Driver;
-import org.freekode.wowbot.beans.interfaces.Receiver;
 import org.freekode.wowbot.tools.StaticFunc;
 
 import java.math.BigDecimal;
 
-public class MainController extends Controller {
+public class Controller {
     public static final double STANDARD_PITCH = -0.25;
     public static final double PITCH_TOLERANCE = 0.02;
     public static final double AZIMUTH_TOLERANCE = 0.02;
     public static final double DISTANCE_TOLERANCE = 0.05;
 
+    /**
+     * to control the character
+     */
+    private Driver driver;
 
-    public MainController(Driver driver, Receiver receiver) {
-        super(driver, receiver);
+    /**
+     * to receive the information
+     */
+    private Receiver receiver;
+
+
+    public Controller(Driver driver, Receiver receiver) {
+        this.driver = driver;
+        this.receiver = receiver;
     }
 
     public Vector3D getCoordinates() {
@@ -76,5 +84,13 @@ public class MainController extends Controller {
 
     public void fpv() throws InterruptedException {
         getDriver().fpv();
+    }
+
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public Receiver getReceiver() {
+        return receiver;
     }
 }

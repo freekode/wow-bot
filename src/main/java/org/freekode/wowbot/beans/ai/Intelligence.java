@@ -3,11 +3,9 @@ package org.freekode.wowbot.beans.ai;
 import com.sun.jna.platform.win32.WinUser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.beans.service.AddonReceiver;
-import org.freekode.wowbot.beans.service.CharacterDriver;
-import org.freekode.wowbot.beans.service.MainController;
-import org.freekode.wowbot.beans.interfaces.Driver;
-import org.freekode.wowbot.beans.interfaces.Receiver;
+import org.freekode.wowbot.beans.service.Receiver;
+import org.freekode.wowbot.beans.service.Driver;
+import org.freekode.wowbot.beans.service.Controller;
 import org.freekode.wowbot.tools.StaticFunc;
 
 import javax.swing.*;
@@ -20,7 +18,7 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, Void> {
     private static final Integer offsetX = 0;
     private static final Integer offsetY = 0;
     private Rectangle windowArea;
-    private MainController controller;
+    private Controller controller;
 
 
     @Override
@@ -47,10 +45,10 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, Void> {
     }
 
     public void init() throws InterruptedException {
-        Receiver receiver = new AddonReceiver((int) (windowArea.getX() + offsetX), (int) (windowArea.getY() + offsetY), 10, 4, 3);
-        Driver driver = new CharacterDriver(windowArea);
+        Receiver receiver = new Receiver((int) (windowArea.getX() + offsetX), (int) (windowArea.getY() + offsetY), 10, 4, 3);
+        Driver driver = new Driver(windowArea);
 
-        controller = new MainController(driver, receiver);
+        controller = new Controller(driver, receiver);
     }
 
     public void send(V object) {
@@ -67,7 +65,7 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, Void> {
         return windowArea;
     }
 
-    public MainController getController() {
+    public Controller getController() {
         return controller;
     }
 }

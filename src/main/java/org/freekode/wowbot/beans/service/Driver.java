@@ -2,13 +2,12 @@ package org.freekode.wowbot.beans.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.beans.interfaces.Driver;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
-public class CharacterDriver implements Driver {
+public class Driver {
     /**
      * how many ms need to run approximately 0.1 distance
      */
@@ -26,7 +25,7 @@ public class CharacterDriver implements Driver {
      */
     public static final int MOUSE_PITCH_DOUBLE_O_TWO = 5;
 
-    private static final Logger logger = LogManager.getLogger(CharacterDriver.class);
+    private static final Logger logger = LogManager.getLogger(Driver.class);
 
     /**
      * operated rectangle of window
@@ -39,7 +38,7 @@ public class CharacterDriver implements Driver {
     private Robot robot;
 
 
-    public CharacterDriver(Rectangle window) {
+    public Driver(Rectangle window) {
         this.window = window;
 
         try {
@@ -50,19 +49,16 @@ public class CharacterDriver implements Driver {
         }
     }
 
-    @Override
     public void centerMouse() {
         int centerX = (int) (window.getX() + window.getWidth() / 2);
         int centerY = (int) (window.getY() + window.getHeight() / 2) - 11;
         mouse(centerX, centerY);
     }
 
-    @Override
     public void mouse(int x, int y) {
         robot.mouseMove(x, y);
     }
 
-    @Override
     public void run(double distance) {
         int runMs = (int) (distance / 0.1 * RUN_POINT_ONE);
         robot.keyPress(KeyEvent.VK_W);
@@ -70,7 +66,6 @@ public class CharacterDriver implements Driver {
         robot.keyRelease(KeyEvent.VK_W);
     }
 
-    @Override
     public void keyRotateRight(double rad) throws InterruptedException {
         long runMs = ((long) (rad / 0.01)) * KEY_YAW_DOUBLE_O_ONE;
         robot.keyPress(KeyEvent.VK_D);
@@ -78,7 +73,6 @@ public class CharacterDriver implements Driver {
         robot.keyRelease(KeyEvent.VK_D);
     }
 
-    @Override
     public void keyRotateLeft(double rad) throws InterruptedException {
         long runMs = ((long) (rad / 0.01)) * KEY_YAW_DOUBLE_O_ONE;
         robot.keyPress(KeyEvent.VK_A);
@@ -86,7 +80,6 @@ public class CharacterDriver implements Driver {
         robot.keyRelease(KeyEvent.VK_A);
     }
 
-    @Override
     public void mouseYaw(double rad) {
         int interval = ((int) (rad / 0.02)) * MOUSE_YAW_DOUBLE_O_TWO;
 
@@ -98,13 +91,11 @@ public class CharacterDriver implements Driver {
         robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
     }
 
-    @Override
     public void pitchInit() {
         mousePitch(-0.01);
         mousePitch(0.01);
     }
 
-    @Override
     public void mousePitch(double rad) {
         int interval = ((int) (rad / 0.01)) * MOUSE_PITCH_DOUBLE_O_TWO;
 
@@ -116,7 +107,6 @@ public class CharacterDriver implements Driver {
         robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
     }
 
-    @Override
     public void fpv() throws InterruptedException {
         robot.keyPress(KeyEvent.VK_END);
         robot.keyRelease(KeyEvent.VK_END);
@@ -136,13 +126,11 @@ public class CharacterDriver implements Driver {
         Thread.sleep(2000);
     }
 
-    @Override
     public void pressKey(int keyCode) {
         robot.keyPress(keyCode);
         robot.keyRelease(keyCode);
     }
 
-    @Override
     public Robot getRobot() {
         return robot;
     }

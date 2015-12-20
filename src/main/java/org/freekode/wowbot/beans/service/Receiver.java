@@ -2,16 +2,15 @@ package org.freekode.wowbot.beans.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.beans.interfaces.Receiver;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class AddonReceiver implements Receiver {
+public class Receiver {
     public static final int UPDATE_INTERVAL = 100;
-    private static final Logger logger = LogManager.getLogger(AddonReceiver.class);
+    private static final Logger logger = LogManager.getLogger(Receiver.class);
     public static long lastUpdate = 0;
 
     private Integer startX;
@@ -28,7 +27,7 @@ public class AddonReceiver implements Receiver {
     private boolean wait;
 
 
-    public AddonReceiver(Integer startX, Integer startY, Integer sidePx, Integer columns, Integer rows) {
+    public Receiver(Integer startX, Integer startY, Integer sidePx, Integer columns, Integer rows) {
         this.startX = startX;
         this.startY = startY;
         this.sidePx = sidePx;
@@ -80,7 +79,6 @@ public class AddonReceiver implements Receiver {
         }
     }
 
-    @Override
     public Double getX() {
         updateColors(wait);
 
@@ -93,7 +91,6 @@ public class AddonReceiver implements Receiver {
         return new Integer(fullString.toString()) / 10000d;
     }
 
-    @Override
     public Double getY() {
         updateColors(wait);
         Color yColor = colors[0][1];
@@ -106,7 +103,6 @@ public class AddonReceiver implements Receiver {
         return new Integer(fullString.toString()) / 10000d;
     }
 
-    @Override
     public Double getPitch() {
         updateColors(wait);
 
@@ -122,7 +118,6 @@ public class AddonReceiver implements Receiver {
         return value;
     }
 
-    @Override
     public Double getAzimuth() {
         updateColors(wait);
 
@@ -135,7 +130,6 @@ public class AddonReceiver implements Receiver {
         return new Integer(fullString.toString()) / 100000d;
     }
 
-    @Override
     public Boolean isOre() {
         updateColors(wait);
 
@@ -143,7 +137,6 @@ public class AddonReceiver implements Receiver {
         return oreColor.equals(Color.WHITE);
     }
 
-    @Override
     public Boolean isHerb() {
         updateColors(wait);
 
@@ -151,7 +144,6 @@ public class AddonReceiver implements Receiver {
         return color.equals(Color.WHITE);
     }
 
-    @Override
     public Boolean isInCombat() {
         updateColors(wait);
 
@@ -159,7 +151,6 @@ public class AddonReceiver implements Receiver {
         return color.equals(Color.WHITE);
     }
 
-    @Override
     public String toString() {
         return "Receiver[x=" + getX() + "; y=" + getY() + "; azimuth=" + getAzimuth() + "; pitch=" + getPitch() +
                 "; isOre=" + isOre() + "; isHerb=" + isHerb() + "; isInCombat=" + isInCombat() + "]";
