@@ -110,6 +110,8 @@ public class TestMovingModule extends Module implements ActionListener {
         logger.info("new azimuth = " + newAzimuth);
 
         ai.setAzimuth(newAzimuth);
+
+        logger.info("current azimuth = " + ai.getController().getReceiver().getAzimuth());
     }
 
     public void setPitch() {
@@ -117,6 +119,8 @@ public class TestMovingModule extends Module implements ActionListener {
         logger.info("new pitch = " + newPitch);
 
         ai.setPitch(newPitch);
+
+        logger.info("current pitch = " + ai.getController().getReceiver().getPitch());
     }
 
     @Override
