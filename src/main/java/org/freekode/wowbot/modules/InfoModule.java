@@ -22,7 +22,7 @@ public class InfoModule extends Module {
 
     public InfoModule() {
         ui = buildInterface();
-        createAiInstance();
+        buildAI();
     }
 
     public Component buildInterface() {
@@ -89,7 +89,7 @@ public class InfoModule extends Module {
     }
 
     @Override
-    public void createAiInstance() {
+    public void buildAI() {
         if (ai == null || ai.isDone() || ai.isCancelled()) {
             ai = new InfoAI();
             ai.addPropertyChangeListener(this);

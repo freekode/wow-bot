@@ -63,7 +63,7 @@ public class FishingModule extends Module {
     }
 
     @Override
-    public void createAiInstance() {
+    public void buildAI() {
         int fishButtonValue = KeyStroke.getKeyStroke(fishButton.getText().charAt(0), 0).getKeyCode();
         int failTryingsValue = Integer.valueOf(failTryings.getText());
         ai = new FishingAI(fishButtonValue, failTryingsValue);

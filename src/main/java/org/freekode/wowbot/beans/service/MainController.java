@@ -1,4 +1,4 @@
-package org.freekode.wowbot.beans;
+package org.freekode.wowbot.beans.service;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.freekode.wowbot.beans.interfaces.Controller;
@@ -46,6 +46,10 @@ public class MainController extends Controller {
     }
 
     public void azimuth(double rad) {
+        if (rad >= (Math.PI * 2)) {
+            return;
+        }
+
         while (true) {
             double currentAzimuth = getReceiver().getAzimuth();
             if (Math.abs(currentAzimuth - rad) > AZIMUTH_TOLERANCE) {

@@ -189,8 +189,8 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
             ai.kill();
             statusBar.setText(currentModule.getName() + " - stopped");
 
-            currentModule.createAiInstance();
-            infoModule.createAiInstance();
+            currentModule.buildAI();
+            infoModule.buildAI();
         } else {
             statusBar.setText(currentModule.getName() + " - not stopped");
         }

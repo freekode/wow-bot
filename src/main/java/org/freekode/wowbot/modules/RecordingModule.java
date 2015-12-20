@@ -12,7 +12,7 @@ public class RecordingModule extends Module {
 
 
     @Override
-    public void createAiInstance() {
+    public void buildAI() {
         ai = new RecordingAI(recordsModel);
     }
 

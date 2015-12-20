@@ -8,7 +8,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 public abstract class Module implements PropertyChangeListener {
-    public abstract void createAiInstance();
+    public abstract void buildAI();
 
     public abstract Component getUI();
 

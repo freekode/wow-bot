@@ -18,7 +18,7 @@ public class TestModule extends Module {
 
     public TestModule() {
         ui = buildInterface();
-        createAiInstance();
+        buildAI();
     }
 
     public Component buildInterface() {
@@ -31,7 +31,7 @@ public class TestModule extends Module {
     }
 
     @Override
-    public void createAiInstance() {
+    public void buildAI() {
         if (ai == null || ai.isDone() || ai.isCancelled()) {
             ai = new TestAI();
             ai.addPropertyChangeListener(this);
