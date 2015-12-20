@@ -8,7 +8,7 @@ public class Main {
         MainUI mainUI = new MainUI();
 //        mainUI.registerHotKeys();
 //        mainUI.addModule("Fishing", new FishingModule());
-        mainUI.addModule("Testing", new TestModule());
+        mainUI.addModule(new TestModule());
 //        mainUI.addModule("Recording", new RecordingModule());
         mainUI.start();
     }

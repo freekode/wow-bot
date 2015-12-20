@@ -8,7 +8,13 @@ import java.awt.*;
 
 public class RecordingModule extends Module {
     private DefaultListModel<String> recordsModel;
+    private Intelligence ai;
 
+
+    @Override
+    public void createAiInstance() {
+        ai = new RecordingAI(recordsModel);
+    }
 
     @Override
     public Component getUI() {
@@ -33,7 +39,12 @@ public class RecordingModule extends Module {
     }
 
     @Override
-    public Intelligence getAi() {
-        return new RecordingAI(recordsModel);
+    public Intelligence getAI() {
+        return ai;
+    }
+
+    @Override
+    public String getName() {
+        return "Recording";
     }
 }

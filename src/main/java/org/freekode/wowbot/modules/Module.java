@@ -8,9 +8,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 public abstract class Module implements PropertyChangeListener {
+    public abstract void createAiInstance();
+
     public abstract Component getUI();
 
-    public abstract Intelligence getAi();
+    public abstract Intelligence getAI();
+
+    public abstract String getName();
 
     @Override
     public void propertyChange(PropertyChangeEvent e) {
@@ -35,7 +39,6 @@ public abstract class Module implements PropertyChangeListener {
                 }
                 break;
         }
-
     }
 
     public void progress(PropertyChangeEvent e) {

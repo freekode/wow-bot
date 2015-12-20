@@ -10,6 +10,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 
 public class FishingModule extends Module {
+    private Intelligence ai;
     private JFormattedTextField fishButton;
     private JFormattedTextField failTryings;
 
@@ -57,9 +58,19 @@ public class FishingModule extends Module {
     }
 
     @Override
-    public Intelligence getAi() {
+    public Intelligence getAI() {
+        return ai;
+    }
+
+    @Override
+    public void createAiInstance() {
         int fishButtonValue = KeyStroke.getKeyStroke(fishButton.getText().charAt(0), 0).getKeyCode();
         int failTryingsValue = Integer.valueOf(failTryings.getText());
-        return new FishingAI(fishButtonValue, failTryingsValue);
+        ai = new FishingAI(fishButtonValue, failTryingsValue);
+    }
+
+    @Override
+    public String getName() {
+        return "Fishing";
     }
 }

@@ -8,20 +8,17 @@ import org.freekode.wowbot.beans.ai.TestAI;
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 public class TestModule extends Module {
     private static final Logger logger = LogManager.getLogger(TestModule.class);
     private JLabel testLabel;
-    private Component ui;
     private Intelligence<String> ai;
+    private Component ui;
 
 
     public TestModule() {
         ui = buildInterface();
-
-        ai = new TestAI();
-        ai.addPropertyChangeListener(this);
+        createAiInstance();
     }
 
     public Component buildInterface() {
@@ -34,13 +31,26 @@ public class TestModule extends Module {
     }
 
     @Override
+    public void createAiInstance() {
+        if (ai == null || ai.isDone() || ai.isCancelled()) {
+            ai = new TestAI();
+            ai.addPropertyChangeListener(this);
+        }
+    }
+
+    @Override
     public Component getUI() {
         return ui;
     }
 
     @Override
-    public Intelligence getAi() {
+    public Intelligence getAI() {
         return ai;
+    }
+
+    @Override
+    public String getName() {
+        return "Test";
     }
 
     @Override

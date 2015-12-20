@@ -13,7 +13,7 @@ import org.freekode.wowbot.tools.StaticFunc;
 import javax.swing.*;
 import java.awt.*;
 
-public abstract class Intelligence<V> extends SwingWorker<Boolean, V> {
+public abstract class Intelligence<V> extends SwingWorker<Boolean, Void> {
     private static final Logger logger = LogManager.getLogger(Intelligence.class);
     private static final String WINDOW_CLASS = "GxWindowClass";
     private static final String WINDOW_NAME = "World of Warcraft";
@@ -26,8 +26,8 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, V> {
     @Override
     public Boolean doInBackground() {
         try {
-//            windowArea = findWindow();
-//            init();
+            windowArea = findWindow();
+            init();
 
             return processing();
         } catch (Exception e) {
@@ -53,11 +53,15 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, V> {
         controller = new MainController(driver, receiver);
     }
 
-    public abstract Boolean processing() throws InterruptedException;
-
     public void send(V object) {
         firePropertyChange("custom", null, object);
     }
+
+    public void kill() {
+        cancel(true);
+    }
+
+    public abstract Boolean processing() throws InterruptedException;
 
     public Rectangle getWindowArea() {
         return windowArea;
@@ -65,9 +69,5 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, V> {
 
     public MainController getController() {
         return controller;
-    }
-
-    public void kill() {
-        cancel(true);
     }
 }

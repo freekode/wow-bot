@@ -5,9 +5,11 @@ import com.melloware.jintellitype.JIntellitype;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.ai.Intelligence;
+import org.freekode.wowbot.modules.InfoModule;
 import org.freekode.wowbot.modules.Module;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,11 +21,11 @@ import java.util.Map;
 public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     private static final Logger logger = LogManager.getLogger(MainUI.class);
 
+    private InfoModule infoModule;
     private Module currentModule;
-    private Intelligence currentAI;
     private StatusBar statusBar;
     private JPanel cards;
-    private HashMap<String, Module> modules = new HashMap<>();
+    private Map<String, Module> modules = new HashMap<>();
 
 
     public void start() {
@@ -51,12 +53,13 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         GridBagConstraints c = new GridBagConstraints();
 
 
-//        c.anchor = GridBagConstraints.CENTER;
-//        c.insets = new Insets(10, 10, 10, 10);
-//        c.gridx = 0;
-//        c.gridy = -1;
+        infoModule = new InfoModule();
+        c.anchor = GridBagConstraints.CENTER;
+        c.insets = new Insets(10, 10, 10, 10);
+        c.gridx = 0;
+        c.gridy = 0;
 //        c.gridwidth = 2;
-//        pane.add(new InfoPanel(), c);
+        pane.add(infoModule.getUI(), c);
 
 
         JButton startButton = new JButton("Start process");
@@ -65,7 +68,7 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         c.anchor = GridBagConstraints.LINE_START;
         c.insets = new Insets(10, 10, 10, 5);
         c.gridx = 0;
-        c.gridy = 0;
+        c.gridy = 1;
         pane.add(startButton, c);
 
         JButton stopButton = new JButton("Stop process");
@@ -74,12 +77,12 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         c.anchor = GridBagConstraints.LINE_END;
         c.insets = new Insets(10, 5, 10, 10);
         c.gridx = 1;
-        c.gridy = 0;
+        c.gridy = 1;
         pane.add(stopButton, c);
 
 
         cards = new JPanel(new CardLayout());
-//        cards.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        cards.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
         JComboBox<String> aiSelect = new JComboBox<>();
         aiSelect.addItemListener(this);
@@ -90,14 +93,14 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         c.anchor = GridBagConstraints.PAGE_START;
         c.insets = new Insets(0, 10, 10, 10);
         c.gridx = 0;
-        c.gridy = 1;
+        c.gridy = 2;
         c.gridwidth = 2;
         pane.add(aiSelect, c);
 
         c.anchor = GridBagConstraints.CENTER;
         c.insets = new Insets(0, 10, 10, 10);
         c.gridx = 0;
-        c.gridy = 2;
+        c.gridy = 3;
         c.gridwidth = 2;
         c.fill = GridBagConstraints.BOTH;
         c.weightx = 1;
@@ -108,7 +111,7 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         statusBar = new StatusBar();
         statusBar.setText("started");
         c.gridx = 0;
-        c.gridy = 3;
+        c.gridy = 4;
         c.gridwidth = 2;
         c.insets = new Insets(0, 0, 0, 0);
         c.anchor = GridBagConstraints.LAST_LINE_START;
@@ -125,8 +128,8 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         JIntellitype.getInstance().addHotKeyListener(this);
     }
 
-    public void addModule(String name, Module module) {
-        modules.put(name, module);
+    public void addModule(Module module) {
+        modules.put(module.getName(), module);
     }
 
     @Override
@@ -157,17 +160,40 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     }
 
     public void startThread() {
-        currentAI = currentModule.getAi();
+        Intelligence ai = currentModule.getAI();
+        Intelligence infoAi = infoModule.getAI();
 
-        if (!currentAI.isDone()) {
-            statusBar.setText("thread ops");
-            currentAI.execute();
+
+        if (!infoAi.isDone() || !ai.isCancelled()) {
+            infoAi.execute();
+        }
+
+        if (!ai.isDone() || !ai.isCancelled()) {
+            ai.execute();
+            statusBar.setText(currentModule.getName() + " - started");
+        } else {
+            statusBar.setText(currentModule.getName() + " - not started");
         }
     }
 
     public void stopThread() {
-        currentAI.kill();
-        statusBar.setText("thread alive = " + currentAI.isDone());
+        Intelligence ai = currentModule.getAI();
+        Intelligence infoAi = infoModule.getAI();
+
+
+        if (!infoAi.isDone() || !infoAi.isCancelled()) {
+            infoAi.kill();
+        }
+
+        if (!ai.isDone() || !ai.isCancelled()) {
+            ai.kill();
+            statusBar.setText(currentModule.getName() + " - stopped");
+
+            currentModule.createAiInstance();
+            infoModule.createAiInstance();
+        } else {
+            statusBar.setText(currentModule.getName() + " - not stopped");
+        }
     }
 }
 
