@@ -2,6 +2,7 @@ package org.freekode.wowbot.modules;
 
 import org.freekode.wowbot.beans.ai.FishingAI;
 import org.freekode.wowbot.beans.ai.Intelligence;
+import org.freekode.wowbot.beans.service.Controller;
 
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
@@ -10,13 +11,17 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 
 public class FishingModule extends Module {
+    private Component ui;
     private Intelligence ai;
     private JFormattedTextField fishButton;
     private JFormattedTextField failTryings;
 
+    public FishingModule() {
+        ui = buildInterface();
+        buildAI();
+    }
 
-    @Override
-    public Component getUI() {
+    public Component buildInterface() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -58,15 +63,20 @@ public class FishingModule extends Module {
     }
 
     @Override
-    public Intelligence getAI() {
-        return ai;
-    }
-
-    @Override
     public void buildAI() {
         int fishButtonValue = KeyStroke.getKeyStroke(fishButton.getText().charAt(0), 0).getKeyCode();
         int failTryingsValue = Integer.valueOf(failTryings.getText());
         ai = new FishingAI(fishButtonValue, failTryingsValue);
+    }
+
+    @Override
+    public Component getUI() {
+        return ui;
+    }
+
+    @Override
+    public Intelligence getAI() {
+        return ai;
     }
 
     @Override
