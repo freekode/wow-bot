@@ -8,9 +8,6 @@ public class MovingAI extends Intelligence<String> {
     private List<Vector3D> points;
 
 
-    public MovingAI() {
-    }
-
     public MovingAI(List<Vector3D> points) {
         this.points = points;
     }

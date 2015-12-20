@@ -14,10 +14,9 @@ import java.io.*;
 
 public class RecordingModule extends Module implements ActionListener {
     private static final Logger logger = LogManager.getLogger(RecordingModule.class);
-    private DefaultListModel<String> recordsModel;
-    private JList<String> recordsList;
-    private Component ui;
     private Intelligence ai;
+    private Component ui;
+    private JList<String> recordsList;
     private JFileChooser fc;
 
     public RecordingModule() {
@@ -39,8 +38,7 @@ public class RecordingModule extends Module implements ActionListener {
 
         GridBagConstraints c = new GridBagConstraints();
 
-        recordsModel = new DefaultListModel<>();
-
+        DefaultListModel<String> recordsModel = new DefaultListModel<>();
         recordsList = new JList<>(recordsModel);
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(0, 0, 5, 0);
@@ -66,8 +64,8 @@ public class RecordingModule extends Module implements ActionListener {
 
 
         JButton deleteButton = new JButton("Delete");
-        saveButton.setActionCommand("delete");
-        saveButton.addActionListener(this);
+        deleteButton.setActionCommand("delete");
+        deleteButton.addActionListener(this);
         c.anchor = GridBagConstraints.CENTER;
         c.fill = GridBagConstraints.NONE;
         c.insets = new Insets(0, 5, 5, 0);
@@ -79,11 +77,11 @@ public class RecordingModule extends Module implements ActionListener {
 
 
         JButton clearButton = new JButton("Clear");
-        saveButton.setActionCommand("clear");
-        saveButton.addActionListener(this);
+        clearButton.setActionCommand("clear");
+        clearButton.addActionListener(this);
         c.anchor = GridBagConstraints.LINE_END;
         c.fill = GridBagConstraints.NONE;
-        c.insets = new Insets(0, 5, 5, 0);
+        c.insets = new Insets(0, 5, 5, 5);
         c.gridx = 2;
         c.gridy = 1;
         c.weightx = 0;
@@ -96,7 +94,8 @@ public class RecordingModule extends Module implements ActionListener {
 
     @Override
     public void property(PropertyChangeEvent e) {
-        recordsModel.addElement(e.getNewValue().toString());
+        DefaultListModel<String> model = (DefaultListModel<String>) recordsList.getModel();
+        model.addElement(e.getNewValue().toString());
     }
 
     @Override
@@ -131,9 +130,10 @@ public class RecordingModule extends Module implements ActionListener {
 
     public String buildCsvFile() {
         StringBuilder out = new StringBuilder();
+        DefaultListModel<String> model = (DefaultListModel<String>) recordsList.getModel();
 
-        for (int i = 0; i < recordsModel.getSize(); i++) {
-            String record = recordsModel.get(i);
+        for (int i = 0; i < model.getSize(); i++) {
+            String record = model.get(i);
 
             out.append(record.replaceAll(" ", "")).append("\n");
         }
@@ -142,12 +142,16 @@ public class RecordingModule extends Module implements ActionListener {
     }
 
     public void delete() {
-        recordsModel.removeElement(recordsList.getSelectedValue());
+        DefaultListModel model = (DefaultListModel) recordsList.getModel();
+        int selectedIndex = recordsList.getSelectedIndex();
+        if (selectedIndex != -1) {
+            model.remove(selectedIndex);
+        }
     }
 
     public void clear() {
-        recordsList.removeAll();
-        recordsModel.clear();
+        DefaultListModel<String> model = (DefaultListModel<String>) recordsList.getModel();
+        model.clear();
     }
 
     @Override

@@ -52,9 +52,11 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, Void> {
     }
 
     public void kill() {
-        logger.info("kill");
-        terminating();
-        cancel(true);
+        if (!isDone() || !isCancelled()) {
+            logger.info("kill");
+            terminating();
+            cancel(true);
+        }
     }
 
     public abstract Boolean processing() throws InterruptedException;
