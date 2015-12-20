@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.beans.ai.TestMovingAI;
 import org.freekode.wowbot.beans.service.Controller;
+import org.freekode.wowbot.tools.ConfigKeys;
 
 import javax.swing.*;
 import java.awt.*;
@@ -66,7 +67,7 @@ public class TestMovingModule extends Module implements ActionListener {
         panel.add(pitchLabel, c);
 
 
-        pitchField = new JTextField(Double.toString(Controller.STANDARD_PITCH));
+        pitchField = new JTextField(Double.toString(ConfigKeys.STANDARD_PITCH));
         pitchField.setColumns(8);
         c.anchor = GridBagConstraints.CENTER;
         c.insets = new Insets(0, 0, 0, 5);

@@ -38,7 +38,8 @@ public class RecordingAI extends Intelligence<String> implements HotkeyListener 
     }
 
     public void addRecord() {
-        String record = getController().getCoordinates().getX() + "; " + getController().getCoordinates().getY();
-        send(record);
+        Double x = getController().getReceiver().getX();
+        Double y = getController().getReceiver().getY();
+        send(x + "; " + y);
     }
 }

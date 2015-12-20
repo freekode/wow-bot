@@ -11,9 +11,6 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 public class InfoAI extends Intelligence<InfoAI.InfoUpdate> {
-    private static final Logger logger = LogManager.getLogger(InfoAI.class);
-
-
     @Override
     public Boolean processing() throws InterruptedException {
         while (true) {

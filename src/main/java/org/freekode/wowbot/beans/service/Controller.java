@@ -1,16 +1,13 @@
 package org.freekode.wowbot.beans.service;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.StaticFunc;
 
+import java.awt.*;
 import java.math.BigDecimal;
 
 public class Controller {
-    public static final double STANDARD_PITCH = -0.25;
-    public static final double PITCH_TOLERANCE = 0.02;
-    public static final double AZIMUTH_TOLERANCE = 0.02;
-    public static final double DISTANCE_TOLERANCE = 0.05;
-
     /**
      * to control the character
      */
@@ -22,9 +19,9 @@ public class Controller {
     private Receiver receiver;
 
 
-    public Controller(Driver driver, Receiver receiver) {
-        this.driver = driver;
-        this.receiver = receiver;
+    public Controller(Rectangle window) {
+        driver = Driver.getInstance(window);
+        receiver = Receiver.getInstance(window);
     }
 
     public Vector3D getCoordinates() {
@@ -33,13 +30,13 @@ public class Controller {
 
     public void init() throws InterruptedException {
         getDriver().pitchInit();
-        pitch(STANDARD_PITCH);
+        pitch(ConfigKeys.STANDARD_PITCH);
     }
 
     public void moveTo(Vector3D point) {
         while (true) {
             double distance = new BigDecimal(Vector3D.distance(getCoordinates(), point)).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
-            if (distance <= DISTANCE_TOLERANCE) {
+            if (distance <= ConfigKeys.DISTANCE_TOLERANCE) {
                 return;
             }
 
@@ -60,7 +57,7 @@ public class Controller {
 
         while (true) {
             double currentAzimuth = getReceiver().getAzimuth();
-            if (Math.abs(currentAzimuth - rad) > AZIMUTH_TOLERANCE) {
+            if (Math.abs(currentAzimuth - rad) > ConfigKeys.AZIMUTH_TOLERANCE) {
                 double changeRad = currentAzimuth - rad;
 
                 getDriver().mouseYaw(changeRad);
@@ -73,7 +70,7 @@ public class Controller {
     public void pitch(double rad) {
         while (true) {
             double currentPitch = getReceiver().getPitch();
-            if (Math.abs(currentPitch - rad) > PITCH_TOLERANCE) {
+            if (Math.abs(currentPitch - rad) > ConfigKeys.PITCH_TOLERANCE) {
                 double changeRad = currentPitch - rad;
                 getDriver().mousePitch(changeRad);
             } else {

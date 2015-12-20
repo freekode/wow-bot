@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.service.Receiver;
 import org.freekode.wowbot.beans.service.Driver;
 import org.freekode.wowbot.beans.service.Controller;
+import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.StaticFunc;
 
 import javax.swing.*;
@@ -13,10 +14,7 @@ import java.awt.*;
 
 public abstract class Intelligence<V> extends SwingWorker<Boolean, Void> {
     private static final Logger logger = LogManager.getLogger(Intelligence.class);
-    private static final String WINDOW_CLASS = "GxWindowClass";
-    private static final String WINDOW_NAME = "World of Warcraft";
-    private static final Integer offsetX = 0;
-    private static final Integer offsetY = 0;
+
     private Rectangle windowArea;
     private Controller controller;
 
@@ -36,7 +34,7 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, Void> {
     }
 
     public Rectangle findWindow() throws Exception {
-        WinUser.WINDOWINFO windowCoordinates = StaticFunc.upWindow(WINDOW_CLASS, WINDOW_NAME);
+        WinUser.WINDOWINFO windowCoordinates = StaticFunc.upWindow(ConfigKeys.WINDOW_CLASS, ConfigKeys.WINDOW_NAME);
 
         if (windowCoordinates == null) {
             throw new Exception("there is no window");
@@ -46,10 +44,7 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, Void> {
     }
 
     public void init() throws InterruptedException {
-        Receiver receiver = new Receiver((int) (windowArea.getX() + offsetX), (int) (windowArea.getY() + offsetY), 10, 4, 4);
-        Driver driver = new Driver(windowArea);
-
-        controller = new Controller(driver, receiver);
+        controller = new Controller(windowArea);
     }
 
     public void send(V object) {

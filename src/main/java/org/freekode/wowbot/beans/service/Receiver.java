@@ -2,6 +2,7 @@ package org.freekode.wowbot.beans.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.freekode.wowbot.tools.ConfigKeys;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -9,9 +10,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class Receiver {
-    public static final int UPDATE_INTERVAL = 100;
+    private static Receiver INSTANCE;
     private static final Logger logger = LogManager.getLogger(Receiver.class);
-    public static long lastUpdate = 0;
+    private static long lastUpdate = 0;
 
     private Integer startX;
     private Integer startY;
@@ -27,7 +28,7 @@ public class Receiver {
     private boolean wait;
 
 
-    public Receiver(Integer startX, Integer startY, Integer sidePx, Integer columns, Integer rows) {
+    private Receiver(Integer startX, Integer startY, Integer sidePx, Integer columns, Integer rows) {
         this.startX = startX;
         this.startY = startY;
         this.sidePx = sidePx;
@@ -38,6 +39,18 @@ public class Receiver {
         updateColors(true);
     }
 
+    public static Receiver getInstance(Rectangle windowArea) {
+        if (INSTANCE == null) {
+
+            INSTANCE = new Receiver(
+                    (int) (windowArea.getX() + ConfigKeys.ADDON_OFFSET_X),
+                    (int) (windowArea.getY() + ConfigKeys.ADDON_OFFSET_Y),
+                    ConfigKeys.ADDON_SIDE_PX, ConfigKeys.ADDON_COLUMNS, ConfigKeys.ADDON_ROWS);
+        }
+
+        return INSTANCE;
+    }
+
     public void setWait(boolean wait) {
         this.wait = wait;
     }
@@ -46,12 +59,12 @@ public class Receiver {
         try {
             while (true) {
                 long currentUpdate = System.currentTimeMillis();
-                if (currentUpdate > (lastUpdate + UPDATE_INTERVAL)) {
+                if (currentUpdate > (lastUpdate + ConfigKeys.RECEIVER_UPDATE_INTERVAL)) {
                     lastUpdate = currentUpdate;
                     break;
                 } else {
                     if (wait) {
-                        Thread.sleep(UPDATE_INTERVAL);
+                        Thread.sleep(ConfigKeys.RECEIVER_UPDATE_INTERVAL);
                     } else {
                         return;
                     }

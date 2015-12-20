@@ -2,29 +2,14 @@ package org.freekode.wowbot.beans.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.freekode.wowbot.tools.ConfigKeys;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 public class Driver {
-    /**
-     * how many ms need to run approximately 0.1 distance
-     */
-    public static final int RUN_POINT_ONE = 357;
-    /**
-     * how many ms need to change yaw using keyboard
-     */
-    public static final int KEY_YAW_DOUBLE_O_ONE = 3;
-    /**
-     * how many px need to change yaw to 0.02 rad by mouse
-     */
-    public static final int MOUSE_YAW_DOUBLE_O_TWO = 5;
-    /**
-     * how many px need to change pitch to 0.02 rad by mouse
-     */
-    public static final int MOUSE_PITCH_DOUBLE_O_TWO = 5;
-
+    private static Driver INSTANCE;
     private static final Logger logger = LogManager.getLogger(Driver.class);
 
     /**
@@ -38,7 +23,7 @@ public class Driver {
     private Robot robot;
 
 
-    public Driver(Rectangle window) {
+    private Driver(Rectangle window) {
         this.window = window;
 
         try {
@@ -47,6 +32,14 @@ public class Driver {
         } catch (AWTException e) {
             logger.error("exception during creating of robot", e);
         }
+    }
+
+    public static Driver getInstance(Rectangle window) {
+        if (INSTANCE == null) {
+            INSTANCE = new Driver(window);
+        }
+
+        return INSTANCE;
     }
 
     public void centerMouse() {
@@ -60,28 +53,28 @@ public class Driver {
     }
 
     public void run(double distance) {
-        int runMs = (int) (distance / 0.1 * RUN_POINT_ONE);
+        int runMs = (int) (distance / 0.1 * ConfigKeys.RUN_POINT_ONE);
         robot.keyPress(KeyEvent.VK_W);
         robot.delay(runMs);
         robot.keyRelease(KeyEvent.VK_W);
     }
 
     public void keyRotateRight(double rad) throws InterruptedException {
-        long runMs = ((long) (rad / 0.01)) * KEY_YAW_DOUBLE_O_ONE;
+        long runMs = ((long) (rad / 0.01)) * ConfigKeys.KEY_YAW_DOUBLE_O_ONE;
         robot.keyPress(KeyEvent.VK_D);
         Thread.sleep(runMs);
         robot.keyRelease(KeyEvent.VK_D);
     }
 
     public void keyRotateLeft(double rad) throws InterruptedException {
-        long runMs = ((long) (rad / 0.01)) * KEY_YAW_DOUBLE_O_ONE;
+        long runMs = ((long) (rad / 0.01)) * ConfigKeys.KEY_YAW_DOUBLE_O_ONE;
         robot.keyPress(KeyEvent.VK_A);
         Thread.sleep(runMs);
         robot.keyRelease(KeyEvent.VK_A);
     }
 
     public void mouseYaw(double rad) {
-        int interval = ((int) (rad / 0.02)) * MOUSE_YAW_DOUBLE_O_TWO;
+        int interval = ((int) (rad / 0.02)) * ConfigKeys.MOUSE_YAW_DOUBLE_O_TWO;
 
         centerMouse();
         Point mousePoint = MouseInfo.getPointerInfo().getLocation();
@@ -97,7 +90,7 @@ public class Driver {
     }
 
     public void mousePitch(double rad) {
-        int interval = ((int) (rad / 0.01)) * MOUSE_PITCH_DOUBLE_O_TWO;
+        int interval = ((int) (rad / 0.01)) * ConfigKeys.MOUSE_PITCH_DOUBLE_O_TWO;
 
         centerMouse();
         Point mousePoint = MouseInfo.getPointerInfo().getLocation();
