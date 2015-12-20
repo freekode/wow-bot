@@ -130,11 +130,11 @@ public class Receiver {
         return new Integer(fullString.toString()) / 100000d;
     }
 
-    public Boolean isOre() {
+    public Boolean isInCombat() {
         updateColors(wait);
 
-        Color oreColor = colors[2][1];
-        return oreColor.equals(Color.WHITE);
+        Color color = colors[1][0];
+        return color.equals(Color.WHITE);
     }
 
     public Boolean isHerb() {
@@ -144,10 +144,17 @@ public class Receiver {
         return color.equals(Color.WHITE);
     }
 
-    public Boolean isInCombat() {
+    public Boolean isOre() {
         updateColors(wait);
 
-        Color color = colors[1][0];
+        Color oreColor = colors[2][1];
+        return oreColor.equals(Color.WHITE);
+    }
+
+    public Boolean bagUpdated() {
+        updateColors(wait);
+
+        Color color = colors[3][0];
         return color.equals(Color.WHITE);
     }
 

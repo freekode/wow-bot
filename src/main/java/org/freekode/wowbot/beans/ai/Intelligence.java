@@ -23,6 +23,7 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, Void> {
 
     @Override
     public Boolean doInBackground() {
+        logger.info("start");
         try {
             windowArea = findWindow();
             init();
@@ -45,7 +46,7 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, Void> {
     }
 
     public void init() throws InterruptedException {
-        Receiver receiver = new Receiver((int) (windowArea.getX() + offsetX), (int) (windowArea.getY() + offsetY), 10, 4, 3);
+        Receiver receiver = new Receiver((int) (windowArea.getX() + offsetX), (int) (windowArea.getY() + offsetY), 10, 4, 4);
         Driver driver = new Driver(windowArea);
 
         controller = new Controller(driver, receiver);
@@ -56,10 +57,15 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, Void> {
     }
 
     public void kill() {
+        logger.info("kill");
+        terminating();
         cancel(true);
     }
 
     public abstract Boolean processing() throws InterruptedException;
+
+    public void terminating() {
+    }
 
     public Rectangle getWindowArea() {
         return windowArea;

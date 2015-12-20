@@ -44,6 +44,8 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
 
         frame.pack();
         frame.setVisible(true);
+
+        statusBar.setText("initialized");
     }
 
     public void buildInterface(JFrame frame) {
@@ -109,7 +111,6 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
 
 
         statusBar = new StatusBar();
-        statusBar.setText("started");
         c.gridx = 0;
         c.gridy = 4;
         c.gridwidth = 2;
