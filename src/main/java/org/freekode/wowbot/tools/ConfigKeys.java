@@ -7,7 +7,7 @@ public class ConfigKeys {
     public static final int ADDON_COLUMNS = 4;
     public static final int ADDON_ROWS = 4;
 
-    public static final int RECEIVER_UPDATE_INTERVAL = 100;
+    public static final int RECEIVER_UPDATE_INTERVAL_MS = 100;
 
     /**
      * how many ms need to run approximately 0.1 distance

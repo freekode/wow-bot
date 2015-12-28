@@ -1,10 +1,11 @@
-package org.freekode.wowbot.modules;
+package org.freekode.wowbot.modules.moving;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.beans.ai.MovingAI;
+import org.freekode.wowbot.modules.Module;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,8 +22,8 @@ public class MovingModule extends Module implements ActionListener {
     private static final Logger logger = LogManager.getLogger(MovingModule.class);
     private MovingAI ai;
     private Component ui;
-    private JList<String> recordsList;
     private JFileChooser fc;
+    private JTable recordsTable;
     private List<Vector3D> points = new ArrayList<>();
 
 
@@ -38,8 +40,10 @@ public class MovingModule extends Module implements ActionListener {
 
         GridBagConstraints c = new GridBagConstraints();
 
-        DefaultListModel<String> recordsModel = new DefaultListModel<>();
-        recordsList = new JList<>(recordsModel);
+        recordsTable = new JTable(new RecordTableModel());
+        recordsTable.setDefaultRenderer(Date.class, new DateRenderer());
+        recordsTable.setDefaultRenderer(Double.class, new DoubleRenderer());
+        JScrollPane scrollPane = new JScrollPane(recordsTable);
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(0, 0, 5, 0);
         c.gridx = 0;
@@ -47,7 +51,7 @@ public class MovingModule extends Module implements ActionListener {
         c.weightx = 1;
         c.weighty = 1;
         c.gridwidth = 3;
-        panel.add(recordsList, c);
+        panel.add(scrollPane, c);
 
 
         JButton saveButton = new JButton("Load");
@@ -69,8 +73,15 @@ public class MovingModule extends Module implements ActionListener {
     @Override
     public void buildAI() {
 //        if (ai == null || ai.isDone() || ai.isCancelled()) {
-            ai = new MovingAI(points);
-            ai.addPropertyChangeListener(this);
+
+        List<Vector3D> points = new ArrayList<>();
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
+        for (CharacterRecord record : model.getData()) {
+            points.add(record.getCoordinates());
+        }
+
+        ai = new MovingAI(points);
+        ai.addPropertyChangeListener(this);
 //        }
     }
 
@@ -91,8 +102,8 @@ public class MovingModule extends Module implements ActionListener {
     }
 
     public void parseCsvFile(File file) {
-        Pattern pattern = Pattern.compile("([\\d\\.]*);([\\d\\.]*)");
-        DefaultListModel<String> model = (DefaultListModel<String>) recordsList.getModel();
+        Pattern pattern = Pattern.compile("([\\d\\.]*);([\\d\\.]*);([\\d\\.]*)");
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
 
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
@@ -102,8 +113,12 @@ public class MovingModule extends Module implements ActionListener {
                 Matcher matcher = pattern.matcher(line);
 
                 if (matcher.find()) {
-                    points.add(new Vector3D(new Double(matcher.group(1)), new Double(matcher.group(2)), 0));
-                    model.addElement(matcher.group(1) + "; " + matcher.group(2));
+
+                    Date date = new Date(new Long(matcher.group(1)));
+                    Double x = new Double(matcher.group(2));
+                    Double y = new Double(matcher.group(3));
+
+                    model.add(new CharacterRecord(date, new Vector3D(x, y, 0)));
                 }
             }
         } catch (IOException e) {

@@ -54,7 +54,7 @@ public class FishingAI extends Intelligence<Void> {
         FISH_BUTTON = fishButton;
         FAIL_TRYINGS = failTryings;
 
-        logger.info("fish button = " + fishButton + "; fail tryings = " + failTryings);
+        logger.info("initialization; fish button = " + fishButton + "; fail tryings = " + failTryings);
     }
 
     @Override
@@ -103,6 +103,8 @@ public class FishingAI extends Intelligence<Void> {
 
             Thread.sleep(500);
         }
+
+        logger.info("sorry, can not find the bobber. stopping");
 
         return true;
     }

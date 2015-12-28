@@ -1,6 +1,8 @@
 package org.freekode.wowbot;
 
 import org.freekode.wowbot.modules.*;
+import org.freekode.wowbot.modules.moving.MovingModule;
+import org.freekode.wowbot.modules.moving.RecordingModule;
 import org.freekode.wowbot.ui.MainUI;
 
 public class Main {

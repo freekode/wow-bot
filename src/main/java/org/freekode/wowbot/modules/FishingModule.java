@@ -2,7 +2,6 @@ package org.freekode.wowbot.modules;
 
 import org.freekode.wowbot.beans.ai.FishingAI;
 import org.freekode.wowbot.beans.ai.Intelligence;
-import org.freekode.wowbot.beans.service.Controller;
 
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;

@@ -2,6 +2,7 @@ package org.freekode.wowbot.ui;
 
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
+import com.melloware.jintellitype.JIntellitypeException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.ai.Intelligence;
@@ -29,7 +30,12 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
 
 
     public void start() {
-        SwingUtilities.invokeLater(this::init);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                init();
+            }
+        });
     }
 
     public void init() {
@@ -38,11 +44,11 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         frame.setSize(300, 400);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setLocation(100, 100);
+        frame.setLocation(50, 100);
 
         buildInterface(frame);
 
-        frame.pack();
+//        frame.pack();
         frame.setVisible(true);
 
         statusBar.setText("initialized");
@@ -60,7 +66,7 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         c.insets = new Insets(10, 10, 10, 10);
         c.gridx = 0;
         c.gridy = 0;
-//        c.gridwidth = 2;
+        c.gridwidth = 2;
         pane.add(infoModule.getUI(), c);
 
 
@@ -123,10 +129,15 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     }
 
     public void registerHotKeys() {
-        JIntellitype.getInstance();
-        JIntellitype.getInstance().registerSwingHotKey(1, Event.CTRL_MASK + Event.ALT_MASK, (int) 'G');
-        JIntellitype.getInstance().registerSwingHotKey(2, Event.CTRL_MASK + Event.ALT_MASK, (int) 'K');
-        JIntellitype.getInstance().addHotKeyListener(this);
+        try {
+            JIntellitype.setLibraryLocation("JIntellitype.dll");
+            JIntellitype.getInstance();
+            JIntellitype.getInstance().registerSwingHotKey(1, Event.CTRL_MASK + Event.ALT_MASK, (int) 'G');
+            JIntellitype.getInstance().registerSwingHotKey(2, Event.CTRL_MASK + Event.ALT_MASK, (int) 'K');
+            JIntellitype.getInstance().addHotKeyListener(this);
+        } catch (JIntellitypeException e) {
+            logger.error("JIntellitype error", e);
+        }
     }
 
     public void addModule(Module module) {

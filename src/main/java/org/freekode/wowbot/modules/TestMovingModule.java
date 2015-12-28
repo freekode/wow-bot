@@ -4,14 +4,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.beans.ai.TestMovingAI;
-import org.freekode.wowbot.beans.service.Controller;
 import org.freekode.wowbot.tools.ConfigKeys;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
 
 public class TestMovingModule extends Module implements ActionListener {
     private static final Logger logger = LogManager.getLogger(TestMovingModule.class);

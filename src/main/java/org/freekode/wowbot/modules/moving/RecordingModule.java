@@ -1,23 +1,29 @@
-package org.freekode.wowbot.modules;
+package org.freekode.wowbot.modules.moving;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.beans.ai.RecordingAI;
+import org.freekode.wowbot.modules.Module;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Date;
+import java.util.List;
 
 public class RecordingModule extends Module implements ActionListener {
     private static final Logger logger = LogManager.getLogger(RecordingModule.class);
     private Intelligence ai;
     private Component ui;
-    private JList<String> recordsList;
+
     private JFileChooser fc;
+    private JTable recordsTable;
 
     public RecordingModule() {
         ui = buildUI();
@@ -38,16 +44,18 @@ public class RecordingModule extends Module implements ActionListener {
 
         GridBagConstraints c = new GridBagConstraints();
 
-        DefaultListModel<String> recordsModel = new DefaultListModel<>();
-        recordsList = new JList<>(recordsModel);
+        recordsTable = new JTable(new RecordTableModel());
+        recordsTable.setDefaultRenderer(Date.class, new DateRenderer());
+        recordsTable.setDefaultRenderer(Double.class, new DoubleRenderer());
+        JScrollPane scrollPane = new JScrollPane(recordsTable);
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(0, 0, 5, 0);
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 1;
         c.weighty = 1;
-        c.gridwidth = 3;
-        panel.add(recordsList, c);
+        c.gridwidth = 4;
+        panel.add(scrollPane, c);
 
 
         JButton saveButton = new JButton("Save");
@@ -60,33 +68,40 @@ public class RecordingModule extends Module implements ActionListener {
         c.gridy = 1;
         c.weightx = 0;
         c.weighty = 0;
+        c.gridwidth = 1;
         panel.add(saveButton, c);
 
 
         JButton deleteButton = new JButton("Delete");
         deleteButton.setActionCommand("delete");
         deleteButton.addActionListener(this);
-        c.anchor = GridBagConstraints.CENTER;
+        c.anchor = GridBagConstraints.LINE_START;
         c.fill = GridBagConstraints.NONE;
         c.insets = new Insets(0, 5, 5, 0);
         c.gridx = 1;
         c.gridy = 1;
-        c.weightx = 0;
-        c.weighty = 0;
         panel.add(deleteButton, c);
 
 
         JButton clearButton = new JButton("Clear");
         clearButton.setActionCommand("clear");
         clearButton.addActionListener(this);
-        c.anchor = GridBagConstraints.LINE_END;
+        c.anchor = GridBagConstraints.LINE_START;
         c.fill = GridBagConstraints.NONE;
-        c.insets = new Insets(0, 5, 5, 5);
+        c.insets = new Insets(0, 5, 5, 0);
         c.gridx = 2;
         c.gridy = 1;
-        c.weightx = 0;
-        c.weighty = 0;
         panel.add(clearButton, c);
+
+        JButton reverseButton = new JButton("Rev");
+        reverseButton.setActionCommand("reverse");
+        reverseButton.addActionListener(this);
+        c.anchor = GridBagConstraints.LINE_START;
+        c.fill = GridBagConstraints.NONE;
+        c.insets = new Insets(0, 5, 5, 5);
+        c.gridx = 3;
+        c.gridy = 1;
+        panel.add(reverseButton, c);
 
 
         return panel;
@@ -94,8 +109,8 @@ public class RecordingModule extends Module implements ActionListener {
 
     @Override
     public void property(PropertyChangeEvent e) {
-        DefaultListModel<String> model = (DefaultListModel<String>) recordsList.getModel();
-        model.addElement(e.getNewValue().toString());
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
+        model.add((CharacterRecord) e.getNewValue());
     }
 
     @Override
@@ -106,6 +121,8 @@ public class RecordingModule extends Module implements ActionListener {
             delete();
         } else if ("clear".equals(e.getActionCommand())) {
             clear();
+        } else if ("reverse".equals(e.getActionCommand())) {
+            reverse();
         }
     }
 
@@ -130,28 +147,33 @@ public class RecordingModule extends Module implements ActionListener {
 
     public String buildCsvFile() {
         StringBuilder out = new StringBuilder();
-        DefaultListModel<String> model = (DefaultListModel<String>) recordsList.getModel();
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
 
-        for (int i = 0; i < model.getSize(); i++) {
-            String record = model.get(i);
-
-            out.append(record.replaceAll(" ", "")).append("\n");
+        for (CharacterRecord record : model.getData()) {
+            out.append(record.getDate().getTime()).append(";")
+                    .append(record.getCoordinates().getX()).append(";")
+                    .append(record.getCoordinates().getY()).append("\n");
         }
 
         return out.toString();
     }
 
     public void delete() {
-        DefaultListModel model = (DefaultListModel) recordsList.getModel();
-        int selectedIndex = recordsList.getSelectedIndex();
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
+        int selectedIndex = recordsTable.getSelectedRow();
         if (selectedIndex != -1) {
-            model.remove(selectedIndex);
+            model.delete(selectedIndex);
         }
     }
 
     public void clear() {
-        DefaultListModel<String> model = (DefaultListModel<String>) recordsList.getModel();
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
         model.clear();
+    }
+
+    public void reverse() {
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
+        model.reverse();
     }
 
     @Override

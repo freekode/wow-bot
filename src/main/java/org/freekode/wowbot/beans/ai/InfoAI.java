@@ -1,15 +1,5 @@
 package org.freekode.wowbot.beans.ai;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
-import org.freekode.wowbot.tools.StaticFunc;
-
-import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-
 public class InfoAI extends Intelligence<InfoAI.InfoUpdate> {
     @Override
     public Boolean processing() throws InterruptedException {

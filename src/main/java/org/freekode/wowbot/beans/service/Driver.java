@@ -9,9 +9,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 public class Driver {
-    private static Driver INSTANCE;
     private static final Logger logger = LogManager.getLogger(Driver.class);
-
+    private static Driver INSTANCE;
     /**
      * operated rectangle of window
      */

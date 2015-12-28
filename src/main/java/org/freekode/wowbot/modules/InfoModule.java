@@ -18,6 +18,10 @@ public class InfoModule extends Module {
     private JLabel yLabel = new JLabel("0");
     private JLabel azimuthLabel = new JLabel("0");
     private JLabel pitchLabel = new JLabel("0");
+    private JLabel isInCombatLabel = new JLabel("false");
+    private JLabel isHerbLabel = new JLabel("false");
+    private JLabel isOreLabel = new JLabel("false");
+    private JLabel bagUpdateLabel = new JLabel("false");
 
 
     public InfoModule() {
@@ -27,12 +31,30 @@ public class InfoModule extends Module {
 
     public Component buildInterface() {
         JPanel panel = new JPanel(new GridBagLayout());
-
-        panel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-
 //        panel.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
+        GridBagConstraints c = new GridBagConstraints();
+
+
+        c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(0, 0, 0, 30);
+        c.gridx = 0;
+        c.gridy = 0;
+        panel.add(addLeftPart(), c);
+
+        c.anchor = GridBagConstraints.LINE_END;
+        c.insets = new Insets(0, 0, 0, 0);
+        c.gridx = 1;
+        c.gridy = 0;
+        panel.add(addRightPart(), c);
+
+
+        return panel;
+    }
+
+    public JPanel addLeftPart() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
 
         c.anchor = GridBagConstraints.LINE_START;
         c.insets = new Insets(0, 0, 5, 20);
@@ -84,6 +106,66 @@ public class InfoModule extends Module {
         c.gridx = 1;
         c.gridy = 3;
         panel.add(pitchLabel, c);
+
+
+        return panel;
+    }
+
+    public JPanel addRightPart() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(0, 0, 5, 20);
+        c.gridx = 0;
+        c.gridy = 0;
+        panel.add(new JLabel("In combat"), c);
+
+        c.anchor = GridBagConstraints.LINE_END;
+        c.insets = new Insets(0, 0, 5, 0);
+        c.gridx = 1;
+        c.gridy = 0;
+        panel.add(isInCombatLabel, c);
+
+
+        c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(0, 0, 5, 20);
+        c.gridx = 0;
+        c.gridy = 1;
+        panel.add(new JLabel("Herb"), c);
+
+        c.anchor = GridBagConstraints.LINE_END;
+        c.insets = new Insets(0, 0, 5, 0);
+        c.gridx = 1;
+        c.gridy = 1;
+        panel.add(isHerbLabel, c);
+
+
+        c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(0, 0, 5, 20);
+        c.gridx = 0;
+        c.gridy = 2;
+        panel.add(new JLabel("Ore"), c);
+
+        c.anchor = GridBagConstraints.LINE_END;
+        c.insets = new Insets(0, 0, 5, 0);
+        c.gridx = 1;
+        c.gridy = 2;
+        panel.add(isOreLabel, c);
+
+
+        c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(0, 0, 0, 20);
+        c.gridx = 0;
+        c.gridy = 3;
+        panel.add(new JLabel("Bag update"), c);
+
+        c.anchor = GridBagConstraints.LINE_END;
+        c.insets = new Insets(0, 0, 0, 0);
+        c.gridx = 1;
+        c.gridy = 3;
+        panel.add(bagUpdateLabel, c);
+
 
         return panel;
     }

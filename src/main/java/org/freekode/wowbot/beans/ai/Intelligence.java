@@ -3,8 +3,6 @@ package org.freekode.wowbot.beans.ai;
 import com.sun.jna.platform.win32.WinUser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.beans.service.Receiver;
-import org.freekode.wowbot.beans.service.Driver;
 import org.freekode.wowbot.beans.service.Controller;
 import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.StaticFunc;
@@ -12,7 +10,7 @@ import org.freekode.wowbot.tools.StaticFunc;
 import javax.swing.*;
 import java.awt.*;
 
-public abstract class Intelligence<V> extends SwingWorker<Boolean, Void> {
+public abstract class Intelligence<T> extends SwingWorker<Boolean, Void> {
     private static final Logger logger = LogManager.getLogger(Intelligence.class);
 
     private Rectangle windowArea;
@@ -47,7 +45,7 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, Void> {
         controller = new Controller(windowArea);
     }
 
-    public void send(V object) {
+    public void send(T object) {
         firePropertyChange("custom", null, object);
     }
 
@@ -59,7 +57,9 @@ public abstract class Intelligence<V> extends SwingWorker<Boolean, Void> {
         }
     }
 
-    public abstract Boolean processing() throws InterruptedException;
+    public Boolean processing() throws InterruptedException {
+        return true;
+    }
 
     public void terminating() {
     }

@@ -10,10 +10,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class Receiver {
-    private static Receiver INSTANCE;
     private static final Logger logger = LogManager.getLogger(Receiver.class);
-    private static long lastUpdate = 0;
-
+    private static Receiver INSTANCE;
     private Integer startX;
     private Integer startY;
     private Integer sidePx;
@@ -21,11 +19,6 @@ public class Receiver {
     private Integer rows;
 
     private Color[][] colors;
-
-    /**
-     * wait next colors update, or get instant info
-     */
-    private boolean wait;
 
 
     private Receiver(Integer startX, Integer startY, Integer sidePx, Integer columns, Integer rows) {
@@ -36,7 +29,7 @@ public class Receiver {
         this.rows = rows;
 
         colors = new Color[rows][columns];
-        updateColors(true);
+        updateColors();
     }
 
     public static Receiver getInstance(Rectangle windowArea) {
@@ -51,25 +44,21 @@ public class Receiver {
         return INSTANCE;
     }
 
-    public void setWait(boolean wait) {
-        this.wait = wait;
-    }
-
-    public void updateColors(boolean wait) {
+    public void updateColors() {
         try {
-            while (true) {
-                long currentUpdate = System.currentTimeMillis();
-                if (currentUpdate > (lastUpdate + ConfigKeys.RECEIVER_UPDATE_INTERVAL)) {
-                    lastUpdate = currentUpdate;
-                    break;
-                } else {
-                    if (wait) {
-                        Thread.sleep(ConfigKeys.RECEIVER_UPDATE_INTERVAL);
-                    } else {
-                        return;
-                    }
-                }
-            }
+//            while (true) {
+//                long currentUpdate = System.currentTimeMillis();
+//                if (currentUpdate > (lastUpdate + ConfigKeys.RECEIVER_UPDATE_INTERVAL_MS)) {
+//                    lastUpdate = currentUpdate;
+//                    break;
+//                } else {
+//                    if (wait) {
+//                        Thread.sleep(ConfigKeys.RECEIVER_UPDATE_INTERVAL_MS);
+//                    } else {
+//                        return;
+//                    }
+//                }
+//            }
 
             Robot robot = new Robot();
             Rectangle rect = new Rectangle(startX, startY, sidePx * columns, sidePx * rows);
@@ -87,13 +76,13 @@ public class Receiver {
                 pointY += sidePx;
                 pointX = sidePx / 2;
             }
-        } catch (AWTException | InterruptedException e) {
+        } catch (AWTException e) {
             logger.error("during updating the colors was an exception ", e);
         }
     }
 
     public Double getX() {
-        updateColors(wait);
+        updateColors();
 
         Color xColor = colors[0][0];
         StringBuilder fullString = new StringBuilder();
@@ -105,7 +94,7 @@ public class Receiver {
     }
 
     public Double getY() {
-        updateColors(wait);
+        updateColors();
         Color yColor = colors[0][1];
 
         StringBuilder fullString = new StringBuilder();
@@ -117,7 +106,7 @@ public class Receiver {
     }
 
     public Double getPitch() {
-        updateColors(wait);
+        updateColors();
 
         Color pitchColor = colors[0][2];
         StringBuilder fullString = new StringBuilder();
@@ -132,7 +121,7 @@ public class Receiver {
     }
 
     public Double getAzimuth() {
-        updateColors(wait);
+        updateColors();
 
         Color azimuthColor = colors[0][3];
         StringBuilder fullString = new StringBuilder();
@@ -144,28 +133,28 @@ public class Receiver {
     }
 
     public Boolean isInCombat() {
-        updateColors(wait);
+        updateColors();
 
         Color color = colors[1][0];
         return color.equals(Color.WHITE);
     }
 
     public Boolean isHerb() {
-        updateColors(wait);
+        updateColors();
 
         Color color = colors[2][0];
         return color.equals(Color.WHITE);
     }
 
     public Boolean isOre() {
-        updateColors(wait);
+        updateColors();
 
         Color oreColor = colors[2][1];
         return oreColor.equals(Color.WHITE);
     }
 
     public Boolean bagUpdated() {
-        updateColors(wait);
+        updateColors();
 
         Color color = colors[3][0];
         return color.equals(Color.WHITE);
