@@ -9,10 +9,10 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
-public class FishingAI extends Intelligence<Void> {
+public class FishingAI extends Intelligence<Boolean> {
     private static final Logger logger = LogManager.getLogger(FishingAI.class);
-    private static final double STANDARD_PITCH = -0.25;
     private static final int FISHING_TIME_SEC = 20;
+    private static final int CHECK_IF_CAUGHT_SEC = 2;
     // red colors
     public final Color[] FIRST_COLORS = {
             Color.decode("#6b240e"),
@@ -49,6 +49,7 @@ public class FishingAI extends Intelligence<Void> {
     private final Rectangle SEARCH_SQUARE = new Rectangle(400, 110, 440, 390);
     private int FISH_BUTTON;
     private int FAIL_TRYINGS;
+
 
     public FishingAI(int fishButton, int failTryings) {
         FISH_BUTTON = fishButton;
@@ -119,8 +120,10 @@ public class FishingAI extends Intelligence<Void> {
                 StaticFunc.cutImage(rectangle);
                 int x = (int) (rectangle.getX() + (rectangle.getWidth() / 2));
                 int y = (int) (rectangle.getY() + (rectangle.getHeight() / 2));
+
+                logger.info("lets take it...");
                 loot(x, y);
-                logger.info("take!");
+                checkIfCaught();
                 break;
             }
             Thread.sleep(100);
@@ -155,5 +158,26 @@ public class FishingAI extends Intelligence<Void> {
         int y = (int) (getWindowArea().getY() + SEARCH_SQUARE.getY());
         getController().getDriver().mouse(x, y);
         Thread.sleep(100);
+    }
+
+    public void checkIfCaught() throws InterruptedException {
+        long endTime = System.currentTimeMillis() / 1000 + CHECK_IF_CAUGHT_SEC;
+
+        Boolean caught = false;
+        while ((System.currentTimeMillis() / 1000) <= endTime) {
+            if (getController().getReceiver().bagUpdated()) {
+                caught = true;
+                break;
+            }
+            Thread.sleep(100);
+        }
+
+        if (caught) {
+            logger.info("got it, yay!");
+        } else {
+            logger.info("oh, no :(");
+        }
+
+        send(caught);
     }
 }

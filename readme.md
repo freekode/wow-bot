@@ -1,7 +1,7 @@
 # WoW Bot
 
 ## Task
-Create a program which able automaticially control the character in World Of Wacraft.
+Create a program which able automatically control the character in World Of Warcraft.
 
 System contains of two components. First is the WoW addon, which showing current info about character
 by encoding numbers to colors. Second part is the java application, which controlling the character.

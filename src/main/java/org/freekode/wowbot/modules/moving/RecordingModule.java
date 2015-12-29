@@ -42,8 +42,8 @@ public class RecordingModule extends Module implements ActionListener {
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-
         GridBagConstraints c = new GridBagConstraints();
+
 
         recordsTable = new JTable(new RecordTableModel());
         recordsTable.setDefaultRenderer(Date.class, new DateRenderer());

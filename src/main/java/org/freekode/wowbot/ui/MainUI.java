@@ -11,6 +11,7 @@ import org.freekode.wowbot.modules.Module;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,7 +41,7 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
 
     public void init() {
         JFrame frame = new JFrame();
-        frame.setTitle("WoW Bot");
+        frame.setTitle("linux");
         frame.setSize(300, 400);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -90,7 +91,7 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
 
 
         cards = new JPanel(new CardLayout());
-        cards.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        cards.setBorder(BorderFactory.createEtchedBorder());
 
         JComboBox<String> aiSelect = new JComboBox<>();
         aiSelect.addItemListener(this);
