@@ -2,6 +2,7 @@ package org.freekode.wowbot.modules.fishing;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.freekode.wowbot.tools.ColorRenderer;
 
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
@@ -22,7 +23,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         this.optionsModel = optionsModel;
 
         setTitle("Fishing options");
-        setSize(150, 150);
+        setSize(170, 250);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setLocation(50, 100);
@@ -81,14 +82,47 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         pane.add(failTryings, c);
 
 
-        // row 0
+        JButton addFirstColorButton = new JButton("+");
+        addFirstColorButton.addActionListener(this);
+        addFirstColorButton.setActionCommand("addFirstColor");
+        addFirstColorButton.setPreferredSize(new Dimension(20, 20));
+        addFirstColorButton.setMargin(new Insets(0, 0, 0, 0));
+        c.gridx = 0;
+        c.gridy = 2;
+        c.insets = new Insets(0, 0, 0, 0);
+        c.anchor = GridBagConstraints.LINE_START;
+        pane.add(addFirstColorButton, c);
+
+        JButton removeFirstColorButton = new JButton("-");
+        removeFirstColorButton.addActionListener(this);
+        removeFirstColorButton.setActionCommand("removeFirstColor");
+        removeFirstColorButton.setPreferredSize(new Dimension(20, 20));
+        removeFirstColorButton.setMargin(new Insets(0, 0, 0, 0));
+        c.gridx = 0;
+        c.gridy = 3;
+        c.insets = new Insets(0, 0, 0, 0);
+        c.anchor = GridBagConstraints.LINE_START;
+        pane.add(removeFirstColorButton, c);
+
+
+        JTable recordsTable = new JTable(new FishingTableModel());
+        recordsTable.setDefaultRenderer(Color.class, new ColorRenderer());
+        recordsTable.setPreferredSize(new Dimension(40, 70));
+        c.insets = new Insets(0, 0, 0, 0);
+        c.gridx = 0;
+        c.gridy = 2;
+        c.gridwidth = 2;
+        pane.add(recordsTable, c);
+
+
         JButton optionsButton = new JButton("Save");
         optionsButton.addActionListener(this);
         optionsButton.setActionCommand("saveOptions");
         c.gridx = 0;
-        c.gridy = 2;
-        c.insets = new Insets(0, 0, 0, 10);
-        c.anchor = GridBagConstraints.LINE_END;
+        c.gridy = 4;
+        c.insets = new Insets(0, 0, 0, 0);
+        c.anchor = GridBagConstraints.LINE_START;
+        c.gridwidth = 1;
         pane.add(optionsButton, c);
     }
 
