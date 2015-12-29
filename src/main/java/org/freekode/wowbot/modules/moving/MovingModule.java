@@ -77,7 +77,7 @@ public class MovingModule extends Module implements ActionListener {
 
         List<Vector3D> points = new ArrayList<>();
         RecordTableModel model = (RecordTableModel) recordsTable.getModel();
-        for (CharacterRecord record : model.getData()) {
+        for (CharacterRecordModel record : model.getData()) {
             points.add(record.getCoordinates());
         }
 
@@ -119,7 +119,7 @@ public class MovingModule extends Module implements ActionListener {
                     Double x = new Double(matcher.group(2));
                     Double y = new Double(matcher.group(3));
 
-                    model.add(new CharacterRecord(date, new Vector3D(x, y, 0)));
+                    model.add(new CharacterRecordModel(date, new Vector3D(x, y, 0)));
                 }
             }
         } catch (IOException e) {

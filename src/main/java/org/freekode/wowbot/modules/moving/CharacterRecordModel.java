@@ -6,11 +6,11 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CharacterRecord {
+public class CharacterRecordModel {
     private Date date;
     private Vector3D coordinates;
 
-    public CharacterRecord(Date date, Vector3D coordinates) {
+    public CharacterRecordModel(Date date, Vector3D coordinates) {
         this.date = date;
         this.coordinates = coordinates;
     }

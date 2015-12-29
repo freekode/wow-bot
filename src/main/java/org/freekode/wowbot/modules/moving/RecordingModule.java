@@ -111,7 +111,7 @@ public class RecordingModule extends Module implements ActionListener {
     @Override
     public void property(PropertyChangeEvent e) {
         RecordTableModel model = (RecordTableModel) recordsTable.getModel();
-        model.add((CharacterRecord) e.getNewValue());
+        model.add((CharacterRecordModel) e.getNewValue());
     }
 
     @Override
@@ -150,7 +150,7 @@ public class RecordingModule extends Module implements ActionListener {
         StringBuilder out = new StringBuilder();
         RecordTableModel model = (RecordTableModel) recordsTable.getModel();
 
-        for (CharacterRecord record : model.getData()) {
+        for (CharacterRecordModel record : model.getData()) {
             out.append(record.getDate().getTime()).append(";")
                     .append(record.getCoordinates().getX()).append(";")
                     .append(record.getCoordinates().getY()).append("\n");

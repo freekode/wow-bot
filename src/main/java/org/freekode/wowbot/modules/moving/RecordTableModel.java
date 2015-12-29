@@ -7,7 +7,7 @@ import java.util.List;
 
 public class RecordTableModel extends AbstractTableModel {
     private String[] columnNames = {"Date", "X", "Y"};
-    private List<CharacterRecord> data = new LinkedList<>();
+    private List<CharacterRecordModel> data = new LinkedList<>();
 
 
     @Override
@@ -35,7 +35,7 @@ public class RecordTableModel extends AbstractTableModel {
         return getValueAt(0, columnIndex).getClass();
     }
 
-    public void add(CharacterRecord record) {
+    public void add(CharacterRecordModel record) {
         data.add(record);
         fireTableRowsInserted(data.size(), data.size());
     }
@@ -57,7 +57,7 @@ public class RecordTableModel extends AbstractTableModel {
         fireTableRowsDeleted(0, data.size());
     }
 
-    public List<CharacterRecord> getData() {
+    public List<CharacterRecordModel> getData() {
         return data;
     }
 }

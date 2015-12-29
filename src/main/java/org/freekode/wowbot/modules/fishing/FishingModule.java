@@ -8,20 +8,17 @@ import org.freekode.wowbot.modules.Module;
 import org.freekode.wowbot.tools.DateRenderer;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import javax.swing.text.MaskFormatter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Date;
 
-public class FishingModule extends Module {
+public class FishingModule extends Module implements ActionListener {
     private static final Logger logger = LogManager.getLogger(FishingModule.class);
+    private FishingOptionsModel optionsModel;
     private Component ui;
     private Intelligence ai;
-    private JFormattedTextField fishButton;
-    private JFormattedTextField failTryings;
     private Integer catches = 0;
     private Integer fails = 0;
     private JLabel catchesCountLabel;
@@ -29,8 +26,9 @@ public class FishingModule extends Module {
     private JTable recordsTable;
 
 
-
     public FishingModule() {
+        optionsModel = new FishingOptionsModel();
+
         ui = buildInterface();
         buildAI();
     }
@@ -40,91 +38,58 @@ public class FishingModule extends Module {
         GridBagConstraints c = new GridBagConstraints();
 
         // row 0
-        JLabel fishBtnLabel = new JLabel("Fish button");
-        fishBtnLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        c.gridx = 0;
+        JButton optionsButton = new JButton("Options");
+        optionsButton.addActionListener(this);
+        optionsButton.setActionCommand("showOptions");
+        c.gridx = 2;
         c.gridy = 0;
-        c.weightx = 0.5;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(0, 0, 0, 10);
+        c.insets = new Insets(5, 5, 5, 5);
         c.anchor = GridBagConstraints.LINE_END;
-        panel.add(fishBtnLabel, c);
-
-        try {
-            fishButton = new JFormattedTextField(new MaskFormatter("*"));
-            fishButton.setValue("=");
-            fishButton.setPreferredSize(new Dimension(40, 20));
-            c.gridx = 1;
-            c.gridy = 0;
-            c.insets = new Insets(0, 0, 0, 0);
-            c.anchor = GridBagConstraints.LINE_START;
-            panel.add(fishButton, c);
-        } catch (ParseException e) {
-            logger.info("parse error", e);
-        }
+        panel.add(optionsButton, c);
 
 
         // row 1
-        JLabel failTryingsLabel = new JLabel("Fail tryings");
-        failTryingsLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        c.gridx = 0;
-        c.gridy = 1;
-        c.insets = new Insets(0, 0, 0, 10);
-        c.anchor = GridBagConstraints.LINE_END;
-        panel.add(failTryingsLabel, c);
-
-        failTryings = new JFormattedTextField(NumberFormat.getNumberInstance());
-        failTryings.setPreferredSize(new Dimension(40, 20));
-        failTryings.setValue(5);
-        c.gridx = 1;
-        c.gridy = 1;
-        c.insets = new Insets(0, 0, 0, 0);
-        c.anchor = GridBagConstraints.LINE_START;
-        panel.add(failTryings, c);
-
-
-        // row 2
         JLabel catchesLabel = new JLabel("Catches");
         catchesLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         c.gridx = 0;
-        c.gridy = 2;
+        c.gridy = 0;
         c.insets = new Insets(0, 0, 0, 10);
         c.anchor = GridBagConstraints.LINE_END;
         panel.add(catchesLabel, c);
 
         catchesCountLabel = new JLabel(catches.toString());
         c.gridx = 1;
-        c.gridy = 2;
+        c.gridy = 0;
         c.insets = new Insets(0, 0, 0, 0);
         c.anchor = GridBagConstraints.LINE_START;
         panel.add(catchesCountLabel, c);
 
 
-        // row 3
+        // row 2
         JLabel failsLabel = new JLabel("Fails");
         failsLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         c.gridx = 0;
-        c.gridy = 3;
+        c.gridy = 1;
         c.insets = new Insets(0, 0, 5, 10);
         c.anchor = GridBagConstraints.LINE_END;
         panel.add(failsLabel, c);
 
         failsCountLabel = new JLabel(fails.toString());
         c.gridx = 1;
-        c.gridy = 3;
+        c.gridy = 1;
         c.insets = new Insets(0, 0, 5, 0);
         c.anchor = GridBagConstraints.LINE_START;
         panel.add(failsCountLabel, c);
 
 
-        // row 4
+        // row 3
         recordsTable = new JTable(new FishingTableModel());
         recordsTable.setDefaultRenderer(Date.class, new DateRenderer("yyyy-MM-dd HH:mm:ss"));
         JScrollPane scrollPane = new JScrollPane(recordsTable);
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
-        c.gridy = 4;
-        c.gridwidth = 2;
+        c.gridy = 3;
+        c.gridwidth = 3;
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
@@ -136,8 +101,8 @@ public class FishingModule extends Module {
 
     @Override
     public void buildAI() {
-        int fishButtonValue = KeyStroke.getKeyStroke(fishButton.getText().charAt(0), 0).getKeyCode();
-        int failTryingsValue = Integer.valueOf(failTryings.getText());
+        int fishButtonValue = KeyStroke.getKeyStroke(optionsModel.getFishKey().charAt(0), 0).getKeyCode();
+        int failTryingsValue = Integer.valueOf(optionsModel.getFailTryings());
 
         ai = new FishingAI(fishButtonValue, failTryingsValue);
         ai.addPropertyChangeListener(this);
@@ -145,7 +110,7 @@ public class FishingModule extends Module {
 
     @Override
     public void property(PropertyChangeEvent e) {
-        if((Boolean) e.getNewValue()) {
+        if ((Boolean) e.getNewValue()) {
             catches++;
             catchesCountLabel.setText(catches.toString());
 
@@ -155,7 +120,7 @@ public class FishingModule extends Module {
         }
 
         FishingTableModel model = (FishingTableModel) recordsTable.getModel();
-        model.add(new FishingRecord(new Date(), (Boolean) e.getNewValue()));
+        model.add(new FishingRecordModel(new Date(), (Boolean) e.getNewValue()));
     }
 
     @Override
@@ -171,5 +136,34 @@ public class FishingModule extends Module {
     @Override
     public String getName() {
         return "Fishing";
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if ("showOptions".equals(e.getActionCommand())) {
+            showOptions();
+        }
+    }
+
+    public void showOptions() {
+        FishingOptionsUI optionsWindow = new FishingOptionsUI();
+        optionsWindow.init(optionsModel);
+        optionsWindow.addPropertyChangeListener(this);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent e) {
+        super.propertyChange(e);
+
+        if ("saveOptions".equals(e.getPropertyName())) {
+            saveOptions((FishingOptionsModel) e.getNewValue());
+        }
+    }
+
+    public void saveOptions(FishingOptionsModel options) {
+        optionsModel = options;
+        buildAI();
+
+        logger.info("options saved");
     }
 }

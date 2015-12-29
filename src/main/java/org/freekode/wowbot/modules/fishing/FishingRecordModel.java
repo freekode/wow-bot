@@ -1,16 +1,18 @@
 package org.freekode.wowbot.modules.fishing;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-
+import java.awt.*;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FishingRecord {
+public class FishingRecordModel {
     private Date date;
     private Boolean caught;
+    private Color first;
+    private Color second;
+    private Color third;
 
-    public FishingRecord(Date date, Boolean caught) {
+    public FishingRecordModel(Date date, Boolean caught) {
         this.date = date;
         this.caught = caught;
     }
@@ -23,10 +25,25 @@ public class FishingRecord {
         return caught;
     }
 
+    public Color getFirst() {
+        return first;
+    }
+
+    public Color getSecond() {
+        return second;
+    }
+
+    public Color getThird() {
+        return third;
+    }
+
     public List<Object> toList() {
         List<Object> list = new LinkedList<>();
         list.add(date);
         list.add(caught);
+        list.add(first);
+        list.add(second);
+        list.add(third);
 
         return list;
     }

@@ -1,13 +1,12 @@
 package org.freekode.wowbot.modules.fishing;
 
 import javax.swing.table.AbstractTableModel;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 public class FishingTableModel extends AbstractTableModel {
-    private String[] columnNames = {"Date", "Caught"};
-    private List<FishingRecord> data = new LinkedList<>();
+    private String[] columnNames = {"Date", "Caught", "1", "2", "3"};
+    private List<FishingRecordModel> data = new LinkedList<>();
 
 
     @Override
@@ -35,7 +34,7 @@ public class FishingTableModel extends AbstractTableModel {
         return getValueAt(0, columnIndex).getClass();
     }
 
-    public void add(FishingRecord record) {
+    public void add(FishingRecordModel record) {
         data.add(record);
         fireTableRowsInserted(data.size(), data.size());
     }
@@ -47,7 +46,7 @@ public class FishingTableModel extends AbstractTableModel {
         fireTableRowsDeleted(0, size);
     }
 
-    public List<FishingRecord> getData() {
+    public List<FishingRecordModel> getData() {
         return data;
     }
 }

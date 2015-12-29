@@ -5,12 +5,12 @@ import com.melloware.jintellitype.JIntellitype;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.modules.moving.CharacterRecord;
+import org.freekode.wowbot.modules.moving.CharacterRecordModel;
 
 import java.awt.*;
 import java.util.Date;
 
-public class RecordingAI extends Intelligence<CharacterRecord> implements HotkeyListener {
+public class RecordingAI extends Intelligence<CharacterRecordModel> implements HotkeyListener {
     public static final int HOT_KEY_IDENTIFIER = 100;
     private static final Logger logger = LogManager.getLogger(RecordingAI.class);
 
@@ -42,7 +42,7 @@ public class RecordingAI extends Intelligence<CharacterRecord> implements Hotkey
         Double x = getController().getReceiver().getX();
         Double y = getController().getReceiver().getY();
 
-        CharacterRecord record = new CharacterRecord(new Date(), new Vector3D(x, y, 0));
+        CharacterRecordModel record = new CharacterRecordModel(new Date(), new Vector3D(x, y, 0));
 
         send(record);
     }
