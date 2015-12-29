@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.ai.FishingAI;
 import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.modules.Module;
+import org.freekode.wowbot.tools.ColorRenderer;
 import org.freekode.wowbot.tools.DateRenderer;
 
 import javax.swing.*;
@@ -85,6 +86,7 @@ public class FishingModule extends Module implements ActionListener {
         // row 3
         recordsTable = new JTable(new FishingTableModel());
         recordsTable.setDefaultRenderer(Date.class, new DateRenderer("yyyy-MM-dd HH:mm:ss"));
+        recordsTable.setDefaultRenderer(Color.class, new ColorRenderer());
         JScrollPane scrollPane = new JScrollPane(recordsTable);
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
@@ -110,7 +112,8 @@ public class FishingModule extends Module implements ActionListener {
 
     @Override
     public void property(PropertyChangeEvent e) {
-        if ((Boolean) e.getNewValue()) {
+        FishingRecordModel record = (FishingRecordModel) e.getNewValue();
+        if (record.getCaught()) {
             catches++;
             catchesCountLabel.setText(catches.toString());
 
@@ -120,22 +123,7 @@ public class FishingModule extends Module implements ActionListener {
         }
 
         FishingTableModel model = (FishingTableModel) recordsTable.getModel();
-        model.add(new FishingRecordModel(new Date(), (Boolean) e.getNewValue()));
-    }
-
-    @Override
-    public Component getUI() {
-        return ui;
-    }
-
-    @Override
-    public Intelligence getAI() {
-        return ai;
-    }
-
-    @Override
-    public String getName() {
-        return "Fishing";
+        model.add(record);
     }
 
     @Override
@@ -165,5 +153,20 @@ public class FishingModule extends Module implements ActionListener {
         buildAI();
 
         logger.info("options saved");
+    }
+
+    @Override
+    public Component getUI() {
+        return ui;
+    }
+
+    @Override
+    public Intelligence getAI() {
+        return ai;
+    }
+
+    @Override
+    public String getName() {
+        return "Fishing";
     }
 }

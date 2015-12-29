@@ -2,17 +2,24 @@ package org.freekode.wowbot.beans.ai;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.freekode.wowbot.modules.fishing.FishingOptionsModel;
+import org.freekode.wowbot.modules.fishing.FishingRecordModel;
 import org.freekode.wowbot.tools.StaticFunc;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.Date;
 
-public class FishingAI extends Intelligence<Boolean> {
+public class FishingAI extends Intelligence<FishingRecordModel> {
     private static final Logger logger = LogManager.getLogger(FishingAI.class);
     private static final int FISHING_TIME_SEC = 20;
     private static final int CHECK_IF_CAUGHT_SEC = 2;
+    private Color firstFound;
+    private Color secondFound;
+    private Color thirdFound;
+
     // red colors
     public final Color[] FIRST_COLORS = {
             Color.decode("#6b240e"),
@@ -47,15 +54,15 @@ public class FishingAI extends Intelligence<Boolean> {
             Color.decode("#42453a"),
     };
     private final Rectangle SEARCH_SQUARE = new Rectangle(400, 110, 440, 390);
-    private int FISH_BUTTON;
-    private int FAIL_TRYINGS;
+    private int fishKey;
+    private int failTryings;
 
 
-    public FishingAI(int fishButton, int failTryings) {
-        FISH_BUTTON = fishButton;
-        FAIL_TRYINGS = failTryings;
+    public FishingAI(int fishKey, int failTryings) {
+        this.fishKey = fishKey;
+        this.failTryings = failTryings;
 
-        logger.info("initialization; fish button = " + fishButton + "; fail tryings = " + failTryings);
+        logger.info("initialization; fish key = " + fishKey + "; fail tryings = " + failTryings);
     }
 
     @Override
@@ -64,7 +71,7 @@ public class FishingAI extends Intelligence<Boolean> {
 
 
         logger.info("start fishing");
-        for (int i = 0; i < FAIL_TRYINGS; i++) {
+        for (int i = 0; i < failTryings; i++) {
             logger.info("try = " + i);
             mouseOut();
             fish();
@@ -75,6 +82,8 @@ public class FishingAI extends Intelligence<Boolean> {
             if (bobberPoint == null) {
                 continue;
             }
+            firstFound = new Color(bobberPoint[2]);
+
 
             logger.info("first color found = " + new Color(bobberPoint[2]).toString());
             Rectangle bobberSquare = new Rectangle(bobberPoint[0] - 30, bobberPoint[1] - 20, 80, 50);
@@ -83,14 +92,20 @@ public class FishingAI extends Intelligence<Boolean> {
             BufferedImage bobberImage = StaticFunc.cutImage(bobberRect);
             int[] bobberPart = findColor(bobberImage, SECOND_COLORS, 6);
             if (bobberPart == null) {
+                clearColors();
                 continue;
             }
+            secondFound = new Color(bobberPart[2]);
+
 
             logger.info("second color found = " + new Color(bobberPart[2]).toString());
             int[] bobberCoordinates = findColor(bobberImage, THIRD_COLORS, 5);
             if (bobberCoordinates == null) {
+                clearColors();
                 continue;
             }
+            thirdFound = new Color(bobberCoordinates[2]);
+
 
             logger.info("third color found = " + new Color(bobberCoordinates[2]).toString());
             Rectangle stickSquare = new Rectangle(bobberCoordinates[0] - 10, bobberCoordinates[1] - 5, 22, 22);
@@ -108,6 +123,12 @@ public class FishingAI extends Intelligence<Boolean> {
         logger.info("sorry, can not find the bobber. stopping");
 
         return true;
+    }
+
+    public void clearColors() {
+        firstFound = null;
+        secondFound = null;
+        thirdFound = null;
     }
 
     public void trackingSquare(Rectangle rectangle, Color color) throws InterruptedException {
@@ -131,7 +152,7 @@ public class FishingAI extends Intelligence<Boolean> {
     }
 
     public void fish() throws InterruptedException {
-        getController().getDriver().pressKey(FISH_BUTTON);
+        getController().getDriver().pressKey(fishKey);
         Thread.sleep(2000);
     }
 
@@ -178,6 +199,8 @@ public class FishingAI extends Intelligence<Boolean> {
             logger.info("oh, no :(");
         }
 
-        send(caught);
+        FishingRecordModel model = new FishingRecordModel(new Date(), caught, firstFound, secondFound, thirdFound);
+        send(model);
+        clearColors();
     }
 }

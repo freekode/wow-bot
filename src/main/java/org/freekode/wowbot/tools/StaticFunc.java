@@ -126,6 +126,14 @@ public class StaticFunc {
         return new Rectangle(startX, startY, width, height);
     }
 
+    /**
+     * find a color in array of pixels
+     *
+     * @param pixels
+     * @param colors     set of colors which need to find
+     * @param similarity 0 exactly that color
+     * @return array with coordinates and found color
+     */
     public static int[] findColor(int[][] pixels, Color[] colors, double similarity) {
 //        int[][] pixels = convertTo2DWithoutUsingGetRGB(image);
 

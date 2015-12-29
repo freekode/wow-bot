@@ -12,9 +12,12 @@ public class FishingRecordModel {
     private Color second;
     private Color third;
 
-    public FishingRecordModel(Date date, Boolean caught) {
+    public FishingRecordModel(Date date, Boolean caught, Color first, Color second, Color third) {
         this.date = date;
         this.caught = caught;
+        this.first = first;
+        this.second = second;
+        this.third = third;
     }
 
     public Date getDate() {
