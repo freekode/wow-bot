@@ -201,5 +201,10 @@ public class InfoModule extends Module {
         yLabel.setText(update.getY().toString());
         azimuthLabel.setText(update.getAzimuth().toString());
         pitchLabel.setText(update.getPitch().toString());
+
+        isInCombatLabel.setText(update.getInCombat().toString());
+        isHerbLabel.setText(update.getHerb().toString());
+        isOreLabel.setText(update.getOre().toString());
+        bagUpdateLabel.setText(update.getBagUpdate().toString());
     }
 }

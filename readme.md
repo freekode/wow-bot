@@ -42,14 +42,6 @@ you have to DO NOT CATCH InterruptedException. Please simply throw it to higher 
 
 ### Module
 Module combine your AI and ui interface which will be show when your module selected in the gui.
-Moudle is abstract class, provide several methods and abstract methods, for easily receive information from your ai
+Module is abstract class, provide several methods and abstract methods, for easily receive information from your ai
 and change values in gui.
-
-
-## 0.1 version
- * ai settings
- * info in window    
- * pause button
- * movement AI
-
 

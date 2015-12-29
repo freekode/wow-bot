@@ -6,6 +6,8 @@ import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.beans.ai.MovingAI;
 import org.freekode.wowbot.modules.Module;
+import org.freekode.wowbot.tools.DateRenderer;
+import org.freekode.wowbot.tools.DoubleRenderer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +26,6 @@ public class MovingModule extends Module implements ActionListener {
     private Component ui;
     private JFileChooser fc;
     private JTable recordsTable;
-    private List<Vector3D> points = new ArrayList<>();
 
 
     public MovingModule() {

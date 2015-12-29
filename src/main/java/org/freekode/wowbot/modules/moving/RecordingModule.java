@@ -5,6 +5,8 @@ import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.beans.ai.RecordingAI;
 import org.freekode.wowbot.modules.Module;
+import org.freekode.wowbot.tools.DateRenderer;
+import org.freekode.wowbot.tools.DoubleRenderer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +17,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Date;
-import java.util.List;
 
 public class RecordingModule extends Module implements ActionListener {
     private static final Logger logger = LogManager.getLogger(RecordingModule.class);

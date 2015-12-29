@@ -1,4 +1,4 @@
-package org.freekode.wowbot.modules.moving;
+package org.freekode.wowbot.tools;
 
 import javax.swing.table.DefaultTableCellRenderer;
 import java.text.SimpleDateFormat;

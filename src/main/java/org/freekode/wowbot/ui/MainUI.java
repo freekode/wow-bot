@@ -44,7 +44,7 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         frame.setSize(300, 400);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setLocation(50, 100);
+        frame.setLocation(50, 50);
 
         buildInterface(frame);
 
@@ -175,12 +175,11 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         Intelligence ai = currentModule.getAI();
         Intelligence infoAi = infoModule.getAI();
 
-
-        if (!infoAi.isDone() || !ai.isCancelled()) {
+        if (!infoAi.isDone()) {
             infoAi.execute();
         }
 
-        if (!ai.isDone() || !ai.isCancelled()) {
+        if (!ai.isDone()) {
             ai.execute();
             statusBar.setText(currentModule.getName() + " - started");
         } else {
@@ -193,11 +192,11 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         Intelligence infoAi = infoModule.getAI();
 
 
-        if (!infoAi.isDone() || !infoAi.isCancelled()) {
+        if (!infoAi.isDone()) {
             infoAi.kill();
         }
 
-        if (!ai.isDone() || !ai.isCancelled()) {
+        if (!ai.isDone()) {
             ai.kill();
             statusBar.setText(currentModule.getName() + " - stopped");
 
