@@ -27,9 +27,9 @@ public class MoveModule extends Module implements ActionListener {
     private ModuleType currentType = ModuleType.RECORD;
     private Intelligence ai;
     private Component ui;
-
     private JFileChooser fc;
     private JTable recordsTable;
+
 
     public MoveModule() {
         ui = buildUI();
@@ -166,8 +166,15 @@ public class MoveModule extends Module implements ActionListener {
 
     @Override
     public void property(PropertyChangeEvent e) {
+        CharacterRecordModel record = (CharacterRecordModel) e.getNewValue();
         RecordTableModel model = (RecordTableModel) recordsTable.getModel();
-        model.add((CharacterRecordModel) e.getNewValue());
+
+        if (currentType == ModuleType.RECORD) {
+            model.add(record);
+        } else if (currentType == ModuleType.MOVE) {
+            // update the model
+            model.update(record);
+        }
     }
 
     @Override

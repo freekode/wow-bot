@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class RecordTableModel extends AbstractTableModel {
-    private String[] columnNames = {"Date", "X", "Y"};
+    private String[] columnNames = {"State", "Date", "X", "Y"};
     private List<CharacterRecordModel> data = new LinkedList<>();
 
 
@@ -55,6 +55,17 @@ public class RecordTableModel extends AbstractTableModel {
     public void reverse() {
         Collections.reverse(data);
         fireTableRowsDeleted(0, data.size());
+    }
+
+    public void update(CharacterRecordModel record) {
+        for (int i = 0; i < data.size(); i++) {
+            CharacterRecordModel element = data.get(i);
+            if (record.equals(element)) {
+                element.setState(record.getState());
+                fireTableRowsUpdated(i, i);
+                return;
+            }
+        }
     }
 
     public List<CharacterRecordModel> getData() {

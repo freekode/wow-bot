@@ -25,7 +25,7 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     private InfoModule infoModule;
     private Module currentModule;
     private StatusBar statusBar;
-    JComboBox<String> aiSelect;
+    private JComboBox<String> aiSelect;
     private JPanel cards;
     private Map<String, Module> modules = new HashMap<>();
 
