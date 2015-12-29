@@ -33,7 +33,7 @@ public class StaticFunc {
         return azimuth;
     }
 
-    public static WinUser.WINDOWINFO upWindow(String windowClass, String windowName) throws Exception {
+    public static WinUser.WINDOWINFO upWindow(String windowClass, String windowName) {
         WinDef.HWND hwnd = User32.INSTANCE.FindWindow(windowClass, windowName);
 
         if (hwnd != null) {

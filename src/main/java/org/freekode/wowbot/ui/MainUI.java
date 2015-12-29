@@ -183,7 +183,7 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         if (!ai.isDone()) {
             ai.execute();
 
-            setEnableComponents(cards, false);
+//            setEnableComponents(cards, false);
             aiSelect.setEnabled(false);
             statusBar.setText(currentModule.getName() + " - started");
         } else {
@@ -200,7 +200,7 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         infoAi.kill();
         ai.kill();
 
-        setEnableComponents(cards, true);
+//        setEnableComponents(cards, true);
         aiSelect.setEnabled(true);
 
         currentModule.buildAI();

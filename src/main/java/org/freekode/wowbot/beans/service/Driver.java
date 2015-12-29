@@ -51,10 +51,10 @@ public class Driver {
         robot.mouseMove(x, y);
     }
 
-    public void run(double distance) {
+    public void run(double distance) throws InterruptedException {
         int runMs = (int) (distance / 0.1 * ConfigKeys.RUN_POINT_ONE);
         robot.keyPress(KeyEvent.VK_W);
-        robot.delay(runMs);
+        Thread.sleep(runMs);
         robot.keyRelease(KeyEvent.VK_W);
     }
 
@@ -72,6 +72,11 @@ public class Driver {
         robot.keyRelease(KeyEvent.VK_A);
     }
 
+    /**
+     * change azimuth by mouse
+     *
+     * @param rad difference of angle
+     */
     public void mouseYaw(double rad) {
         int interval = ((int) (rad / 0.02)) * ConfigKeys.MOUSE_YAW_DOUBLE_O_TWO;
 

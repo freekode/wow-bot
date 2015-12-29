@@ -1,6 +1,8 @@
 package org.freekode.wowbot.beans.service;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.StaticFunc;
 
@@ -8,6 +10,8 @@ import java.awt.*;
 import java.math.BigDecimal;
 
 public class Controller {
+    private static final Logger logger = LogManager.getLogger(Controller.class);
+
     /**
      * to control the character
      */
@@ -33,8 +37,15 @@ public class Controller {
         pitch(ConfigKeys.STANDARD_PITCH);
     }
 
-    public void moveTo(Vector3D point) {
+    /**
+     * move to exact point
+     * character automatically turned and run
+     *
+     * @param point distantion coordinates
+     */
+    public void moveTo(Vector3D point) throws InterruptedException {
         while (true) {
+            // get the distance between character and destination
             double distance = new BigDecimal(Vector3D.distance(getCoordinates(), point)).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
             if (distance <= ConfigKeys.DISTANCE_TOLERANCE) {
                 return;
@@ -42,14 +53,21 @@ public class Controller {
 
             azimuth(StaticFunc.getAzimuth(getCoordinates(), point));
 
+            // we need to run less distance because azimuth angle has very poor results of correction
+            // so we run some meters, stop correct azimuth more precisely and run what left
             if (distance > 1) {
                 distance -= 1;
             }
 
-            getDriver().run(distance);
+            run(distance);
         }
     }
 
+    /**
+     * set new azimuth
+     *
+     * @param rad new azimuth in radians
+     */
     public void azimuth(double rad) {
         if (rad >= (Math.PI * 2)) {
             return;
@@ -67,6 +85,11 @@ public class Controller {
         }
     }
 
+    /**
+     * set new pitch
+     *
+     * @param rad new pitch in radians
+     */
     public void pitch(double rad) {
         while (true) {
             double currentPitch = getReceiver().getPitch();
@@ -76,6 +99,28 @@ public class Controller {
             } else {
                 break;
             }
+        }
+    }
+
+    public void run(double distance) throws InterruptedException {
+        double originDistance = distance;
+        Vector3D currentLocation = getCoordinates();
+
+        while (true) {
+            if (distance <= ConfigKeys.DISTANCE_TOLERANCE) {
+                return;
+            }
+
+            double alreadyRun = Vector3D.distance(currentLocation, getCoordinates());
+            distance = originDistance - alreadyRun;
+            if (distance > 1) {
+                distance -= 1;
+            }
+            if (distance < 0) {
+                return;
+            }
+
+            getDriver().run(distance);
         }
     }
 

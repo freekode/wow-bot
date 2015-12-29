@@ -1,5 +1,6 @@
 package org.freekode.wowbot.modules;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.ai.Intelligence;
@@ -18,11 +19,20 @@ public class TestMovingModule extends Module implements ActionListener {
 
     private JTextField azimuthField;
     private JTextField pitchField;
+    private JTextField runField;
 
 
     public TestMovingModule() {
         ui = buildInterface();
         buildAI();
+    }
+
+    @Override
+    public void buildAI() {
+        if (ai == null || ai.isDone() || ai.isCancelled()) {
+            ai = new TestMovingAI();
+            ai.addPropertyChangeListener(this);
+        }
     }
 
     public Component buildInterface() {
@@ -37,7 +47,6 @@ public class TestMovingModule extends Module implements ActionListener {
         c.gridy = 0;
         panel.add(azimuthLabel, c);
 
-
         azimuthField = new JTextField();
         azimuthField.setColumns(8);
         c.anchor = GridBagConstraints.CENTER;
@@ -45,7 +54,6 @@ public class TestMovingModule extends Module implements ActionListener {
         c.gridx = 1;
         c.gridy = 0;
         panel.add(azimuthField, c);
-
 
         JButton setAzimuthButton = new JButton("Set");
         setAzimuthButton.setActionCommand("setAzimuth");
@@ -59,40 +67,55 @@ public class TestMovingModule extends Module implements ActionListener {
 
         JLabel pitchLabel = new JLabel("Pitch");
         c.anchor = GridBagConstraints.LINE_START;
-        c.insets = new Insets(0, 0, 0, 5);
+        c.insets = new Insets(0, 0, 5, 5);
         c.gridx = 0;
         c.gridy = 1;
         panel.add(pitchLabel, c);
 
-
         pitchField = new JTextField(Double.toString(ConfigKeys.STANDARD_PITCH));
         pitchField.setColumns(8);
         c.anchor = GridBagConstraints.CENTER;
-        c.insets = new Insets(0, 0, 0, 5);
+        c.insets = new Insets(0, 0, 5, 5);
         c.gridx = 1;
         c.gridy = 1;
         panel.add(pitchField, c);
-
 
         JButton setPitchButton = new JButton("Set");
         setPitchButton.setActionCommand("setPitch");
         setPitchButton.addActionListener(this);
         c.anchor = GridBagConstraints.LINE_END;
-        c.insets = new Insets(0, 0, 0, 0);
+        c.insets = new Insets(0, 0, 5, 0);
         c.gridx = 2;
         c.gridy = 1;
         panel.add(setPitchButton, c);
 
 
-        return panel;
-    }
+        JLabel distanceLabel = new JLabel("Run");
+        c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(0, 0, 5, 5);
+        c.gridx = 0;
+        c.gridy = 2;
+        panel.add(distanceLabel, c);
 
-    @Override
-    public void buildAI() {
-        if (ai == null || ai.isDone() || ai.isCancelled()) {
-            ai = new TestMovingAI();
-            ai.addPropertyChangeListener(this);
-        }
+        runField = new JTextField("0");
+        runField.setColumns(8);
+        c.anchor = GridBagConstraints.CENTER;
+        c.insets = new Insets(0, 0, 5, 5);
+        c.gridx = 1;
+        c.gridy = 2;
+        panel.add(runField, c);
+
+        JButton runButton = new JButton("Run");
+        runButton.setActionCommand("run");
+        runButton.addActionListener(this);
+        c.anchor = GridBagConstraints.LINE_END;
+        c.insets = new Insets(0, 0, 5, 0);
+        c.gridx = 2;
+        c.gridy = 2;
+        panel.add(runButton, c);
+
+
+        return panel;
     }
 
     @Override
@@ -101,6 +124,8 @@ public class TestMovingModule extends Module implements ActionListener {
             setAzimuth();
         } else if ("setPitch".equals(e.getActionCommand())) {
             setPitch();
+        } else if ("run".equals(e.getActionCommand())) {
+            run();
         }
     }
 
@@ -120,6 +145,21 @@ public class TestMovingModule extends Module implements ActionListener {
         ai.setPitch(newPitch);
 
         logger.info("current pitch = " + ai.getController().getReceiver().getPitch());
+    }
+
+    public void run() {
+        Double distance = new Double(runField.getText());
+        Vector3D currentLocation = ai.getController().getCoordinates();
+        logger.info("run = " + distance);
+
+        try {
+            ai.run(distance);
+        } catch (InterruptedException e) {
+            logger.info("run test exception", e);
+        }
+
+        Vector3D newLocation = ai.getController().getCoordinates();
+        logger.info("real distance = " + Vector3D.distance(currentLocation, newLocation));
     }
 
     @Override

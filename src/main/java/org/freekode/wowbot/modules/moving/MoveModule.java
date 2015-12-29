@@ -97,7 +97,7 @@ public class MoveModule extends Module implements ActionListener {
         recordsTable.setDefaultRenderer(Date.class, new DateRenderer());
         recordsTable.setDefaultRenderer(Double.class, new DoubleRenderer());
         JScrollPane scrollPane = new JScrollPane(recordsTable);
-        c.insets = new Insets(0, 0, 5, 0);
+        c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
         c.gridy = 2;
         c.weightx = 1;
