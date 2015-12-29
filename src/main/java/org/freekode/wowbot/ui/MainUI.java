@@ -22,10 +22,10 @@ import java.util.Map;
 
 public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     private static final Logger logger = LogManager.getLogger(MainUI.class);
-
     private InfoModule infoModule;
     private Module currentModule;
     private StatusBar statusBar;
+    JComboBox<String> aiSelect;
     private JPanel cards;
     private Map<String, Module> modules = new HashMap<>();
 
@@ -42,7 +42,7 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     public void init() {
         JFrame frame = new JFrame();
         frame.setTitle("linux");
-        frame.setSize(300, 400);
+        frame.setSize(500, 600);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLocation(50, 50);
@@ -93,7 +93,7 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         cards = new JPanel(new CardLayout());
         cards.setBorder(BorderFactory.createEtchedBorder());
 
-        JComboBox<String> aiSelect = new JComboBox<>();
+        aiSelect = new JComboBox<>();
         aiSelect.addItemListener(this);
         for (Map.Entry<String, Module> entry : modules.entrySet()) {
             aiSelect.addItem(entry.getKey());
@@ -182,6 +182,9 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
 
         if (!ai.isDone()) {
             ai.execute();
+
+            setEnableComponents(cards, false);
+            aiSelect.setEnabled(false);
             statusBar.setText(currentModule.getName() + " - started");
         } else {
             statusBar.setText(currentModule.getName() + " - not started");
@@ -189,22 +192,30 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     }
 
     public void stopThread() {
+        statusBar.setText(currentModule.getName() + " - stop");
+
         Intelligence ai = currentModule.getAI();
         Intelligence infoAi = infoModule.getAI();
 
+        infoAi.kill();
+        ai.kill();
 
-        if (!infoAi.isDone()) {
-            infoAi.kill();
-        }
+        setEnableComponents(cards, true);
+        aiSelect.setEnabled(true);
 
-        if (!ai.isDone()) {
-            ai.kill();
-            statusBar.setText(currentModule.getName() + " - stopped");
+        currentModule.buildAI();
+        infoModule.buildAI();
+    }
 
-            currentModule.buildAI();
-            infoModule.buildAI();
-        } else {
-            statusBar.setText(currentModule.getName() + " - not stopped");
+    public void setEnableComponents(Container container, boolean enable) {
+        Component[] components = container.getComponents();
+        for (Component component : components) {
+            component.setEnabled(enable);
+
+            if (component instanceof Container) {
+                component.setEnabled(enable);
+                setEnableComponents((Container) component, enable);
+            }
         }
     }
 }

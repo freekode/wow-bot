@@ -1,8 +1,10 @@
 package org.freekode.wowbot.modules.moving;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.ai.Intelligence;
+import org.freekode.wowbot.beans.ai.MovingAI;
 import org.freekode.wowbot.beans.ai.RecordingAI;
 import org.freekode.wowbot.modules.Module;
 import org.freekode.wowbot.tools.DateRenderer;
@@ -16,24 +18,47 @@ import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class RecordingModule extends Module implements ActionListener {
-    private static final Logger logger = LogManager.getLogger(RecordingModule.class);
+public class MoveModule extends Module implements ActionListener {
+    private static final Logger logger = LogManager.getLogger(MoveModule.class);
+    private ModuleType currentType = ModuleType.RECORD;
     private Intelligence ai;
     private Component ui;
 
     private JFileChooser fc;
     private JTable recordsTable;
 
-    public RecordingModule() {
+    public MoveModule() {
         ui = buildUI();
         buildAI();
     }
 
     @Override
     public void buildAI() {
+        if (currentType == ModuleType.RECORD) {
+            buildRecordUI();
+        } else if (currentType == ModuleType.MOVE) {
+            buildMoveUI();
+        }
+
+    }
+
+    public void buildRecordUI() {
         ai = new RecordingAI();
+        ai.addPropertyChangeListener(this);
+    }
+
+    public void buildMoveUI() {
+        List<Vector3D> points = new ArrayList<>();
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
+        for (CharacterRecordModel record : model.getData()) {
+            points.add(record.getCoordinates());
+        }
+
+        ai = new MovingAI(points);
         ai.addPropertyChangeListener(this);
     }
 
@@ -45,17 +70,40 @@ public class RecordingModule extends Module implements ActionListener {
         GridBagConstraints c = new GridBagConstraints();
 
 
+        JRadioButton recordRadio = new JRadioButton("Record");
+        recordRadio.addActionListener(this);
+        recordRadio.setActionCommand("recordAI");
+        recordRadio.setSelected(true);
+        c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(0, 0, 5, 0);
+        c.gridx = 0;
+        c.gridy = 0;
+        panel.add(recordRadio, c);
+
+        JRadioButton moveRadio = new JRadioButton("Move");
+        moveRadio.addActionListener(this);
+        moveRadio.setActionCommand("moveAI");
+        c.anchor = GridBagConstraints.LINE_START;
+        c.gridx = 1;
+        c.gridy = 0;
+        panel.add(moveRadio, c);
+
+        ButtonGroup buttonGroup = new ButtonGroup();
+        buttonGroup.add(recordRadio);
+        buttonGroup.add(moveRadio);
+
+
         recordsTable = new JTable(new RecordTableModel());
         recordsTable.setDefaultRenderer(Date.class, new DateRenderer());
         recordsTable.setDefaultRenderer(Double.class, new DoubleRenderer());
         JScrollPane scrollPane = new JScrollPane(recordsTable);
-        c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(0, 0, 5, 0);
         c.gridx = 0;
-        c.gridy = 0;
+        c.gridy = 2;
         c.weightx = 1;
         c.weighty = 1;
-        c.gridwidth = 4;
+        c.gridwidth = 5;
+        c.fill = GridBagConstraints.BOTH;
         panel.add(scrollPane, c);
 
 
@@ -63,14 +111,24 @@ public class RecordingModule extends Module implements ActionListener {
         saveButton.setActionCommand("save");
         saveButton.addActionListener(this);
         c.anchor = GridBagConstraints.LINE_START;
-        c.fill = GridBagConstraints.NONE;
         c.insets = new Insets(0, 5, 5, 0);
         c.gridx = 0;
         c.gridy = 1;
         c.weightx = 0;
         c.weighty = 0;
         c.gridwidth = 1;
+        c.fill = GridBagConstraints.NONE;
         panel.add(saveButton, c);
+
+
+        JButton loadButton = new JButton("Load");
+        loadButton.setActionCommand("load");
+        loadButton.addActionListener(this);
+        c.anchor = GridBagConstraints.LINE_START;
+        c.fill = GridBagConstraints.NONE;
+        c.gridx = 1;
+        c.gridy = 1;
+        panel.add(loadButton, c);
 
 
         JButton deleteButton = new JButton("Delete");
@@ -78,8 +136,7 @@ public class RecordingModule extends Module implements ActionListener {
         deleteButton.addActionListener(this);
         c.anchor = GridBagConstraints.LINE_START;
         c.fill = GridBagConstraints.NONE;
-        c.insets = new Insets(0, 5, 5, 0);
-        c.gridx = 1;
+        c.gridx = 2;
         c.gridy = 1;
         panel.add(deleteButton, c);
 
@@ -89,8 +146,7 @@ public class RecordingModule extends Module implements ActionListener {
         clearButton.addActionListener(this);
         c.anchor = GridBagConstraints.LINE_START;
         c.fill = GridBagConstraints.NONE;
-        c.insets = new Insets(0, 5, 5, 0);
-        c.gridx = 2;
+        c.gridx = 3;
         c.gridy = 1;
         panel.add(clearButton, c);
 
@@ -100,7 +156,7 @@ public class RecordingModule extends Module implements ActionListener {
         c.anchor = GridBagConstraints.LINE_START;
         c.fill = GridBagConstraints.NONE;
         c.insets = new Insets(0, 5, 5, 5);
-        c.gridx = 3;
+        c.gridx = 4;
         c.gridy = 1;
         panel.add(reverseButton, c);
 
@@ -124,11 +180,18 @@ public class RecordingModule extends Module implements ActionListener {
             clear();
         } else if ("reverse".equals(e.getActionCommand())) {
             reverse();
+        } else if ("load".equals(e.getActionCommand())) {
+            load();
+        } else if ("recordAI".equals(e.getActionCommand())) {
+            recordAi();
+        } else if ("moveAI".equals(e.getActionCommand())) {
+            moveAi();
         }
     }
 
     public void save() {
-        String csv = buildCsvFile();
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
+        String csv = CsvTools.buildCsvFile(model.getData());
 
         int returnVal = fc.showSaveDialog(ui);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -146,17 +209,17 @@ public class RecordingModule extends Module implements ActionListener {
         logger.info("saved");
     }
 
-    public String buildCsvFile() {
-        StringBuilder out = new StringBuilder();
-        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
+    public void load() {
+        int returnVal = fc.showOpenDialog(ui);
 
-        for (CharacterRecordModel record : model.getData()) {
-            out.append(record.getDate().getTime()).append(";")
-                    .append(record.getCoordinates().getX()).append(";")
-                    .append(record.getCoordinates().getY()).append("\n");
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            List<CharacterRecordModel> records = CsvTools.parseCsvFile(fc.getSelectedFile());
+            RecordTableModel model = (RecordTableModel) recordsTable.getModel();
+            for (CharacterRecordModel record : records) {
+                model.add(record);
+            }
+            buildAI();
         }
-
-        return out.toString();
     }
 
     public void delete() {
@@ -177,6 +240,16 @@ public class RecordingModule extends Module implements ActionListener {
         model.reverse();
     }
 
+    public void recordAi() {
+        currentType = ModuleType.RECORD;
+        buildAI();
+    }
+
+    public void moveAi() {
+        currentType = ModuleType.MOVE;
+        buildAI();
+    }
+
     @Override
     public Component getUI() {
         return ui;
@@ -189,6 +262,11 @@ public class RecordingModule extends Module implements ActionListener {
 
     @Override
     public String getName() {
-        return "Recording";
+        return "Move";
+    }
+
+    public enum ModuleType {
+        RECORD,
+        MOVE
     }
 }

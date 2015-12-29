@@ -21,6 +21,8 @@ public class RecordingAI extends Intelligence<CharacterRecordModel> implements H
         JIntellitype.getInstance().registerSwingHotKey(HOT_KEY_IDENTIFIER, Event.CTRL_MASK + Event.ALT_MASK, (int) 'R');
         JIntellitype.getInstance().addHotKeyListener(this);
 
+
+
         return true;
     }
 
