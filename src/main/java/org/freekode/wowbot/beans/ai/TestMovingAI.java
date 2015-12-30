@@ -9,7 +9,7 @@ public class TestMovingAI extends Intelligence<String> {
         return true;
     }
 
-    public void setAzimuth(Double value) {
+    public void setAzimuth(Double value) throws InterruptedException {
         getController().azimuth(value);
     }
 

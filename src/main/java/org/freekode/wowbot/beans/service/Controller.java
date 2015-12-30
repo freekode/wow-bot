@@ -47,6 +47,7 @@ public class Controller {
         while (true) {
             // get the distance between character and destination
             double distance = new BigDecimal(Vector3D.distance(getCoordinates(), point)).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
+            logger.info("distance = " + distance);
             if (distance <= ConfigKeys.DISTANCE_TOLERANCE) {
                 return;
             }
@@ -68,7 +69,7 @@ public class Controller {
      *
      * @param rad new azimuth in radians
      */
-    public void azimuth(double rad) {
+    public void azimuth(double rad) throws InterruptedException {
         if (rad >= (Math.PI * 2)) {
             return;
         }

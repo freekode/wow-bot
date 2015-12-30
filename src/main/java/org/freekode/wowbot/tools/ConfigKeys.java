@@ -18,9 +18,9 @@ public class ConfigKeys {
      */
     public static final int KEY_YAW_DOUBLE_O_ONE = 3;
     /**
-     * how many px need to change yaw to 0.02 rad by mouse
+     * how many px need to change yaw to 0.005 rad by mouse
      */
-    public static final int MOUSE_YAW_DOUBLE_O_TWO = 5;
+    public static final int MOUSE_YAW_DOUBLE_O_ONE = 1;
     /**
      * how many px need to change pitch to 0.02 rad by mouse
      */
@@ -28,10 +28,9 @@ public class ConfigKeys {
 
     public static final double STANDARD_PITCH = -0.25;
     public static final double PITCH_TOLERANCE = 0.02;
-    public static final double AZIMUTH_TOLERANCE = 0.02;
+    public static final double AZIMUTH_TOLERANCE = 0.005;
     public static final double DISTANCE_TOLERANCE = 0.05;
 
     public static final String WINDOW_CLASS = "GxWindowClass";
-
     public static final String WINDOW_NAME = "World of Warcraft";
 }

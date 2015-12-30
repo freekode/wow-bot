@@ -133,7 +133,11 @@ public class TestMovingModule extends Module implements ActionListener {
         Double newAzimuth = new Double(azimuthField.getText());
         logger.info("new azimuth = " + newAzimuth);
 
-        ai.setAzimuth(newAzimuth);
+        try {
+            ai.setAzimuth(newAzimuth);
+        } catch (InterruptedException e) {
+            logger.info("azimuth test exception", e);
+        }
 
         logger.info("current azimuth = " + ai.getController().getReceiver().getAzimuth());
     }

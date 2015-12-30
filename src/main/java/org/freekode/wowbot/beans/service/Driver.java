@@ -77,8 +77,8 @@ public class Driver {
      *
      * @param rad difference of angle
      */
-    public void mouseYaw(double rad) {
-        int interval = ((int) (rad / 0.02)) * ConfigKeys.MOUSE_YAW_DOUBLE_O_TWO;
+    public void mouseYaw(double rad) throws InterruptedException {
+        int interval = ((int) (rad / 0.005)) * ConfigKeys.MOUSE_YAW_DOUBLE_O_ONE;
 
         centerMouse();
         Point mousePoint = MouseInfo.getPointerInfo().getLocation();
@@ -86,6 +86,7 @@ public class Driver {
         robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
         robot.mouseMove(mousePoint.x + interval, mousePoint.y);
         robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
+        Thread.sleep(5);
     }
 
     public void pitchInit() {
