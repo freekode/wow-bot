@@ -25,8 +25,12 @@ public class GatherAI extends Intelligence<CharacterRecordModel> {
                 logger.info("move = " + point);
                 getController().moveTo(point.getCoordinates());
             } else if (point.getAction() == CharacterRecordModel.Action.GATHER) {
+                getController().getDriver().fpv();
                 logger.info("gather = " + point);
+                Thread.sleep(1000);
                 getController().gather();
+                Thread.sleep(1000);
+                getController().getDriver().third();
             }
 
             point.setState("reached");

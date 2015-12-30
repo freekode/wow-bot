@@ -44,14 +44,10 @@ public class Controller {
      * @param point distantion coordinates
      */
     public void moveTo(Vector3D point) throws InterruptedException {
-        while (true) {
-            // get the distance between character and destination
-            double distance = new BigDecimal(Vector3D.distance(getCoordinates(), point)).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
+        // get the distance between character and destination
+        double distance = new BigDecimal(Vector3D.distance(getCoordinates(), point)).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
+        while (distance > ConfigKeys.DISTANCE_TOLERANCE) {
             logger.info("distance = " + distance);
-            if (distance <= ConfigKeys.DISTANCE_TOLERANCE) {
-                return;
-            }
-
             azimuth(StaticFunc.getAzimuth(getCoordinates(), point));
 
             // we need to run less distance because azimuth angle has very poor results of correction
@@ -61,6 +57,7 @@ public class Controller {
             }
 
             run(distance);
+            distance = new BigDecimal(Vector3D.distance(getCoordinates(), point)).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
         }
     }
 
@@ -74,15 +71,12 @@ public class Controller {
             return;
         }
 
-        while (true) {
-            double currentAzimuth = getReceiver().getAzimuth();
-            if (Math.abs(currentAzimuth - rad) > ConfigKeys.AZIMUTH_TOLERANCE) {
-                double changeRad = currentAzimuth - rad;
+        double currentAzimuth = getReceiver().getAzimuth();
+        while ((Math.abs(currentAzimuth - rad) > ConfigKeys.AZIMUTH_TOLERANCE)) {
+            double changeRad = currentAzimuth - rad;
+            driver.mouseYaw(changeRad);
 
-                driver.mouseYaw(changeRad);
-            } else {
-                break;
-            }
+            currentAzimuth = getReceiver().getAzimuth();
         }
     }
 
@@ -92,14 +86,12 @@ public class Controller {
      * @param rad new pitch in radians
      */
     public void pitch(double rad) {
-        while (true) {
-            double currentPitch = getReceiver().getPitch();
-            if (Math.abs(currentPitch - rad) > ConfigKeys.PITCH_TOLERANCE) {
-                double changeRad = currentPitch - rad;
-                driver.mousePitch(changeRad);
-            } else {
-                break;
-            }
+        double currentPitch = getReceiver().getPitch();
+        while (Math.abs(currentPitch - rad) > ConfigKeys.PITCH_TOLERANCE) {
+            double changeRad = currentPitch - rad;
+            driver.mousePitch(changeRad);
+
+            currentPitch = getReceiver().getPitch();
         }
     }
 
@@ -154,10 +146,6 @@ public class Controller {
         pitch(ConfigKeys.STANDARD_PITCH);
 
         return found;
-    }
-
-    public void fpv() throws InterruptedException {
-        driver.fpv();
     }
 
     public Driver getDriver() {
