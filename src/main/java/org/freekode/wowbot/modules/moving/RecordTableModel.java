@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class RecordTableModel extends AbstractTableModel {
-    private String[] columnNames = {"State", "Date", "X", "Y"};
+    private String[] columnNames = {"State", "Date", "X", "Y", "Action"};
     private List<CharacterRecordModel> data = new LinkedList<>();
 
 

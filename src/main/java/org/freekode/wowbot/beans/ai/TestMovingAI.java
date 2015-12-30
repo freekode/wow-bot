@@ -10,15 +10,22 @@ public class TestMovingAI extends Intelligence<String> {
     }
 
     public void setAzimuth(Double value) throws InterruptedException {
+        StaticFunc.upWindow(ConfigKeys.WINDOW_CLASS, ConfigKeys.WINDOW_NAME);
         getController().azimuth(value);
     }
 
     public void setPitch(Double value) {
+        StaticFunc.upWindow(ConfigKeys.WINDOW_CLASS, ConfigKeys.WINDOW_NAME);
         getController().pitch(value);
     }
 
     public void run(Double value) throws InterruptedException {
         StaticFunc.upWindow(ConfigKeys.WINDOW_CLASS, ConfigKeys.WINDOW_NAME);
         getController().run(value);
+    }
+
+    public void gatherHerb() throws InterruptedException {
+        StaticFunc.upWindow(ConfigKeys.WINDOW_CLASS, ConfigKeys.WINDOW_NAME);
+        getController().gather();
     }
 }

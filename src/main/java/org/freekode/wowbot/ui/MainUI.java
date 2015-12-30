@@ -45,7 +45,7 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         frame.setSize(500, 600);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setLocation(50, 50);
+        frame.setLocation(0, 0);
 
         buildInterface(frame);
 

@@ -11,16 +11,18 @@ import java.awt.*;
 import java.util.Date;
 
 public class RecordingAI extends Intelligence<CharacterRecordModel> implements HotkeyListener {
-    public static final int HOT_KEY_IDENTIFIER = 100;
     private static final Logger logger = LogManager.getLogger(RecordingAI.class);
+    private static final int HOT_KEY_IDENTIFIER_MOVE = 100;
+    private static final int HOT_KEY_IDENTIFIER_GATHER = 101;
+
 
     @Override
     public Boolean processing() throws InterruptedException {
         logger.info("start recording");
         JIntellitype.getInstance();
-        JIntellitype.getInstance().registerSwingHotKey(HOT_KEY_IDENTIFIER, Event.CTRL_MASK + Event.ALT_MASK, (int) 'R');
+        JIntellitype.getInstance().registerSwingHotKey(HOT_KEY_IDENTIFIER_MOVE, Event.CTRL_MASK + Event.ALT_MASK, (int) '1');
+        JIntellitype.getInstance().registerSwingHotKey(HOT_KEY_IDENTIFIER_GATHER, Event.CTRL_MASK + Event.ALT_MASK, (int) '2');
         JIntellitype.getInstance().addHotKeyListener(this);
-
 
 
         return true;
@@ -29,22 +31,36 @@ public class RecordingAI extends Intelligence<CharacterRecordModel> implements H
     @Override
     public void terminating() {
         logger.info("stop recording");
-        JIntellitype.getInstance().unregisterHotKey(HOT_KEY_IDENTIFIER);
+        JIntellitype.getInstance().unregisterHotKey(HOT_KEY_IDENTIFIER_MOVE);
+        JIntellitype.getInstance().unregisterHotKey(HOT_KEY_IDENTIFIER_GATHER);
         JIntellitype.getInstance().removeHotKeyListener(this);
     }
 
     @Override
     public void onHotKey(int i) {
-        if (i == HOT_KEY_IDENTIFIER) {
-            addRecord();
+        if (i == HOT_KEY_IDENTIFIER_MOVE) {
+            addMoveRecord();
+        } else if (i == HOT_KEY_IDENTIFIER_GATHER) {
+            addGatherRecord();
         }
     }
 
-    public void addRecord() {
+    public void addMoveRecord() {
         Double x = getController().getReceiver().getX();
         Double y = getController().getReceiver().getY();
 
-        CharacterRecordModel record = new CharacterRecordModel(new Date(), new Vector3D(x, y, 0));
+        CharacterRecordModel record = new CharacterRecordModel(
+                new Date(), new Vector3D(x, y, 0), CharacterRecordModel.Action.MOVE);
+
+        send(record);
+    }
+
+    public void addGatherRecord() {
+        Double x = getController().getReceiver().getX();
+        Double y = getController().getReceiver().getY();
+
+        CharacterRecordModel record = new CharacterRecordModel(
+                new Date(), new Vector3D(x, y, 0), CharacterRecordModel.Action.GATHER);
 
         send(record);
     }

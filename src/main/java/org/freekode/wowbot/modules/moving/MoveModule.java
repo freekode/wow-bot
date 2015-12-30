@@ -3,6 +3,7 @@ package org.freekode.wowbot.modules.moving;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.freekode.wowbot.beans.ai.GatherAI;
 import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.beans.ai.MovingAI;
 import org.freekode.wowbot.beans.ai.RecordingAI;
@@ -42,6 +43,8 @@ public class MoveModule extends Module implements ActionListener {
             buildRecordUI();
         } else if (currentType == ModuleType.MOVE) {
             buildMoveUI();
+        } else if (currentType == ModuleType.GATHER) {
+            buildGatherUI();
         }
 
     }
@@ -59,6 +62,13 @@ public class MoveModule extends Module implements ActionListener {
         }
 
         ai = new MovingAI(points);
+        ai.addPropertyChangeListener(this);
+    }
+
+    public void buildGatherUI() {
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
+
+        ai = new GatherAI(model.getData());
         ai.addPropertyChangeListener(this);
     }
 
@@ -88,9 +98,18 @@ public class MoveModule extends Module implements ActionListener {
         c.gridy = 0;
         panel.add(moveRadio, c);
 
+        JRadioButton gatherRadio = new JRadioButton("Gather");
+        gatherRadio.addActionListener(this);
+        gatherRadio.setActionCommand("gatherAI");
+        c.anchor = GridBagConstraints.LINE_START;
+        c.gridx = 2;
+        c.gridy = 0;
+        panel.add(gatherRadio, c);
+
         ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(recordRadio);
         buttonGroup.add(moveRadio);
+        buttonGroup.add(gatherRadio);
 
 
         recordsTable = new JTable(new RecordTableModel());
@@ -193,6 +212,8 @@ public class MoveModule extends Module implements ActionListener {
             recordAi();
         } else if ("moveAI".equals(e.getActionCommand())) {
             moveAi();
+        } else if ("gatherAI".equals(e.getActionCommand())) {
+            gatherAi();
         }
     }
 
@@ -257,6 +278,11 @@ public class MoveModule extends Module implements ActionListener {
         buildAI();
     }
 
+    public void gatherAi() {
+        currentType = ModuleType.GATHER;
+        buildAI();
+    }
+
     @Override
     public Component getUI() {
         return ui;
@@ -274,6 +300,7 @@ public class MoveModule extends Module implements ActionListener {
 
     public enum ModuleType {
         RECORD,
-        MOVE
+        MOVE,
+        GATHER
     }
 }

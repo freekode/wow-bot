@@ -33,7 +33,7 @@ public class Controller {
     }
 
     public void init() throws InterruptedException {
-        getDriver().pitchInit();
+        driver.pitchInit();
         pitch(ConfigKeys.STANDARD_PITCH);
     }
 
@@ -79,7 +79,7 @@ public class Controller {
             if (Math.abs(currentAzimuth - rad) > ConfigKeys.AZIMUTH_TOLERANCE) {
                 double changeRad = currentAzimuth - rad;
 
-                getDriver().mouseYaw(changeRad);
+                driver.mouseYaw(changeRad);
             } else {
                 break;
             }
@@ -96,13 +96,19 @@ public class Controller {
             double currentPitch = getReceiver().getPitch();
             if (Math.abs(currentPitch - rad) > ConfigKeys.PITCH_TOLERANCE) {
                 double changeRad = currentPitch - rad;
-                getDriver().mousePitch(changeRad);
+                driver.mousePitch(changeRad);
             } else {
                 break;
             }
         }
     }
 
+    /**
+     * run exact distance
+     *
+     * @param distance distance
+     * @throws InterruptedException
+     */
     public void run(double distance) throws InterruptedException {
         double leftDistance = distance;
         Vector3D currentLocation = getCoordinates();
@@ -113,22 +119,45 @@ public class Controller {
             logger.info("left distance = " + leftDistance);
 
 
-
             if (leftDistance < 0) {
                 return;
             }
 
             if (leftDistance > 0.75) {
-                getDriver().run(0.75);
+                driver.run(0.75);
             } else {
-                getDriver().run(leftDistance);
+                driver.run(leftDistance);
             }
             Thread.sleep(50);
         }
     }
 
+    public boolean gather() throws InterruptedException {
+        driver.mouseForGather();
+        pitch(ConfigKeys.GATHER_PITCH);
+
+        Boolean found = false;
+        for (int i = 0; i < 20; i++) {
+            if (receiver.isHerb() || receiver.isOre()) {
+                found = true;
+                break;
+            }
+
+            driver.keyRotateLeft(0.3);
+        }
+
+        if (found) {
+            driver.gather();
+            Thread.sleep(3000);
+        }
+
+        pitch(ConfigKeys.STANDARD_PITCH);
+
+        return found;
+    }
+
     public void fpv() throws InterruptedException {
-        getDriver().fpv();
+        driver.fpv();
     }
 
     public Driver getDriver() {

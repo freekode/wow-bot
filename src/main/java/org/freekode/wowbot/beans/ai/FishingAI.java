@@ -165,13 +165,7 @@ public class FishingAI extends Intelligence<FishingRecordModel> {
 
     public void loot(int x, int y) throws InterruptedException {
         getController().getDriver().mouse(x, y);
-        getController().getDriver().getRobot().keyPress(KeyEvent.VK_SHIFT);
-        Thread.sleep(300);
-        getController().getDriver().getRobot().mousePress(InputEvent.BUTTON1_DOWN_MASK);
-        Thread.sleep(300);
-        getController().getDriver().getRobot().mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-        getController().getDriver().getRobot().keyRelease(KeyEvent.VK_SHIFT);
-        Thread.sleep(500);
+        getController().getDriver().gather();
     }
 
     public void mouseOut() throws InterruptedException {

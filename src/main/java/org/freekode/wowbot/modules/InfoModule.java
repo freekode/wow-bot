@@ -14,10 +14,10 @@ public class InfoModule extends Module {
     private JLabel yLabel = new JLabel("0");
     private JLabel azimuthLabel = new JLabel("0");
     private JLabel pitchLabel = new JLabel("0");
-    private JLabel isInCombatLabel = new JLabel("false");
-    private JLabel isHerbLabel = new JLabel("false");
-    private JLabel isOreLabel = new JLabel("false");
-    private JLabel bagUpdateLabel = new JLabel("false");
+    private JCheckBox isInCombatLabel = new JCheckBox();
+    private JCheckBox isHerbLabel = new JCheckBox();
+    private JCheckBox isOreLabel = new JCheckBox();
+    private JCheckBox bagUpdateLabel = new JCheckBox();
 
 
     public InfoModule() {
@@ -117,6 +117,7 @@ public class InfoModule extends Module {
         c.gridy = 0;
         panel.add(new JLabel("In combat"), c);
 
+        isInCombatLabel.setEnabled(false);
         c.anchor = GridBagConstraints.LINE_END;
         c.insets = new Insets(0, 0, 5, 0);
         c.gridx = 1;
@@ -130,6 +131,7 @@ public class InfoModule extends Module {
         c.gridy = 1;
         panel.add(new JLabel("Herb"), c);
 
+        isHerbLabel.setEnabled(false);
         c.anchor = GridBagConstraints.LINE_END;
         c.insets = new Insets(0, 0, 5, 0);
         c.gridx = 1;
@@ -143,6 +145,7 @@ public class InfoModule extends Module {
         c.gridy = 2;
         panel.add(new JLabel("Ore"), c);
 
+        isOreLabel.setEnabled(false);
         c.anchor = GridBagConstraints.LINE_END;
         c.insets = new Insets(0, 0, 5, 0);
         c.gridx = 1;
@@ -156,6 +159,7 @@ public class InfoModule extends Module {
         c.gridy = 3;
         panel.add(new JLabel("Bag update"), c);
 
+        bagUpdateLabel.setEnabled(false);
         c.anchor = GridBagConstraints.LINE_END;
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 1;
@@ -198,9 +202,9 @@ public class InfoModule extends Module {
         azimuthLabel.setText(update.getAzimuth().toString());
         pitchLabel.setText(update.getPitch().toString());
 
-        isInCombatLabel.setText(update.getInCombat().toString());
-        isHerbLabel.setText(update.getHerb().toString());
-        isOreLabel.setText(update.getOre().toString());
-        bagUpdateLabel.setText(update.getBagUpdate().toString());
+        isInCombatLabel.setSelected(update.getInCombat());
+        isHerbLabel.setSelected(update.getHerb());
+        isOreLabel.setSelected(update.getOre());
+        bagUpdateLabel.setSelected(update.getBagUpdate());
     }
 }

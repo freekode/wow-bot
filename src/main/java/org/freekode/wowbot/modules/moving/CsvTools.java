@@ -16,14 +16,15 @@ public class CsvTools {
         for (CharacterRecordModel record : records) {
             out.append(record.getDate().getTime()).append(";")
                     .append(record.getCoordinates().getX()).append(";")
-                    .append(record.getCoordinates().getY()).append("\n");
+                    .append(record.getCoordinates().getY()).append(";")
+                    .append(record.getAction()).append("\n");
         }
 
         return out.toString();
     }
 
     public static List<CharacterRecordModel> parseCsvFile(File file) {
-        Pattern pattern = Pattern.compile("([\\d\\.]*);([\\d\\.]*);([\\d\\.]*)");
+        Pattern pattern = Pattern.compile("([\\d\\.]*);([\\d\\.]*);([\\d\\.]*);(.*)");
         List<CharacterRecordModel> records = new LinkedList<>();
 
         try {
@@ -38,8 +39,9 @@ public class CsvTools {
                     Date date = new Date(new Long(matcher.group(1)));
                     Double x = new Double(matcher.group(2));
                     Double y = new Double(matcher.group(3));
+                    CharacterRecordModel.Action action = CharacterRecordModel.Action.valueOf(matcher.group(4));
 
-                    records.add(new CharacterRecordModel(date, new Vector3D(x, y, 0)));
+                    records.add(new CharacterRecordModel(date, new Vector3D(x, y, 0), action));
                 }
             }
 

@@ -47,12 +47,29 @@ public class Driver {
         mouse(centerX, centerY);
     }
 
+    public void mouseForGather() {
+        int centerX = (int) (window.getX() + window.getWidth() / 2);
+        int centerY = (int) (window.getY() + window.getHeight() / 2) - 11;
+        centerY = centerY + centerY / 2;
+        mouse(centerX, centerY);
+    }
+
+    public void gather() throws InterruptedException {
+        robot.keyPress(KeyEvent.VK_SHIFT);
+        Thread.sleep(300);
+        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+        Thread.sleep(300);
+        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        robot.keyRelease(KeyEvent.VK_SHIFT);
+        Thread.sleep(500);
+    }
+
     public void mouse(int x, int y) {
         robot.mouseMove(x, y);
     }
 
     public void run(double distance) throws InterruptedException {
-        int runMs = (int) (distance / 0.001 * ConfigKeys.RUN_POINT_ONE);
+        int runMs = (int) (distance / 0.001 * ConfigKeys.RUN_DOUBLE_O_ONE);
         robot.keyPress(KeyEvent.VK_W);
         Thread.sleep(runMs);
         robot.keyRelease(KeyEvent.VK_W);
@@ -86,7 +103,7 @@ public class Driver {
         robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
         robot.mouseMove(mousePoint.x + interval, mousePoint.y);
         robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
-        Thread.sleep(5);
+        Thread.sleep(20);
     }
 
     public void pitchInit() {

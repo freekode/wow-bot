@@ -10,10 +10,17 @@ public class CharacterRecordModel {
     private String state = "";
     private Date date;
     private Vector3D coordinates;
+    private Action action;
 
-    public CharacterRecordModel(Date date, Vector3D coordinates) {
+
+    public CharacterRecordModel(Vector3D coordinates) {
+        this.coordinates = coordinates;
+    }
+
+    public CharacterRecordModel(Date date, Vector3D coordinates, Action action) {
         this.date = date;
         this.coordinates = coordinates;
+        this.action = action;
     }
 
     public Date getDate() {
@@ -32,12 +39,17 @@ public class CharacterRecordModel {
         this.state = state;
     }
 
+    public Action getAction() {
+        return action;
+    }
+
     public List<Object> toList() {
         List<Object> list = new LinkedList<>();
         list.add(state);
         list.add(date);
         list.add(coordinates.getX());
         list.add(coordinates.getY());
+        list.add(action);
 
         return list;
     }
@@ -56,5 +68,10 @@ public class CharacterRecordModel {
     @Override
     public int hashCode() {
         return coordinates.hashCode();
+    }
+
+    public enum Action {
+        MOVE,
+        GATHER
     }
 }

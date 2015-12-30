@@ -19,9 +19,7 @@ public class MovingAI extends Intelligence<CharacterRecordModel> {
     @Override
     public Boolean processing() throws InterruptedException {
         for (Vector3D point : points) {
-
-
-            CharacterRecordModel record = new CharacterRecordModel(null, point);
+            CharacterRecordModel record = new CharacterRecordModel(point);
             record.setState("started");
             send(record);
 

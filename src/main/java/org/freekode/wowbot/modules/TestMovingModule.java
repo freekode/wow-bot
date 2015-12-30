@@ -114,6 +114,16 @@ public class TestMovingModule extends Module implements ActionListener {
         c.gridy = 2;
         panel.add(runButton, c);
 
+        JButton gatherHerbButton = new JButton("Gather Herb");
+        gatherHerbButton.setActionCommand("gather");
+        gatherHerbButton.addActionListener(this);
+        c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(0, 0, 5, 0);
+        c.gridx = 0;
+        c.gridy = 3;
+        c.gridwidth = 2;
+        panel.add(gatherHerbButton, c);
+
 
         return panel;
     }
@@ -126,6 +136,8 @@ public class TestMovingModule extends Module implements ActionListener {
             setPitch();
         } else if ("run".equals(e.getActionCommand())) {
             run();
+        } else if ("gather".equals(e.getActionCommand())) {
+            gatherHerb();
         }
     }
 
@@ -164,6 +176,16 @@ public class TestMovingModule extends Module implements ActionListener {
 
         Vector3D newLocation = ai.getController().getCoordinates();
         logger.info("real distance = " + Vector3D.distance(currentLocation, newLocation));
+    }
+
+    public void gatherHerb() {
+        logger.info("gather herb");
+
+        try {
+            ai.gatherHerb();
+        } catch (InterruptedException e) {
+            logger.info("gather herb", e);
+        }
     }
 
     @Override
