@@ -178,6 +178,8 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     }
 
     public void startThread() {
+        currentModule.buildAI();
+        infoModule.buildAI();
         Intelligence ai = currentModule.getAI();
         Intelligence infoAi = infoModule.getAI();
 
@@ -207,9 +209,6 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
 
 //        setEnableComponents(cards, true);
         aiSelect.setEnabled(true);
-
-        currentModule.buildAI();
-        infoModule.buildAI();
     }
 
     public void setEnableComponents(Container container, boolean enable) {

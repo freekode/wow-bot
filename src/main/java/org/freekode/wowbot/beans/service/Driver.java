@@ -48,10 +48,10 @@ public class Driver {
     }
 
     public void mouseForGather() {
-        int centerX = (int) (window.getX() + window.getWidth() / 2);
-        int centerY = (int) (window.getY() + window.getHeight() / 2) - 11;
-        centerY = centerY + centerY / 2;
-        mouse(centerX, centerY);
+        int x = (int) (window.getX() + window.getWidth() / 2);
+        int y = (int) (window.getY() + window.getHeight() / 2) - 11;
+        y = y + y / 2;
+        mouse(x, y);
     }
 
     public void gather() throws InterruptedException {
@@ -94,7 +94,7 @@ public class Driver {
      *
      * @param rad difference of angle
      */
-    public void mouseYaw(double rad) throws InterruptedException {
+    public void mouseYaw(double rad) {
         int interval = ((int) (rad / 0.005)) * ConfigKeys.MOUSE_YAW_DOUBLE_O_ONE;
 
         centerMouse();
@@ -103,7 +103,6 @@ public class Driver {
         robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
         robot.mouseMove(mousePoint.x + interval, mousePoint.y);
         robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
-        Thread.sleep(20);
     }
 
     public void pitchInit() {

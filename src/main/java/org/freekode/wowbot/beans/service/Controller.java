@@ -7,6 +7,7 @@ import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.StaticFunc;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 
 public class Controller {
@@ -47,6 +48,10 @@ public class Controller {
         // get the distance between character and destination
         double distance = new BigDecimal(Vector3D.distance(getCoordinates(), point)).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
         while (distance > ConfigKeys.DISTANCE_TOLERANCE) {
+            if (receiver.isInCombat()) {
+                fight();
+            }
+
             logger.info("distance = " + distance);
             azimuth(StaticFunc.getAzimuth(getCoordinates(), point));
 
@@ -75,6 +80,7 @@ public class Controller {
         while ((Math.abs(currentAzimuth - rad) > ConfigKeys.AZIMUTH_TOLERANCE)) {
             double changeRad = currentAzimuth - rad;
             driver.mouseYaw(changeRad);
+            Thread.sleep(100);
 
             currentAzimuth = getReceiver().getAzimuth();
         }
@@ -125,8 +131,8 @@ public class Controller {
     }
 
     public boolean gather() throws InterruptedException {
-        driver.mouseForGather();
         pitch(ConfigKeys.GATHER_PITCH);
+        driver.mouseForGather();
 
         Boolean found = false;
         for (int i = 0; i < 20; i++) {
@@ -146,6 +152,25 @@ public class Controller {
         pitch(ConfigKeys.STANDARD_PITCH);
 
         return found;
+    }
+
+    /**
+     * try to fight as hard as you can
+     *
+     * @throws InterruptedException
+     */
+    public void fight() throws InterruptedException {
+        logger.info("fight!");
+        while (receiver.isInCombat()) {
+            driver.keyRotateLeft(0.3);
+
+            driver.getRobot().keyPress(KeyEvent.VK_1);
+            driver.getRobot().keyRelease(KeyEvent.VK_1);
+
+            Thread.sleep(2000);
+        }
+
+        logger.info("k.o.");
     }
 
     public Driver getDriver() {
