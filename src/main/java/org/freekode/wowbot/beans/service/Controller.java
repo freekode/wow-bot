@@ -150,6 +150,7 @@ public class Controller {
         }
 
         pitch(ConfigKeys.STANDARD_PITCH);
+        driver.centerMouse();
 
         return found;
     }
