@@ -104,24 +104,26 @@ public class Controller {
     }
 
     public void run(double distance) throws InterruptedException {
-        double originDistance = distance;
+        double leftDistance = distance;
         Vector3D currentLocation = getCoordinates();
 
-        while (true) {
-            if (distance <= ConfigKeys.DISTANCE_TOLERANCE) {
-                return;
-            }
-
+        while (leftDistance > ConfigKeys.DISTANCE_TOLERANCE) {
             double alreadyRun = Vector3D.distance(currentLocation, getCoordinates());
-            distance = originDistance - alreadyRun;
-            if (distance > 1) {
-                distance -= 1;
-            }
-            if (distance < 0) {
+            leftDistance = distance - alreadyRun;
+            logger.info("left distance = " + leftDistance);
+
+
+
+            if (leftDistance < 0) {
                 return;
             }
 
-            getDriver().run(distance);
+            if (leftDistance > 0.75) {
+                getDriver().run(0.75);
+            } else {
+                getDriver().run(leftDistance);
+            }
+            Thread.sleep(50);
         }
     }
 

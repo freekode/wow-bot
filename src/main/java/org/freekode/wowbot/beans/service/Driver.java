@@ -52,7 +52,7 @@ public class Driver {
     }
 
     public void run(double distance) throws InterruptedException {
-        int runMs = (int) (distance / 0.1 * ConfigKeys.RUN_POINT_ONE);
+        int runMs = (int) (distance / 0.001 * ConfigKeys.RUN_POINT_ONE);
         robot.keyPress(KeyEvent.VK_W);
         Thread.sleep(runMs);
         robot.keyRelease(KeyEvent.VK_W);

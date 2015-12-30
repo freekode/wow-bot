@@ -7,12 +7,12 @@ public class ConfigKeys {
     public static final int ADDON_COLUMNS = 4;
     public static final int ADDON_ROWS = 4;
 
-    public static final int RECEIVER_UPDATE_INTERVAL_MS = 100;
+    public static final int RECEIVER_UPDATE_INTERVAL_MS = 10;
 
     /**
-     * how many ms need to run approximately 0.1 distance
+     * how many ms need to run approximately 0.001 distance
      */
-    public static final int RUN_POINT_ONE = 357;
+    public static final int RUN_POINT_ONE = 3;
     /**
      * how many ms need to change yaw using keyboard
      */
@@ -29,7 +29,7 @@ public class ConfigKeys {
     public static final double STANDARD_PITCH = -0.25;
     public static final double PITCH_TOLERANCE = 0.02;
     public static final double AZIMUTH_TOLERANCE = 0.005;
-    public static final double DISTANCE_TOLERANCE = 0.05;
+    public static final double DISTANCE_TOLERANCE = 0.005;
 
     public static final String WINDOW_CLASS = "GxWindowClass";
     public static final String WINDOW_NAME = "World of Warcraft";
