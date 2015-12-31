@@ -69,6 +69,11 @@ public class Driver {
         mouse(x, y);
     }
 
+    /**
+     * gather herb, ore or fish
+     *
+     * @throws InterruptedException
+     */
     public void gather() throws InterruptedException {
         robot.keyPress(KeyEvent.VK_SHIFT);
         Thread.sleep(300);
@@ -91,14 +96,16 @@ public class Driver {
     }
 
     public void keyRotateRight(double rad) throws InterruptedException {
-        long runMs = ((long) (rad / 0.01)) * ConfigKeys.KEY_YAW_DOUBLE_O_ONE;
+        long runMs = ((long) (rad / 0.1)) * ConfigKeys.KEY_YAW_DOUBLE_O_ONE;
+
         robot.keyPress(KeyEvent.VK_D);
         Thread.sleep(runMs);
         robot.keyRelease(KeyEvent.VK_D);
     }
 
     public void keyRotateLeft(double rad) throws InterruptedException {
-        long runMs = ((long) (rad / 0.01)) * ConfigKeys.KEY_YAW_DOUBLE_O_ONE;
+        long runMs = ((long) (rad / 0.1)) * ConfigKeys.KEY_YAW_DOUBLE_O_ONE;
+
         robot.keyPress(KeyEvent.VK_A);
         Thread.sleep(runMs);
         robot.keyRelease(KeyEvent.VK_A);
@@ -152,7 +159,7 @@ public class Driver {
         robot.keyPress(KeyEvent.VK_HOME);
         robot.keyRelease(KeyEvent.VK_HOME);
 
-        Thread.sleep(2000);
+        Thread.sleep(3000);
     }
 
     public void third() throws InterruptedException {
@@ -165,7 +172,7 @@ public class Driver {
         robot.keyPress(KeyEvent.VK_END);
         robot.keyRelease(KeyEvent.VK_END);
 
-        Thread.sleep(2000);
+        Thread.sleep(3000);
     }
 
     public void pressKey(int keyCode) {

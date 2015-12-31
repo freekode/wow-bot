@@ -59,10 +59,19 @@ public class TestMovingModule extends Module implements ActionListener {
         setAzimuthButton.setActionCommand("setAzimuth");
         setAzimuthButton.addActionListener(this);
         c.anchor = GridBagConstraints.LINE_END;
-        c.insets = new Insets(0, 0, 5, 0);
+        c.insets = new Insets(0, 0, 5, 5);
         c.gridx = 2;
         c.gridy = 0;
         panel.add(setAzimuthButton, c);
+
+        JButton setAzimuthByKeyButton = new JButton("Set by key");
+        setAzimuthByKeyButton.setActionCommand("setAzimuthByKey");
+        setAzimuthByKeyButton.addActionListener(this);
+        c.anchor = GridBagConstraints.LINE_END;
+        c.insets = new Insets(0, 0, 5, 0);
+        c.gridx = 3;
+        c.gridy = 0;
+        panel.add(setAzimuthByKeyButton, c);
 
 
         JLabel pitchLabel = new JLabel("Pitch");
@@ -132,12 +141,16 @@ public class TestMovingModule extends Module implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if ("setAzimuth".equals(e.getActionCommand())) {
             setAzimuth();
+        } else if ("setAzimuthByKey".equals(e.getActionCommand())) {
+            setAzimuthByKey();
         } else if ("setPitch".equals(e.getActionCommand())) {
             setPitch();
         } else if ("run".equals(e.getActionCommand())) {
             run();
         } else if ("gather".equals(e.getActionCommand())) {
             gatherHerb();
+        } else {
+            logger.info("unknown action command = " + e.getActionCommand());
         }
     }
 
@@ -147,6 +160,19 @@ public class TestMovingModule extends Module implements ActionListener {
 
         try {
             ai.setAzimuth(newAzimuth);
+        } catch (InterruptedException e) {
+            logger.info("azimuth test exception", e);
+        }
+
+        logger.info("current azimuth = " + ai.getController().getReceiver().getAzimuth());
+    }
+
+    public void setAzimuthByKey() {
+        Double newAzimuth = new Double(azimuthField.getText());
+        logger.info("new azimuth = " + newAzimuth);
+
+        try {
+            ai.setAzimuthByKey(newAzimuth);
         } catch (InterruptedException e) {
             logger.info("azimuth test exception", e);
         }

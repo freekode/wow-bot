@@ -18,6 +18,8 @@ public class InfoModule extends Module {
     private JCheckBox isHerbLabel = new JCheckBox();
     private JCheckBox isOreLabel = new JCheckBox();
     private JCheckBox bagUpdateLabel = new JCheckBox();
+    private JCheckBox hasTargetLabel = new JCheckBox();
+    private JCheckBox inActionRangeLabel = new JCheckBox();
 
 
     public InfoModule() {
@@ -33,22 +35,28 @@ public class InfoModule extends Module {
 
 
         c.anchor = GridBagConstraints.LINE_START;
-        c.insets = new Insets(0, 0, 0, 30);
+        c.insets = new Insets(0, 0, 0, 20);
         c.gridx = 0;
         c.gridy = 0;
-        panel.add(addLeftPart(), c);
+        panel.add(addFirstPart(), c);
 
-        c.anchor = GridBagConstraints.LINE_END;
-        c.insets = new Insets(0, 0, 0, 0);
+        c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(0, 0, 0, 20);
         c.gridx = 1;
         c.gridy = 0;
-        panel.add(addRightPart(), c);
+        panel.add(addSecondPart(), c);
+
+        c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(0, 0, 0, 20);
+        c.gridx = 2;
+        c.gridy = 0;
+        panel.add(addThirdPart(), c);
 
 
         return panel;
     }
 
-    public JPanel addLeftPart() {
+    public JPanel addFirstPart() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -107,12 +115,12 @@ public class InfoModule extends Module {
         return panel;
     }
 
-    public JPanel addRightPart() {
+    public JPanel addSecondPart() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
         c.anchor = GridBagConstraints.LINE_START;
-        c.insets = new Insets(0, 0, 5, 20);
+        c.insets = new Insets(0, 0, 5, 10);
         c.gridx = 0;
         c.gridy = 0;
         panel.add(new JLabel("In combat"), c);
@@ -126,7 +134,7 @@ public class InfoModule extends Module {
 
 
         c.anchor = GridBagConstraints.LINE_START;
-        c.insets = new Insets(0, 0, 5, 20);
+        c.insets = new Insets(0, 0, 5, 10);
         c.gridx = 0;
         c.gridy = 1;
         panel.add(new JLabel("Herb"), c);
@@ -140,7 +148,7 @@ public class InfoModule extends Module {
 
 
         c.anchor = GridBagConstraints.LINE_START;
-        c.insets = new Insets(0, 0, 5, 20);
+        c.insets = new Insets(0, 0, 5, 10);
         c.gridx = 0;
         c.gridy = 2;
         panel.add(new JLabel("Ore"), c);
@@ -154,7 +162,7 @@ public class InfoModule extends Module {
 
 
         c.anchor = GridBagConstraints.LINE_START;
-        c.insets = new Insets(0, 0, 0, 20);
+        c.insets = new Insets(0, 0, 0, 10);
         c.gridx = 0;
         c.gridy = 3;
         panel.add(new JLabel("Bag update"), c);
@@ -165,6 +173,42 @@ public class InfoModule extends Module {
         c.gridx = 1;
         c.gridy = 3;
         panel.add(bagUpdateLabel, c);
+
+
+        return panel;
+    }
+
+    public JPanel addThirdPart() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+
+        c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(0, 0, 0, 10);
+        c.gridx = 0;
+        c.gridy = 0;
+        panel.add(new JLabel("Has target"), c);
+
+        hasTargetLabel.setEnabled(false);
+        c.anchor = GridBagConstraints.LINE_END;
+        c.insets = new Insets(0, 0, 0, 0);
+        c.gridx = 1;
+        c.gridy = 0;
+        panel.add(hasTargetLabel, c);
+
+
+        c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(0, 0, 0, 10);
+        c.gridx = 0;
+        c.gridy = 1;
+        panel.add(new JLabel("In range"), c);
+
+        inActionRangeLabel.setEnabled(false);
+        c.anchor = GridBagConstraints.LINE_END;
+        c.insets = new Insets(0, 0, 0, 0);
+        c.gridx = 1;
+        c.gridy = 1;
+        panel.add(inActionRangeLabel, c);
 
 
         return panel;
@@ -206,5 +250,7 @@ public class InfoModule extends Module {
         isHerbLabel.setSelected(update.getHerb());
         isOreLabel.setSelected(update.getOre());
         bagUpdateLabel.setSelected(update.getBagUpdate());
+        hasTargetLabel.setSelected(update.getHasTarget());
+        inActionRangeLabel.setSelected(update.getInRange());
     }
 }

@@ -12,8 +12,10 @@ public class InfoAI extends Intelligence<InfoAI.InfoUpdate> {
             Boolean ore = getController().getReceiver().isOre();
             Boolean herb = getController().getReceiver().isHerb();
             Boolean bagUpdate = getController().getReceiver().bagUpdated();
+            Boolean hasTarget = getController().getReceiver().hasTarget();
+            Boolean inActionRange = getController().getReceiver().isInActionRange();
 
-            send(new InfoUpdate(x, y, azimuth, pitch, inCombat, ore, herb, bagUpdate));
+            send(new InfoUpdate(x, y, azimuth, pitch, inCombat, ore, herb, bagUpdate, hasTarget, inActionRange));
 
             Thread.sleep(200);
         }
@@ -28,10 +30,12 @@ public class InfoAI extends Intelligence<InfoAI.InfoUpdate> {
         private Boolean ore;
         private Boolean herb;
         private Boolean bagUpdate;
+        private Boolean hasTarget;
+        private Boolean inRange;
 
 
         public InfoUpdate(Double x, Double y, Double azimuth, Double pitch, Boolean inCombat, Boolean ore,
-                          Boolean herb, Boolean bagUpdate) {
+                          Boolean herb, Boolean bagUpdate, Boolean hasTarget, Boolean inRange) {
             this.x = x;
             this.y = y;
             this.azimuth = azimuth;
@@ -40,6 +44,8 @@ public class InfoAI extends Intelligence<InfoAI.InfoUpdate> {
             this.ore = ore;
             this.herb = herb;
             this.bagUpdate = bagUpdate;
+            this.hasTarget = hasTarget;
+            this.inRange = inRange;
         }
 
         public Double getX() {
@@ -72,6 +78,14 @@ public class InfoAI extends Intelligence<InfoAI.InfoUpdate> {
 
         public Boolean getBagUpdate() {
             return bagUpdate;
+        }
+
+        public Boolean getHasTarget() {
+            return hasTarget;
+        }
+
+        public Boolean getInRange() {
+            return inRange;
         }
     }
 }

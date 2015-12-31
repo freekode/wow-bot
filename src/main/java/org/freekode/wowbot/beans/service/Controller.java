@@ -52,8 +52,8 @@ public class Controller {
                 fight();
             }
 
-            logger.info("distance = " + distance);
-            azimuth(StaticFunc.getAzimuth(getCoordinates(), point));
+//            azimuth(StaticFunc.getAzimuth(getCoordinates(), point));
+            azimuthByKey(StaticFunc.getAzimuth(getCoordinates(), point));
 
             // we need to run less distance because azimuth angle has very poor results of correction
             // so we run some meters, stop correct azimuth more precisely and run what left
@@ -88,6 +88,36 @@ public class Controller {
         }
     }
 
+    public void azimuthByKey(double rad) throws InterruptedException {
+        if (rad >= (Math.PI * 2)) {
+            return;
+        }
+
+        double currentAzimuth = getReceiver().getAzimuth();
+        while ((Math.abs(currentAzimuth - rad) > ConfigKeys.AZIMUTH_KEY_TOLERANCE)) {
+            double changeRad = currentAzimuth - rad;
+
+            if (changeRad < 0) {
+                changeRad = changeRad * -1;
+
+                if (changeRad > Math.PI) {
+                    driver.keyRotateRight(changeRad - Math.PI);
+                } else {
+                    driver.keyRotateLeft(changeRad);
+                }
+            } else {
+                if (changeRad > Math.PI) {
+                    driver.keyRotateLeft(changeRad - Math.PI);
+                } else {
+                    driver.keyRotateRight(changeRad);
+                }
+            }
+
+            Thread.sleep(100);
+            currentAzimuth = getReceiver().getAzimuth();
+        }
+    }
+
     /**
      * set new pitch
      *
@@ -116,8 +146,6 @@ public class Controller {
         while (leftDistance > ConfigKeys.DISTANCE_TOLERANCE) {
             double alreadyRun = Vector3D.distance(currentLocation, getCoordinates());
             leftDistance = distance - alreadyRun;
-            logger.info("left distance = " + leftDistance);
-
 
             if (leftDistance < 0) {
                 return;
@@ -133,31 +161,48 @@ public class Controller {
     }
 
     public boolean gather() throws InterruptedException {
+        // first person view, to see clearly
+        driver.fpv();
         pitch(ConfigKeys.GATHER_PITCH);
 
+        // rotate the character and "scan" by mouse where is herb
         Boolean found = false;
-
         outer:
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 50; i++) {
+            // remove focus if we have
             cleanTarget();
 
+            // if someone attack us, all gathering will interrupted
+            // so fight, and gather again with beginning
+            if (receiver.isInCombat()) {
+                fight();
+                i = 0;
+            }
+
+            // scan where is herb, there is a bug
+            // sometimes mouse not stopping where he found the herb
+            // it just make one step again, it is problem of later detection
             for (int j = 0; j < 5; j++) {
                 driver.mouseForGather(j);
+                Thread.sleep(10);
                 if (receiver.isHerb() || receiver.isOre()) {
                     found = true;
                     break outer;
                 }
             }
 
-            driver.keyRotateLeft(0.2);
+            // rotate the character
+            driver.keyRotateLeft(0.25);
         }
 
+        // if found gather
         if (found) {
             driver.gather();
             Thread.sleep(3000);
         }
 
         pitch(ConfigKeys.STANDARD_PITCH);
+        driver.third();
         driver.centerMouse();
 
         return found;
@@ -171,14 +216,17 @@ public class Controller {
     public void fight() throws InterruptedException {
         logger.info("fight!");
 
-        cleanTarget();
         while (receiver.isInCombat()) {
-            driver.keyRotateLeft(0.3);
+            if (!receiver.isInActionRange()) {
+                cleanTarget();
+            }
 
             driver.getRobot().keyPress(KeyEvent.VK_1);
             driver.getRobot().keyRelease(KeyEvent.VK_1);
 
-            Thread.sleep(500);
+            driver.keyRotateLeft(0.3);
+
+            Thread.sleep(700);
         }
 
         cleanTarget();
@@ -188,6 +236,7 @@ public class Controller {
     public void cleanTarget() {
         if (receiver.hasTarget()) {
             driver.getRobot().keyPress(KeyEvent.VK_ESCAPE);
+            driver.getRobot().keyRelease(KeyEvent.VK_ESCAPE);
         }
     }
 

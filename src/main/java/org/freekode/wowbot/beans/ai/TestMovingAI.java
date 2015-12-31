@@ -14,6 +14,11 @@ public class TestMovingAI extends Intelligence<String> {
         getController().azimuth(value);
     }
 
+    public void setAzimuthByKey(Double value) throws InterruptedException {
+        StaticFunc.upWindow(ConfigKeys.WINDOW_CLASS, ConfigKeys.WINDOW_NAME);
+        getController().azimuthByKey(value);
+    }
+
     public void setPitch(Double value) {
         StaticFunc.upWindow(ConfigKeys.WINDOW_CLASS, ConfigKeys.WINDOW_NAME);
         getController().pitch(value);

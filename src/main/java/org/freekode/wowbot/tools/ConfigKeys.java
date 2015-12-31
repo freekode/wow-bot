@@ -15,7 +15,7 @@ public class ConfigKeys {
     public static final int RUN_DOUBLE_O_ONE = 3;
 
     /**
-     * how many ms need to change yaw using keyboard
+     * ms to change azimuth by 0.001
      */
     public static final int KEY_YAW_DOUBLE_O_ONE = 3;
 
@@ -37,6 +37,7 @@ public class ConfigKeys {
     public static final double STANDARD_PITCH = -0.25;
     public static final double PITCH_TOLERANCE = 0.01;
     public static final double AZIMUTH_TOLERANCE = 0.005;
+    public static final double AZIMUTH_KEY_TOLERANCE = 0.13;
     public static final double DISTANCE_TOLERANCE = 0.075;
 
     public static final String WINDOW_CLASS = "GxWindowClass";

@@ -165,6 +165,11 @@ public class Receiver {
         return color.equals(Color.WHITE);
     }
 
+    public Boolean isInActionRange() {
+        Color color = colors[1][2];
+        return color.equals(Color.WHITE);
+    }
+
     public String toString() {
         return "Receiver[x=" + getX() + "; y=" + getY() + "; azimuth=" + getAzimuth() + "; pitch=" + getPitch() +
                 "; isOre=" + isOre() + "; isHerb=" + isHerb() + "; isInCombat=" + isInCombat() + "]";
