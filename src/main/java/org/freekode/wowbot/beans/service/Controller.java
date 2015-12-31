@@ -132,10 +132,16 @@ public class Controller {
 
     public boolean gather() throws InterruptedException {
         pitch(ConfigKeys.GATHER_PITCH);
-        driver.mouseForGather();
 
         Boolean found = false;
         for (int i = 0; i < 20; i++) {
+            driver.mouseForGather();
+            if (receiver.isHerb() || receiver.isOre()) {
+                found = true;
+                break;
+            }
+
+            driver.centerMouse();
             if (receiver.isHerb() || receiver.isOre()) {
                 found = true;
                 break;

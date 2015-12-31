@@ -68,8 +68,12 @@ public class FishingAI extends Intelligence<FishingRecordModel> {
     @Override
     public Boolean processing() throws InterruptedException {
         getController().init();
+        startFishing();
 
+        return true;
+    }
 
+    public void startFishing() throws InterruptedException {
         logger.info("start fishing");
         for (int i = 0; i < failTryings; i++) {
             logger.info("try = " + i);
@@ -121,8 +125,6 @@ public class FishingAI extends Intelligence<FishingRecordModel> {
         }
 
         logger.info("sorry, can not find the bobber. stopping");
-
-        return true;
     }
 
     public void clearColors() {
