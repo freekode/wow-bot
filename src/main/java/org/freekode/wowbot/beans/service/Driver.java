@@ -47,10 +47,25 @@ public class Driver {
         mouse(centerX, centerY);
     }
 
-    public void mouseForGather() {
+    public void mouseForGather(int pos) {
         int x = (int) (window.getX() + window.getWidth() / 2);
         int y = (int) (window.getY() + window.getHeight() / 2) - 11;
-        y = y + y / 4;
+
+        switch (pos) {
+            case 0:
+                y -= (y / 2);
+                break;
+            case 1:
+                y -= (y / 4);
+                break;
+            case 3:
+                y += (y / 4);
+                break;
+            case 4:
+                y += (y / 2);
+                break;
+
+        }
         mouse(x, y);
     }
 

@@ -62,7 +62,8 @@ public class RecordTableModel extends AbstractTableModel {
             CharacterRecordModel element = data.get(i);
             if (record.equals(element)) {
                 element.setState(record.getState());
-                fireTableRowsUpdated(i, i);
+                fireTableRowsUpdated(i, data.size());
+                fireTableDataChanged();
                 return;
             }
         }

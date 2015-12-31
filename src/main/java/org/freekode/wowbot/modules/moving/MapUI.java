@@ -132,10 +132,8 @@ public class MapUI extends JFrame implements ActionListener {
                 int dx = e.getX() - x;
                 int dy = e.getY() - y;
 
-
                 dragX += dx;
                 dragY += dy;
-                logger.info("dragX = " + dragX);
 
                 x += dx;
                 y += dy;

@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MoveModule extends Module implements ActionListener {
@@ -57,8 +58,14 @@ public class MoveModule extends Module implements ActionListener {
     public void buildMoveUI() {
         List<Vector3D> points = new ArrayList<>();
         RecordTableModel model = (RecordTableModel) recordsTable.getModel();
+
         for (CharacterRecordModel record : model.getData()) {
             points.add(record.getCoordinates());
+        }
+
+        int selectedIndex = recordsTable.getSelectedRow();
+        if (selectedIndex > -1) {
+            points = points.subList(selectedIndex, points.size());
         }
 
         ai = new MovingAI(points);
@@ -68,7 +75,13 @@ public class MoveModule extends Module implements ActionListener {
     public void buildGatherUI() {
         RecordTableModel model = (RecordTableModel) recordsTable.getModel();
 
-        ai = new GatherAI(model.getData());
+        List<CharacterRecordModel> records = new LinkedList<>(model.getData());
+        int selectedIndex = recordsTable.getSelectedRow();
+        if (selectedIndex > -1) {
+            records = records.subList(selectedIndex, records.size());
+        }
+
+        ai = new GatherAI(records);
         ai.addPropertyChangeListener(this);
     }
 
