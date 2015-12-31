@@ -1,11 +1,15 @@
 package org.freekode.wowbot.modules.moving;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.swing.table.AbstractTableModel;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 public class RecordTableModel extends AbstractTableModel {
+    private static final Logger logger = LogManager.getLogger(RecordTableModel.class);
     private String[] columnNames = {"State", "Date", "X", "Y", "Action"};
     private List<CharacterRecordModel> data = new LinkedList<>();
 
@@ -57,16 +61,17 @@ public class RecordTableModel extends AbstractTableModel {
         fireTableRowsDeleted(0, data.size());
     }
 
-    public void update(CharacterRecordModel record) {
+    public Integer update(CharacterRecordModel record) {
         for (int i = 0; i < data.size(); i++) {
             CharacterRecordModel element = data.get(i);
             if (record.equals(element)) {
                 element.setState(record.getState());
-                fireTableRowsUpdated(i, data.size());
-                fireTableDataChanged();
-                return;
+                fireTableRowsUpdated(i, i);
+                return i;
             }
         }
+
+        return null;
     }
 
     public List<CharacterRecordModel> getData() {

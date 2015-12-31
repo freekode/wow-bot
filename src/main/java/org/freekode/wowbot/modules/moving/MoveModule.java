@@ -128,6 +128,7 @@ public class MoveModule extends Module implements ActionListener {
         recordsTable = new JTable(new RecordTableModel());
         recordsTable.setDefaultRenderer(Date.class, new DateRenderer());
         recordsTable.setDefaultRenderer(Double.class, new DoubleRenderer());
+        recordsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(recordsTable);
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
@@ -214,9 +215,13 @@ public class MoveModule extends Module implements ActionListener {
 
         if (currentType == ModuleType.RECORD) {
             model.add(record);
-        } else if (currentType == ModuleType.MOVE) {
+        } else if (currentType == ModuleType.MOVE || currentType == ModuleType.GATHER) {
             // update the model
-            model.update(record);
+            Integer index = model.update(record);
+            if (index != null) {
+                recordsTable.changeSelection(index, 0, false, false);
+                recordsTable.scrollRectToVisible(recordsTable.getCellRect(index, 0, true));
+            }
         }
     }
 
