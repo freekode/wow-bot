@@ -121,7 +121,7 @@ public class MoveModule extends Module implements ActionListener {
         c.gridy = 2;
         c.weightx = 1;
         c.weighty = 1;
-        c.gridwidth = 5;
+        c.gridwidth = 6;
         c.fill = GridBagConstraints.BOTH;
         panel.add(scrollPane, c);
 
@@ -174,10 +174,21 @@ public class MoveModule extends Module implements ActionListener {
         reverseButton.addActionListener(this);
         c.anchor = GridBagConstraints.LINE_START;
         c.fill = GridBagConstraints.NONE;
-        c.insets = new Insets(0, 5, 5, 5);
+        c.insets = new Insets(0, 5, 5, 0);
         c.gridx = 4;
         c.gridy = 1;
         panel.add(reverseButton, c);
+
+        JButton mapButton = new JButton("Map");
+        mapButton.setActionCommand("showMap");
+        mapButton.addActionListener(this);
+        c.anchor = GridBagConstraints.LINE_START;
+        c.fill = GridBagConstraints.NONE;
+        c.insets = new Insets(0, 5, 5, 0);
+        c.gridx = 5;
+        c.gridy = 1;
+        panel.add(mapButton, c);
+
 
 
         return panel;
@@ -214,6 +225,8 @@ public class MoveModule extends Module implements ActionListener {
             moveAi();
         } else if ("gatherAI".equals(e.getActionCommand())) {
             gatherAi();
+        } else if ("showMap".equals(e.getActionCommand())) {
+            showMap();
         }
     }
 
@@ -281,6 +294,15 @@ public class MoveModule extends Module implements ActionListener {
     public void gatherAi() {
         currentType = ModuleType.GATHER;
         buildAI();
+    }
+
+    public void showMap() {
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
+        List<CharacterRecordModel> records = model.getData();
+
+        MapUI optionsWindow = new MapUI();
+        optionsWindow.init(records);
+        optionsWindow.addPropertyChangeListener(this);
     }
 
     @Override
