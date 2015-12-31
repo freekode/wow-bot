@@ -37,7 +37,7 @@ public class ConfigKeys {
     public static final double STANDARD_PITCH = -0.25;
     public static final double PITCH_TOLERANCE = 0.01;
     public static final double AZIMUTH_TOLERANCE = 0.005;
-    public static final double DISTANCE_TOLERANCE = 0.03;
+    public static final double DISTANCE_TOLERANCE = 0.075;
 
     public static final String WINDOW_CLASS = "GxWindowClass";
     public static final String WINDOW_NAME = "World of Warcraft";

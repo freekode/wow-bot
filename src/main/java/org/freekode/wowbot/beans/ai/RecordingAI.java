@@ -14,6 +14,7 @@ public class RecordingAI extends Intelligence<CharacterRecordModel> implements H
     private static final Logger logger = LogManager.getLogger(RecordingAI.class);
     private static final int HOT_KEY_IDENTIFIER_MOVE = 100;
     private static final int HOT_KEY_IDENTIFIER_GATHER = 101;
+    private Vector3D prevPoint = Vector3D.ZERO;
 
 
     @Override
@@ -52,9 +53,15 @@ public class RecordingAI extends Intelligence<CharacterRecordModel> implements H
     public void addMoveRecord() {
         Double x = getController().getReceiver().getX();
         Double y = getController().getReceiver().getY();
+        Vector3D newPoint = new Vector3D(x, y, 0);
 
+        if (newPoint.equals(prevPoint)) {
+            return;
+        }
+
+        prevPoint = newPoint;
         CharacterRecordModel record = new CharacterRecordModel(
-                new Date(), new Vector3D(x, y, 0), CharacterRecordModel.Action.MOVE);
+                new Date(), newPoint, CharacterRecordModel.Action.MOVE);
 
         send(record);
     }

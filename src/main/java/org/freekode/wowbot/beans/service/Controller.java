@@ -168,7 +168,7 @@ public class Controller {
             driver.getRobot().keyPress(KeyEvent.VK_1);
             driver.getRobot().keyRelease(KeyEvent.VK_1);
 
-            Thread.sleep(2000);
+            Thread.sleep(500);
         }
 
         logger.info("k.o.");

@@ -50,7 +50,7 @@ public class Driver {
     public void mouseForGather() {
         int x = (int) (window.getX() + window.getWidth() / 2);
         int y = (int) (window.getY() + window.getHeight() / 2) - 11;
-        y = y + y / 2;
+        y = y + y / 4;
         mouse(x, y);
     }
 
