@@ -45,3 +45,19 @@ Module combine your AI and ui interface which will be show when your module sele
 Module is abstract class, provide several methods and abstract methods, for easily receive information from your ai
 and change values in gui.
 
+
+## Conclusion about the bot
+Well, after several tests I have to say with such a type of control, type of reading the data about character, some
+things are unable to proceed. I am talking abouth gathering and moving overall. First of all positioning, controlling
+are quite precise, really with this there is no any big problem to simply walk by the coordinates in clean area.
+But clean area (without mobs, players, etc...), yeah, not achievable. I am setting the azimuth and pitch by using a mouse.
+Mouse is a very precise in comparison with keys (A and D). But when mouse "working" it can click on another external object
+(for example a cow), and everything can happen. Now, the bot even can fight (quite poor, but mobs are not annoying any more).
+Gathering, gathering is working with big plants. Sometimes "plant scanner" can not find a plant, but it exists.
+Of course, all these problems of can be solved, but solution will cost too much time, need to find too much cases.
+So I think with such technology I can not make it possible.
+
+There is a module of fishing, I really proud of that. By my opinion it is very good module, with simple implementation.
+
+So, try to not be so negative, it the future there is solution about everything, it is OpenCV. Computer Vision for such
+project may be only one solution which can allow easy resolve current problem cases.
