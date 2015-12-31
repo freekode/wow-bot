@@ -93,9 +93,9 @@ public class MapUI extends JFrame implements ActionListener {
                 Vector3D point = record.getCoordinates();
 
                 if (record.getAction() == CharacterRecordModel.Action.MOVE) {
-                    g2d.setPaint(new Color(0, 255, 255));
+                    g2d.setPaint(new Color(255, 0, 0));
                 } else if (record.getAction() == CharacterRecordModel.Action.GATHER) {
-                    g2d.setPaint(new Color(255, 255, 0));
+                    g2d.setPaint(new Color(0, 255, 0));
                 }
 
                 double width = 5 * (1 / scale);
