@@ -53,16 +53,16 @@ public class Driver {
         }
 
         int centerX = (int) (window.getX() + window.getWidth() / 2);
-        int y = (int) (window.getY() + window.getHeight() / 2) - 11;
+        int centerY = (int) (window.getY() + window.getHeight() / 2) - 11;
 
-//        int high = (int) (y - y * 0.75);
-        int high = y;
-        int low = (int) (y + y * 0.75);
+        int high = centerY;
+//        int high = (int) (centerY - centerY * 0.1);
+        int low = (int) (centerY + centerY * 0.35);
         int stepPx = (low - high) / steps;
 
-        y = high + stepNum * stepPx;
+        centerY = high + stepNum * stepPx;
 
-        mouse(centerX, y);
+        mouse(centerX, centerY);
     }
 
     /**
@@ -169,6 +169,20 @@ public class Driver {
         robot.keyRelease(KeyEvent.VK_END);
 
         Thread.sleep(3000);
+    }
+
+    public void fpvByMouse() throws InterruptedException {
+        for (int i = 0; i < 15; i++) {
+            robot.mouseWheel(-5);
+            Thread.sleep(10);
+        }
+    }
+
+    public void thirdByMouse() throws InterruptedException {
+        for (int i = 0; i < 15; i++) {
+            robot.mouseWheel(5);
+            Thread.sleep(10);
+        }
     }
 
     public void pressKey(int keyCode) {
