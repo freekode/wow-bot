@@ -26,7 +26,7 @@ public class GatherAI extends Intelligence<CharacterRecordModel> {
             if (point.getAction() == CharacterRecordModel.Action.MOVE) {
                 getController().moveTo(point.getCoordinates());
             } else if (point.getAction() == CharacterRecordModel.Action.GATHER) {
-                getController().gather();
+                getController().gatherSecond();
             }
 
             point.setState("reached");

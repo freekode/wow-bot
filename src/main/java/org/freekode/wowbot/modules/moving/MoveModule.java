@@ -215,7 +215,6 @@ public class MoveModule extends Module implements ActionListener {
 
         if (currentType == ModuleType.RECORD) {
             Integer index = model.add(record);
-            recordsTable.changeSelection(index, 0, false, false);
             recordsTable.scrollRectToVisible(recordsTable.getCellRect(index, 0, true));
         } else if (currentType == ModuleType.MOVE || currentType == ModuleType.GATHER) {
             // update the model

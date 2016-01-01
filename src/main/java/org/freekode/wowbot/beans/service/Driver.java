@@ -49,13 +49,14 @@ public class Driver {
 
     public void mouseForGather(int stepNum, Integer steps) {
         if (steps == null) {
-            steps = 10;
+            steps = 5;
         }
 
         int centerX = (int) (window.getX() + window.getWidth() / 2);
         int y = (int) (window.getY() + window.getHeight() / 2) - 11;
 
-        int high = (int) (y - y * 0.75);
+//        int high = (int) (y - y * 0.75);
+        int high = y;
         int low = (int) (y + y * 0.75);
         int stepPx = (low - high) / steps;
 

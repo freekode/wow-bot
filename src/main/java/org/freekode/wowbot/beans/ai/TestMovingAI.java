@@ -31,6 +31,6 @@ public class TestMovingAI extends Intelligence<String> {
 
     public void gatherHerb() throws InterruptedException {
         StaticFunc.upWindow(ConfigKeys.WINDOW_CLASS, ConfigKeys.WINDOW_NAME);
-        getController().gather();
+        getController().gatherSecond();
     }
 }

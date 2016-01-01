@@ -221,6 +221,46 @@ public class Controller {
         return found != null;
     }
 
+    public boolean gatherSecond() throws InterruptedException {
+        // first person view, to see clearly
+        driver.fpv();
+        if (!receiver.isHerb() || !receiver.isOre()) {
+            pitch(ConfigKeys.GATHER_PITCH);
+        }
+
+        // rotate the character and "scan" by mouse where is herb
+        Integer found = null;
+        int steps = 5;
+        outer:
+        for (int i = 0; i < steps; i++) {
+            driver.mouseForGather(i, steps);
+
+            for (int j = 0; j < 30; j++) {
+                driver.keyRotateLeft(0.5);
+                Thread.sleep(50);
+                if (receiver.isHerb() || receiver.isOre()) {
+                    found = i;
+
+                    logger.info("found j = " + found);
+                    break outer;
+                }
+            }
+        }
+
+        // if found gather
+        if (found != null) {
+            driver.mouseForGather(found, steps);
+            driver.gather();
+            Thread.sleep(3000);
+        }
+
+        pitch(ConfigKeys.STANDARD_PITCH);
+        driver.third();
+        driver.centerMouse();
+
+        return found != null;
+    }
+
     /**
      * try to fight as hard as you can
      *
