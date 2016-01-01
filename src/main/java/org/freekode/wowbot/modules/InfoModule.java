@@ -34,19 +34,19 @@ public class InfoModule extends Module {
         GridBagConstraints c = new GridBagConstraints();
 
 
-        c.anchor = GridBagConstraints.LINE_START;
+        c.anchor = GridBagConstraints.PAGE_START;
         c.insets = new Insets(0, 0, 0, 20);
         c.gridx = 0;
         c.gridy = 0;
         panel.add(addFirstPart(), c);
 
-        c.anchor = GridBagConstraints.LINE_START;
+        c.anchor = GridBagConstraints.PAGE_START;
         c.insets = new Insets(0, 0, 0, 20);
         c.gridx = 1;
         c.gridy = 0;
         panel.add(addSecondPart(), c);
 
-        c.anchor = GridBagConstraints.LINE_START;
+        c.anchor = GridBagConstraints.PAGE_START;
         c.insets = new Insets(0, 0, 0, 20);
         c.gridx = 2;
         c.gridy = 0;
@@ -121,28 +121,28 @@ public class InfoModule extends Module {
 
 
         c.anchor = GridBagConstraints.LINE_START;
-        c.insets = new Insets(0, 0, 5, 10);
+        c.insets = new Insets(0, 0, 0, 10);
         c.gridx = 0;
         c.gridy = 0;
         panel.add(new JLabel("Herb"), c);
 
         isHerbLabel.setEnabled(false);
         c.anchor = GridBagConstraints.LINE_END;
-        c.insets = new Insets(0, 0, 5, 0);
+        c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 1;
         c.gridy = 0;
         panel.add(isHerbLabel, c);
 
 
         c.anchor = GridBagConstraints.LINE_START;
-        c.insets = new Insets(0, 0, 5, 10);
+        c.insets = new Insets(0, 0, 0, 10);
         c.gridx = 0;
         c.gridy = 1;
         panel.add(new JLabel("Ore"), c);
 
         isOreLabel.setEnabled(false);
         c.anchor = GridBagConstraints.LINE_END;
-        c.insets = new Insets(0, 0, 5, 0);
+        c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 1;
         c.gridy = 1;
         panel.add(isOreLabel, c);
@@ -171,14 +171,14 @@ public class InfoModule extends Module {
 
 
         c.anchor = GridBagConstraints.LINE_START;
-        c.insets = new Insets(0, 0, 5, 10);
+        c.insets = new Insets(0, 0, 0, 10);
         c.gridx = 0;
         c.gridy = 0;
         panel.add(new JLabel("In combat"), c);
 
         isInCombatLabel.setEnabled(false);
         c.anchor = GridBagConstraints.LINE_END;
-        c.insets = new Insets(0, 0, 5, 0);
+        c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 1;
         c.gridy = 0;
         panel.add(isInCombatLabel, c);
