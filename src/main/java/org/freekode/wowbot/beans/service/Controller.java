@@ -164,10 +164,13 @@ public class Controller {
     public boolean gather() throws InterruptedException {
         // first person view, to see clearly
         driver.fpv();
-        pitch(ConfigKeys.GATHER_PITCH);
+        if (!receiver.isHerb() || !receiver.isOre()) {
+            pitch(ConfigKeys.GATHER_PITCH);
+        }
 
         // rotate the character and "scan" by mouse where is herb
-        Boolean found = false;
+        Integer found = null;
+        int steps = 10;
         outer:
         for (int i = 0; i < 50; i++) {
             // remove focus if we have
@@ -183,21 +186,30 @@ public class Controller {
             // scan where is herb, there is a bug
             // sometimes mouse not stopping where he found the herb
             // it just make one step again, it is problem of later detection
-            for (int j = 0; j < 5; j++) {
-                driver.mouseForGather(j);
-                Thread.sleep(10);
+            for (int j = 0; j < steps; j++) {
+                driver.mouseForGather(j, steps);
+
+                Thread.sleep(50);
                 if (receiver.isHerb() || receiver.isOre()) {
-                    found = true;
+                    found = j;
+                    found++;
+
+                    if (found > steps) {
+                        found = steps;
+                    }
+
+                    logger.info("found j = " + found);
                     break outer;
                 }
             }
 
             // rotate the character
-            driver.keyRotateLeft(0.25);
+            driver.keyRotateLeft(0.5);
         }
 
         // if found gather
-        if (found) {
+        if (found != null) {
+            driver.mouseForGather(found, steps);
             driver.gather();
             Thread.sleep(3000);
         }
@@ -206,7 +218,7 @@ public class Controller {
         driver.third();
         driver.centerMouse();
 
-        return found;
+        return found != null;
     }
 
     /**

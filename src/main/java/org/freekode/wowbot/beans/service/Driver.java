@@ -47,26 +47,21 @@ public class Driver {
         mouse(centerX, centerY);
     }
 
-    public void mouseForGather(int pos) {
-        int x = (int) (window.getX() + window.getWidth() / 2);
+    public void mouseForGather(int stepNum, Integer steps) {
+        if (steps == null) {
+            steps = 10;
+        }
+
+        int centerX = (int) (window.getX() + window.getWidth() / 2);
         int y = (int) (window.getY() + window.getHeight() / 2) - 11;
 
-        switch (pos) {
-            case 0:
-                y -= (y / 2);
-                break;
-            case 1:
-                y -= (y / 4);
-                break;
-            case 3:
-                y += (y / 4);
-                break;
-            case 4:
-                y += (y / 2);
-                break;
+        int high = (int) (y - y * 0.75);
+        int low = (int) (y + y * 0.75);
+        int stepPx = (low - high) / steps;
 
-        }
-        mouse(x, y);
+        y = high + stepNum * stepPx;
+
+        mouse(centerX, y);
     }
 
     /**
@@ -159,7 +154,7 @@ public class Driver {
         robot.keyPress(KeyEvent.VK_HOME);
         robot.keyRelease(KeyEvent.VK_HOME);
 
-        Thread.sleep(3000);
+        Thread.sleep(3500);
     }
 
     public void third() throws InterruptedException {

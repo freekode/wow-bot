@@ -27,7 +27,7 @@ public abstract class Intelligence<T> extends SwingWorker<Boolean, Void> {
             return processing();
         } catch (Exception e) {
             logger.info("Intelligence exception", e);
-            return null;
+            return true;
         }
     }
 

@@ -32,7 +32,7 @@ public class ConfigKeys {
     /**
      * set this pitch for gathering
      */
-    public static final double GATHER_PITCH = -0.45;
+    public static final double GATHER_PITCH = -0.5;
 
     public static final double STANDARD_PITCH = -0.25;
     public static final double PITCH_TOLERANCE = 0.01;

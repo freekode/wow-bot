@@ -39,9 +39,10 @@ public class RecordTableModel extends AbstractTableModel {
         return getValueAt(0, columnIndex).getClass();
     }
 
-    public void add(CharacterRecordModel record) {
+    public Integer add(CharacterRecordModel record) {
         data.add(record);
         fireTableRowsInserted(data.size(), data.size());
+        return data.size();
     }
 
     public void clear() {

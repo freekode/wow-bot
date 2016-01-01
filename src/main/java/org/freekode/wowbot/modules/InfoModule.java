@@ -119,6 +119,57 @@ public class InfoModule extends Module {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
+
+        c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(0, 0, 5, 10);
+        c.gridx = 0;
+        c.gridy = 0;
+        panel.add(new JLabel("Herb"), c);
+
+        isHerbLabel.setEnabled(false);
+        c.anchor = GridBagConstraints.LINE_END;
+        c.insets = new Insets(0, 0, 5, 0);
+        c.gridx = 1;
+        c.gridy = 0;
+        panel.add(isHerbLabel, c);
+
+
+        c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(0, 0, 5, 10);
+        c.gridx = 0;
+        c.gridy = 1;
+        panel.add(new JLabel("Ore"), c);
+
+        isOreLabel.setEnabled(false);
+        c.anchor = GridBagConstraints.LINE_END;
+        c.insets = new Insets(0, 0, 5, 0);
+        c.gridx = 1;
+        c.gridy = 1;
+        panel.add(isOreLabel, c);
+
+
+        c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(0, 0, 0, 10);
+        c.gridx = 0;
+        c.gridy = 2;
+        panel.add(new JLabel("Bag update"), c);
+
+        bagUpdateLabel.setEnabled(false);
+        c.anchor = GridBagConstraints.LINE_END;
+        c.insets = new Insets(0, 0, 0, 0);
+        c.gridx = 1;
+        c.gridy = 2;
+        panel.add(bagUpdateLabel, c);
+
+
+        return panel;
+    }
+
+    public JPanel addThirdPart() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+
         c.anchor = GridBagConstraints.LINE_START;
         c.insets = new Insets(0, 0, 5, 10);
         c.gridx = 0;
@@ -134,80 +185,30 @@ public class InfoModule extends Module {
 
 
         c.anchor = GridBagConstraints.LINE_START;
-        c.insets = new Insets(0, 0, 5, 10);
-        c.gridx = 0;
-        c.gridy = 1;
-        panel.add(new JLabel("Herb"), c);
-
-        isHerbLabel.setEnabled(false);
-        c.anchor = GridBagConstraints.LINE_END;
-        c.insets = new Insets(0, 0, 5, 0);
-        c.gridx = 1;
-        c.gridy = 1;
-        panel.add(isHerbLabel, c);
-
-
-        c.anchor = GridBagConstraints.LINE_START;
-        c.insets = new Insets(0, 0, 5, 10);
-        c.gridx = 0;
-        c.gridy = 2;
-        panel.add(new JLabel("Ore"), c);
-
-        isOreLabel.setEnabled(false);
-        c.anchor = GridBagConstraints.LINE_END;
-        c.insets = new Insets(0, 0, 5, 0);
-        c.gridx = 1;
-        c.gridy = 2;
-        panel.add(isOreLabel, c);
-
-
-        c.anchor = GridBagConstraints.LINE_START;
         c.insets = new Insets(0, 0, 0, 10);
         c.gridx = 0;
-        c.gridy = 3;
-        panel.add(new JLabel("Bag update"), c);
-
-        bagUpdateLabel.setEnabled(false);
-        c.anchor = GridBagConstraints.LINE_END;
-        c.insets = new Insets(0, 0, 0, 0);
-        c.gridx = 1;
-        c.gridy = 3;
-        panel.add(bagUpdateLabel, c);
-
-
-        return panel;
-    }
-
-    public JPanel addThirdPart() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-
-
-        c.anchor = GridBagConstraints.LINE_START;
-        c.insets = new Insets(0, 0, 0, 10);
-        c.gridx = 0;
-        c.gridy = 0;
+        c.gridy = 1;
         panel.add(new JLabel("Has target"), c);
 
         hasTargetLabel.setEnabled(false);
         c.anchor = GridBagConstraints.LINE_END;
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 1;
-        c.gridy = 0;
+        c.gridy = 1;
         panel.add(hasTargetLabel, c);
 
 
         c.anchor = GridBagConstraints.LINE_START;
         c.insets = new Insets(0, 0, 0, 10);
         c.gridx = 0;
-        c.gridy = 1;
+        c.gridy = 2;
         panel.add(new JLabel("In range"), c);
 
         inActionRangeLabel.setEnabled(false);
         c.anchor = GridBagConstraints.LINE_END;
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 1;
-        c.gridy = 1;
+        c.gridy = 2;
         panel.add(inActionRangeLabel, c);
 
 
