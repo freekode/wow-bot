@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class StaticFunc {
     private static final Logger logger = LogManager.getLogger(StaticFunc.class);
@@ -134,7 +135,7 @@ public class StaticFunc {
      * @param similarity 0 exactly that color
      * @return array with coordinates and found color
      */
-    public static int[] findColor(int[][] pixels, Color[] colors, double similarity) {
+    public static int[] findColor(int[][] pixels, List<Color> colors, double similarity) {
 //        int[][] pixels = convertTo2DWithoutUsingGetRGB(image);
 
         for (int y = 0; y < pixels.length; y++) {

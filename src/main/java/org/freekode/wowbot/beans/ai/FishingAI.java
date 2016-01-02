@@ -2,67 +2,40 @@ package org.freekode.wowbot.beans.ai;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.modules.fishing.FishingOptionsModel;
 import org.freekode.wowbot.modules.fishing.FishingRecordModel;
 import org.freekode.wowbot.tools.StaticFunc;
 
 import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 public class FishingAI extends Intelligence<FishingRecordModel> {
     private static final Logger logger = LogManager.getLogger(FishingAI.class);
     private static final int FISHING_TIME_SEC = 20;
     private static final int CHECK_IF_CAUGHT_SEC = 2;
-    private Color firstFound;
-    private Color secondFound;
-    private Color thirdFound;
-
-    // red colors
-    public final Color[] FIRST_COLORS = {
-            Color.decode("#6b240e"),
-            Color.decode("#4d160e"),
-
-            Color.decode("#c62f12"),
-            Color.decode("#94260b"),
-
-            Color.decode("#49150a"),
-            Color.decode("#341209"),
-    };
-    // blue colors
-    public final Color[] SECOND_COLORS = {
-            Color.decode("#353c59"),
-            Color.decode("#2f3756"),
-
-            Color.decode("#4d5363"),
-            Color.decode("#626574"),
-
-            Color.decode("#1e2d4a"),
-            Color.decode("#17263d"),
-    };
-    // white-yellow colors
-    public final Color[] THIRD_COLORS = {
-            Color.decode("#6a5344"),
-            Color.decode("#756051"),
-
-            Color.decode("#4d4030"),
-            Color.decode("#624d38"),
-
-            Color.decode("#504d3e"),
-            Color.decode("#42453a"),
-    };
     private final Rectangle SEARCH_SQUARE = new Rectangle(400, 110, 440, 390);
+    private FishingRecordModel record;
+    // red colors
+    private List<Color> firstColors;
+    // blue colors
+    private List<Color> secondColors;
+    // white-yellow colors
+    private List<Color> thirdColors;
     private int fishKey;
     private int failTryings;
 
 
-    public FishingAI(int fishKey, int failTryings) {
+    public FishingAI(int fishKey, int failTryings, List<Color> firstColors, List<Color> secondColors, List<Color> thirdColors) {
         this.fishKey = fishKey;
         this.failTryings = failTryings;
+        this.firstColors = firstColors;
+        this.secondColors = secondColors;
+        this.thirdColors = thirdColors;
 
-        logger.info("initialization; fish key = " + fishKey + "; fail tryings = " + failTryings);
+        logger.info("fish key = " + fishKey + "; fail tryings = " + failTryings +
+                "; [" + firstColors.size() + ", " + secondColors.size() + ", " + thirdColors.size() + "]");
     }
 
     @Override
@@ -80,13 +53,17 @@ public class FishingAI extends Intelligence<FishingRecordModel> {
             mouseOut();
             fish();
 
+            record = new FishingRecordModel(new Date());
+            send(record);
+
             Rectangle imageRect = StaticFunc.calculateCutSquare(getWindowArea(), SEARCH_SQUARE);
             BufferedImage image = StaticFunc.cutImage(imageRect);
-            int[] bobberPoint = findColor(image, FIRST_COLORS, 7);
+            int[] bobberPoint = findColor(image, firstColors, 7);
             if (bobberPoint == null) {
                 continue;
             }
-            firstFound = new Color(bobberPoint[2]);
+            record.setFirst(new Color(bobberPoint[2]));
+            send(record);
 
 
             logger.info("first color found = " + new Color(bobberPoint[2]).toString());
@@ -94,21 +71,21 @@ public class FishingAI extends Intelligence<FishingRecordModel> {
             Rectangle bobberRect = StaticFunc.calculateCutSquare(getWindowArea(),
                     StaticFunc.calculateCutSquare(SEARCH_SQUARE, bobberSquare));
             BufferedImage bobberImage = StaticFunc.cutImage(bobberRect);
-            int[] bobberPart = findColor(bobberImage, SECOND_COLORS, 6);
+            int[] bobberPart = findColor(bobberImage, secondColors, 6);
             if (bobberPart == null) {
-                clearColors();
                 continue;
             }
-            secondFound = new Color(bobberPart[2]);
+            record.setSecond(new Color(bobberPart[2]));
+            send(record);
 
 
             logger.info("second color found = " + new Color(bobberPart[2]).toString());
-            int[] bobberCoordinates = findColor(bobberImage, THIRD_COLORS, 5);
+            int[] bobberCoordinates = findColor(bobberImage, thirdColors, 5);
             if (bobberCoordinates == null) {
-                clearColors();
                 continue;
             }
-            thirdFound = new Color(bobberCoordinates[2]);
+            record.setThird(new Color(bobberCoordinates[2]));
+            send(record);
 
 
             logger.info("third color found = " + new Color(bobberCoordinates[2]).toString());
@@ -127,18 +104,12 @@ public class FishingAI extends Intelligence<FishingRecordModel> {
         logger.info("sorry, can not find the bobber. stopping");
     }
 
-    public void clearColors() {
-        firstFound = null;
-        secondFound = null;
-        thirdFound = null;
-    }
-
     public void trackingSquare(Rectangle rectangle, Color color) throws InterruptedException {
         long endTime = System.currentTimeMillis() / 1000 + FISHING_TIME_SEC;
 
         while ((System.currentTimeMillis() / 1000) <= endTime) {
             BufferedImage image = StaticFunc.cutImage(rectangle);
-            int[] trackCoordinates = findColor(image, new Color[]{color}, 8);
+            int[] trackCoordinates = findColor(image, Collections.singletonList(color), 8);
             if (trackCoordinates == null) {
                 StaticFunc.cutImage(rectangle);
                 int x = (int) (rectangle.getX() + (rectangle.getWidth() / 2));
@@ -158,7 +129,7 @@ public class FishingAI extends Intelligence<FishingRecordModel> {
         Thread.sleep(2000);
     }
 
-    public int[] findColor(BufferedImage image, Color[] colors, double similarity) {
+    public int[] findColor(BufferedImage image, List<Color> colors, double similarity) {
 //        int[][] pixels = StaticFunc.convertTo2DWithoutUsingGetRGB(image);
         int[][] pixels = StaticFunc.convertTo2DUsingGetRGB(image);
 
@@ -195,8 +166,7 @@ public class FishingAI extends Intelligence<FishingRecordModel> {
             logger.info("oh, no :(");
         }
 
-        FishingRecordModel model = new FishingRecordModel(new Date(), caught, firstFound, secondFound, thirdFound);
-        send(model);
-        clearColors();
+        record.setCaught(caught);
+        send(record);
     }
 }

@@ -12,12 +12,8 @@ public class FishingRecordModel {
     private Color second;
     private Color third;
 
-    public FishingRecordModel(Date date, Boolean caught, Color first, Color second, Color third) {
+    public FishingRecordModel(Date date) {
         this.date = date;
-        this.caught = caught;
-        this.first = first;
-        this.second = second;
-        this.third = third;
     }
 
     public Date getDate() {
@@ -28,16 +24,32 @@ public class FishingRecordModel {
         return caught;
     }
 
+    public void setCaught(Boolean caught) {
+        this.caught = caught;
+    }
+
     public Color getFirst() {
         return first;
+    }
+
+    public void setFirst(Color first) {
+        this.first = first;
     }
 
     public Color getSecond() {
         return second;
     }
 
+    public void setSecond(Color second) {
+        this.second = second;
+    }
+
     public Color getThird() {
         return third;
+    }
+
+    public void setThird(Color third) {
+        this.third = third;
     }
 
     public List<Object> toList() {
@@ -49,5 +61,21 @@ public class FishingRecordModel {
         list.add(third);
 
         return list;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FishingRecordModel that = (FishingRecordModel) o;
+
+        return date.equals(that.date);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return date.hashCode();
     }
 }

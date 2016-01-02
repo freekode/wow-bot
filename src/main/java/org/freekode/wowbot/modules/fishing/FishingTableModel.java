@@ -1,11 +1,14 @@
 package org.freekode.wowbot.modules.fishing;
 
 import javax.swing.table.AbstractTableModel;
+import java.awt.*;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 public class FishingTableModel extends AbstractTableModel {
     private String[] columnNames = {"Date", "Caught", "1", "2", "3"};
+    private Class[] columnClasses = {Date.class, Boolean.class, Color.class, Color.class, Color.class};
     private List<FishingRecordModel> data = new LinkedList<>();
 
 
@@ -31,12 +34,34 @@ public class FishingTableModel extends AbstractTableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return getValueAt(0, columnIndex).getClass();
+        return columnClasses[columnIndex];
     }
 
-    public void add(FishingRecordModel record) {
-        data.add(record);
+    public Integer updateOrAdd(FishingRecordModel newRecord) {
+        Integer updateIndex = update(newRecord);
+        if (updateIndex != null) {
+            return updateIndex;
+        }
+
+        data.add(newRecord);
         fireTableRowsInserted(data.size(), data.size());
+        return data.size();
+    }
+
+    public Integer update(FishingRecordModel newRecord) {
+        for (int i = 0; i < data.size(); i++) {
+            FishingRecordModel element = data.get(i);
+            if (newRecord.equals(element)) {
+                element.setFirst(newRecord.getFirst());
+                element.setSecond(newRecord.getSecond());
+                element.setThird(newRecord.getThird());
+                element.setCaught(newRecord.getCaught());
+                fireTableRowsUpdated(i, i);
+                return i;
+            }
+        }
+
+        return null;
     }
 
     public void clear() {

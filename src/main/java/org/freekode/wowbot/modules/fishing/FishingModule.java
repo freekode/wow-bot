@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.util.Date;
+import java.util.List;
 
 public class FishingModule extends Module implements ActionListener {
     private static final Logger logger = LogManager.getLogger(FishingModule.class);
@@ -105,25 +106,30 @@ public class FishingModule extends Module implements ActionListener {
     public void buildAI() {
         int fishButtonValue = KeyStroke.getKeyStroke(optionsModel.getFishKey().charAt(0), 0).getKeyCode();
         int failTryingsValue = Integer.valueOf(optionsModel.getFailTryings());
+        List<Color> firstColors = optionsModel.getFirstColors();
+        List<Color> secondColors = optionsModel.getSecondColors();
+        List<Color> thirdColors = optionsModel.getThirdColors();
 
-        ai = new FishingAI(fishButtonValue, failTryingsValue);
+        ai = new FishingAI(fishButtonValue, failTryingsValue, firstColors, secondColors, thirdColors);
         ai.addPropertyChangeListener(this);
     }
 
     @Override
     public void property(PropertyChangeEvent e) {
         FishingRecordModel record = (FishingRecordModel) e.getNewValue();
-        if (record.getCaught()) {
-            catches++;
-            catchesCountLabel.setText(catches.toString());
 
-        } else {
-            fails++;
-            failsCountLabel.setText(fails.toString());
+        if (record.getCaught() != null) {
+            if (record.getCaught()) {
+                catches++;
+                catchesCountLabel.setText(catches.toString());
+            } else {
+                fails++;
+                failsCountLabel.setText(fails.toString());
+            }
         }
 
         FishingTableModel model = (FishingTableModel) recordsTable.getModel();
-        model.add(record);
+        model.updateOrAdd(record);
     }
 
     @Override
