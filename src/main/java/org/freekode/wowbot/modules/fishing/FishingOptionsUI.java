@@ -123,6 +123,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
 
         c.gridx = 0;
         c.gridy = 0;
+        c.insets = new Insets(0, 0, 0, 10);
         panel.add(getFirstColorList(), c);
 
         c.gridx = 1;
@@ -131,6 +132,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
 
         c.gridx = 2;
         c.gridy = 0;
+        c.insets = new Insets(0, 0, 0, 0);
         panel.add(getThirdColorList(), c);
 
 
@@ -167,6 +169,10 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 2;
+        panel.add(new JLabel("Red"), c);
 
         DefaultListModel<Color> listFirstModel = new DefaultListModel<>();
         for (Color elem : optionsModel.getFirstColors()) {
@@ -176,8 +182,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         firstColorList.setCellRenderer(new ColorListRenderer());
         firstColorList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 2;
+        c.gridy = 1;
         panel.add(new JScrollPane(firstColorList), c);
 
         JButton addFirstColorButton = new JButton("+");
@@ -186,9 +191,8 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         addFirstColorButton.setPreferredSize(new Dimension(20, 20));
         addFirstColorButton.setMargin(new Insets(0, 0, 0, 0));
         c.gridx = 0;
-        c.gridy = 1;
+        c.gridy = 2;
         c.gridwidth = 1;
-        c.anchor = GridBagConstraints.LINE_START;
         panel.add(addFirstColorButton, c);
 
         JButton removeFirstColorButton = new JButton("-");
@@ -197,7 +201,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         removeFirstColorButton.setPreferredSize(new Dimension(20, 20));
         removeFirstColorButton.setMargin(new Insets(0, 0, 0, 0));
         c.gridx = 1;
-        c.gridy = 1;
+        c.gridy = 2;
         panel.add(removeFirstColorButton, c);
 
 
@@ -208,6 +212,10 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 2;
+        panel.add(new JLabel("Blue"), c);
 
         DefaultListModel<Color> listModel = new DefaultListModel<>();
         for (Color elem : optionsModel.getSecondColors()) {
@@ -217,8 +225,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         secondColorList.setCellRenderer(new ColorListRenderer());
         secondColorList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 2;
+        c.gridy = 1;
         panel.add(new JScrollPane(secondColorList), c);
 
         JButton addColorButton = new JButton("+");
@@ -227,9 +234,8 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         addColorButton.setPreferredSize(new Dimension(20, 20));
         addColorButton.setMargin(new Insets(0, 0, 0, 0));
         c.gridx = 0;
-        c.gridy = 1;
+        c.gridy = 2;
         c.gridwidth = 1;
-        c.anchor = GridBagConstraints.LINE_START;
         panel.add(addColorButton, c);
 
         JButton removeColorButton = new JButton("-");
@@ -238,7 +244,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         removeColorButton.setPreferredSize(new Dimension(20, 20));
         removeColorButton.setMargin(new Insets(0, 0, 0, 0));
         c.gridx = 1;
-        c.gridy = 1;
+        c.gridy = 2;
         panel.add(removeColorButton, c);
 
 
@@ -249,6 +255,10 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 2;
+        panel.add(new JLabel("WhYe"), c);
 
         DefaultListModel<Color> listModel = new DefaultListModel<>();
         for (Color elem : optionsModel.getThirdColors()) {
@@ -258,8 +268,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         thirdColorList.setCellRenderer(new ColorListRenderer());
         thirdColorList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 2;
+        c.gridy = 1;
         panel.add(new JScrollPane(thirdColorList), c);
 
         JButton addColorButton = new JButton("+");
@@ -268,9 +277,8 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         addColorButton.setPreferredSize(new Dimension(20, 20));
         addColorButton.setMargin(new Insets(0, 0, 0, 0));
         c.gridx = 0;
-        c.gridy = 1;
+        c.gridy = 2;
         c.gridwidth = 1;
-        c.anchor = GridBagConstraints.LINE_START;
         panel.add(addColorButton, c);
 
         JButton removeColorButton = new JButton("-");
@@ -279,7 +287,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         removeColorButton.setPreferredSize(new Dimension(20, 20));
         removeColorButton.setMargin(new Insets(0, 0, 0, 0));
         c.gridx = 1;
-        c.gridy = 1;
+        c.gridy = 2;
         panel.add(removeColorButton, c);
 
 
