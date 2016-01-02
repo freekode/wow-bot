@@ -71,6 +71,7 @@ public class Driver {
      * @throws InterruptedException
      */
     public void gather() throws InterruptedException {
+        Thread.sleep(300);
         robot.keyPress(KeyEvent.VK_SHIFT);
         Thread.sleep(300);
         robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);

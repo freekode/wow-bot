@@ -49,9 +49,9 @@ public class Controller {
         double distance = new BigDecimal(Vector3D.distance(getCoordinates(), point)).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
         logger.info("distance = " + distance);
         while (distance > ConfigKeys.DISTANCE_TOLERANCE) {
-            if (receiver.isInCombat()) {
-                fight();
-            }
+//            if (receiver.isInCombat()) {
+//                fight();
+//            }
 
 //            azimuth(StaticFunc.getAzimuth(getCoordinates(), point));
             azimuthByKey(StaticFunc.getAzimuth(getCoordinates(), point));
@@ -244,12 +244,12 @@ public class Controller {
             driver.mouseForGather(i, steps);
 
             for (int j = 0; j < 30; j++) {
+                Thread.sleep(40);
                 if (receiver.isHerb() || receiver.isOre()) {
                     found = i;
 
                     break outer;
                 }
-                Thread.sleep(5);
                 driver.keyRotateLeft(1);
             }
         }
