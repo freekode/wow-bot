@@ -28,6 +28,12 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     private Map<String, Module> modules = new HashMap<>();
 
 
+    public MainUI(boolean hotKey) {
+        if (hotKey) {
+            registerHotKeys();
+        }
+    }
+
     public void start() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -128,6 +134,8 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     }
 
     public void registerHotKeys() {
+        logger.info("register hotkeys");
+
         try {
             JIntellitype.setLibraryLocation("JIntellitype.dll");
             JIntellitype.getInstance();

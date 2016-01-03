@@ -2,6 +2,7 @@ package org.freekode.wowbot.beans.ai;
 
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
+import com.melloware.jintellitype.JIntellitypeException;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,10 +21,14 @@ public class RecordingAI extends Intelligence<CharacterRecordModel> implements H
     @Override
     public Boolean processing() throws InterruptedException {
         logger.info("start recording");
-        JIntellitype.getInstance();
-        JIntellitype.getInstance().registerSwingHotKey(HOT_KEY_IDENTIFIER_MOVE, Event.CTRL_MASK + Event.ALT_MASK, (int) '1');
-        JIntellitype.getInstance().registerSwingHotKey(HOT_KEY_IDENTIFIER_GATHER, Event.CTRL_MASK + Event.ALT_MASK, (int) '2');
-        JIntellitype.getInstance().addHotKeyListener(this);
+        try {
+            JIntellitype.getInstance();
+            JIntellitype.getInstance().registerSwingHotKey(HOT_KEY_IDENTIFIER_MOVE, Event.CTRL_MASK + Event.ALT_MASK, (int) '1');
+            JIntellitype.getInstance().registerSwingHotKey(HOT_KEY_IDENTIFIER_GATHER, Event.CTRL_MASK + Event.ALT_MASK, (int) '2');
+            JIntellitype.getInstance().addHotKeyListener(this);
+        } catch (JIntellitypeException e) {
+            logger.error("JIntellitype error", e);
+        }
 
         while (true) {
             addMoveRecord();
@@ -36,9 +41,13 @@ public class RecordingAI extends Intelligence<CharacterRecordModel> implements H
     @Override
     public void terminating() {
         logger.info("stop recording");
-        JIntellitype.getInstance().unregisterHotKey(HOT_KEY_IDENTIFIER_MOVE);
-        JIntellitype.getInstance().unregisterHotKey(HOT_KEY_IDENTIFIER_GATHER);
-        JIntellitype.getInstance().removeHotKeyListener(this);
+        try {
+            JIntellitype.getInstance().unregisterHotKey(HOT_KEY_IDENTIFIER_MOVE);
+            JIntellitype.getInstance().unregisterHotKey(HOT_KEY_IDENTIFIER_GATHER);
+            JIntellitype.getInstance().removeHotKeyListener(this);
+        } catch (JIntellitypeException e) {
+            logger.error("JIntellitype error", e);
+        }
     }
 
     @Override
