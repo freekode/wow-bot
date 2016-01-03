@@ -11,8 +11,8 @@ public class Main {
         mainUI.registerHotKeys();
         mainUI.addModule(new FishingModule());
 //        mainUI.addModule(new TestModule());
-//        mainUI.addModule(new TestMovingModule());
-//        mainUI.addModule(new MoveModule());
+        mainUI.addModule(new TestMovingModule());
+        mainUI.addModule(new MoveModule());
         mainUI.start();
     }
 }
