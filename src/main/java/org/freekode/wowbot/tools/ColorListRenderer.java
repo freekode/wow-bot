@@ -2,7 +2,6 @@ package org.freekode.wowbot.tools;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
 public class ColorListRenderer extends JLabel implements ListCellRenderer<Color> {

@@ -204,7 +204,6 @@ public class MoveModule extends Module implements ActionListener {
         panel.add(mapButton, c);
 
 
-
         return panel;
     }
 

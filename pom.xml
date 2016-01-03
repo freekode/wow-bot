@@ -6,6 +6,7 @@
 
     <groupId>org.freekode</groupId>
     <artifactId>wowbot</artifactId>
+    <packaging>jar</packaging>
     <version>0.2</version>
 
 
