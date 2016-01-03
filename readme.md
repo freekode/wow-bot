@@ -58,6 +58,3 @@ Of course, all these problems of can be solved, but solution will cost too much 
 So I think with such technology I can not make it possible.
 
 There is a module of fishing, I really proud of that. By my opinion it is very good module, with simple implementation.
-
-So, try to not be so negative, it the future there is solution about everything, it is OpenCV. Computer Vision for such
-project may be only one solution which can allow easy resolve current problem cases.
