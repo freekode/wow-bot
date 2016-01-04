@@ -3,6 +3,9 @@ package org.freekode.wowbot.tools;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
+import java.util.*;
 import java.util.List;
 
 public class StaticFunc {
@@ -172,5 +176,36 @@ public class StaticFunc {
         }
 
         return null;
+    }
+
+    public static Map<String, Object> loadProperties(String prefix) {
+        Map<String, Object> out = new HashMap<>();
+
+        try {
+            Configuration configuration = new PropertiesConfiguration(ConfigKeys.PROPERTIES_FILENAME);
+            Iterator<String> iterator = configuration.getKeys(prefix);
+            while (iterator.hasNext()) {
+                String key = iterator.next();
+                Object value = configuration.getProperty(key);
+
+                out.put(key.replaceFirst("^\\w*\\.", ""), value);
+            }
+        } catch (ConfigurationException e) {
+            logger.info("loading config has failed");
+        }
+
+        return out;
+    }
+
+    public static void saveProperties(String prefix, Map<String, Object> values) {
+        try {
+            PropertiesConfiguration configuration = new PropertiesConfiguration(ConfigKeys.PROPERTIES_FILENAME);
+            for (Map.Entry<String, Object> entry : values.entrySet()) {
+                configuration.setProperty(prefix + "." + entry.getKey(), entry.getValue());
+            }
+            configuration.save();
+        } catch (ConfigurationException e) {
+            logger.info("saving config has failed");
+        }
     }
 }

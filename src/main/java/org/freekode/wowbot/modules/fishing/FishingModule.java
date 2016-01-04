@@ -7,6 +7,7 @@ import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.modules.Module;
 import org.freekode.wowbot.tools.ColorRenderer;
 import org.freekode.wowbot.tools.DateRenderer;
+import org.freekode.wowbot.tools.StaticFunc;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class FishingModule extends Module implements ActionListener {
     private static final Logger logger = LogManager.getLogger(FishingModule.class);
@@ -29,7 +31,8 @@ public class FishingModule extends Module implements ActionListener {
 
 
     public FishingModule() {
-        optionsModel = new FishingOptionsModel();
+        Map<String, Object> config = StaticFunc.loadProperties("fishing");
+        optionsModel = new FishingOptionsModel(config);
 
         ui = buildInterface();
         buildAI();
@@ -105,7 +108,7 @@ public class FishingModule extends Module implements ActionListener {
     @Override
     public void buildAI() {
         int fishButtonValue = KeyStroke.getKeyStroke(optionsModel.getFishKey().charAt(0), 0).getKeyCode();
-        int failTryingsValue = Integer.valueOf(optionsModel.getFailTryings());
+        int failTryingsValue = optionsModel.getFailTryings();
         List<Color> firstColors = optionsModel.getFirstColors();
         List<Color> secondColors = optionsModel.getSecondColors();
         List<Color> thirdColors = optionsModel.getThirdColors();

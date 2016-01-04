@@ -1,6 +1,8 @@
 package org.freekode.wowbot.tools;
 
 public class ConfigKeys {
+    public static final String PROPERTIES_FILENAME = "bot.properties";
+
     public static final int ADDON_OFFSET_X = 0;
     public static final int ADDON_OFFSET_Y = 0;
     public static final int ADDON_SIDE_PX = 10;
