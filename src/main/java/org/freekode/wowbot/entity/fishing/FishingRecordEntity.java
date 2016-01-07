@@ -8,6 +8,7 @@ import java.util.List;
 public class FishingRecordEntity {
     private Date date;
     private Boolean caught;
+    private String kitName;
     private Color first;
     private Color second;
     private Color third;
@@ -51,6 +52,14 @@ public class FishingRecordEntity {
 
     public void setThird(Color third) {
         this.third = third;
+    }
+
+    public String getKitName() {
+        return kitName;
+    }
+
+    public void setKitName(String kitName) {
+        this.kitName = kitName;
     }
 
     public List<Object> toList() {

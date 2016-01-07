@@ -1,16 +1,14 @@
 package org.freekode.wowbot.entity.fishing;
 
-import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FishingOptionsEntity {
     private String fishKey;
     private Integer failTryings;
     private List<FishingKitEntity> kits;
-    private List<Color> firstColors;
-    private List<Color> secondColors;
-    private List<Color> thirdColors;
 
 
     public FishingOptionsEntity() {
@@ -18,9 +16,7 @@ public class FishingOptionsEntity {
         failTryings = 5;
         kits = new ArrayList<>();
 
-        firstColors = new ArrayList<>();
-        secondColors = new ArrayList<>();
-        thirdColors = new ArrayList<>();
+        kits.add(FishingKitEntity.getStandard());
     }
 
     public String getFishKey() {
@@ -39,30 +35,6 @@ public class FishingOptionsEntity {
         this.failTryings = failTryings;
     }
 
-    public List<Color> getFirstColors() {
-        return firstColors;
-    }
-
-    public void setFirstColors(List<Color> firstColors) {
-        this.firstColors = firstColors;
-    }
-
-    public List<Color> getSecondColors() {
-        return secondColors;
-    }
-
-    public void setSecondColors(List<Color> secondColors) {
-        this.secondColors = secondColors;
-    }
-
-    public List<Color> getThirdColors() {
-        return thirdColors;
-    }
-
-    public void setThirdColors(List<Color> thirdColors) {
-        this.thirdColors = thirdColors;
-    }
-
     public List<FishingKitEntity> getKits() {
         return kits;
     }
@@ -72,8 +44,6 @@ public class FishingOptionsEntity {
     }
 
     public void parse(Map<String, Object> config) {
-        kits = new ArrayList<>();
-
         Object fishKeyObject = config.get("fishingKey");
         if (fishKeyObject != null) {
             fishKey = fishKeyObject.toString();
@@ -86,12 +56,17 @@ public class FishingOptionsEntity {
         }
 
 
-        kits = new ArrayList<>();
         List<Map<String, Object>> kitsMap = (List<Map<String, Object>>) config.get("kits");
-        for (Map<String, Object> kitMap : kitsMap) {
-            FishingKitEntity kit = new FishingKitEntity();
-            kit.parse(kitMap);
-            kits.add(kit);
+        if (kitsMap != null) {
+            for (Map<String, Object> kitMap : kitsMap) {
+                if (FishingKitEntity.getStandard().getName().equals(kitMap.get("name").toString())) {
+                    continue;
+                }
+
+                FishingKitEntity kit = new FishingKitEntity();
+                kit.parse(kitMap);
+                kits.add(kit);
+            }
         }
 
 
@@ -130,6 +105,10 @@ public class FishingOptionsEntity {
 
         List<Object> kitsList = new ArrayList<>();
         for (FishingKitEntity kit : kits) {
+            if (FishingKitEntity.getStandard().getName().equals(kit.getName())) {
+                continue;
+            }
+
             kitsList.add(kit.getMap());
         }
         out.put("kits", kitsList);

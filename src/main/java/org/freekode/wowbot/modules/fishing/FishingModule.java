@@ -96,7 +96,7 @@ public class FishingModule extends Module implements ActionListener {
         recordsTable.setDefaultRenderer(Date.class, new DateRenderer("yyyy-MM-dd HH:mm:ss"));
         recordsTable.setDefaultRenderer(Color.class, new ColorCellRenderer());
         recordsTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
-        recordsTable.getColumnModel().getColumn(0).setPreferredWidth(150);
+        recordsTable.getColumnModel().getColumn(0).setPreferredWidth(120);
         recordsTable.getColumnModel().getColumn(1).setPreferredWidth(25);
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
@@ -115,11 +115,8 @@ public class FishingModule extends Module implements ActionListener {
     public void buildAI() {
         int fishButtonValue = KeyStroke.getKeyStroke(optionsModel.getFishKey().charAt(0), 0).getKeyCode();
         int failTryingsValue = optionsModel.getFailTryings();
-        List<Color> firstColors = optionsModel.getFirstColors();
-        List<Color> secondColors = optionsModel.getSecondColors();
-        List<Color> thirdColors = optionsModel.getThirdColors();
 
-        ai = new FishingAI(fishButtonValue, failTryingsValue, firstColors, secondColors, thirdColors);
+        ai = new FishingAI(fishButtonValue, failTryingsValue, optionsModel.getKits());
         ai.addPropertyChangeListener(this);
     }
 
