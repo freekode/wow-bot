@@ -12,6 +12,7 @@ public class FishingRecordEntity {
     private Color second;
     private Color third;
 
+
     public FishingRecordEntity(Date date) {
         this.date = date;
     }

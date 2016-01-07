@@ -1,18 +1,21 @@
-package org.freekode.wowbot.modules.fishing;
+package org.freekode.wowbot.entity.fishing;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class FishingOptionsModel {
+public class FishingOptionsEntity {
     private String fishKey;
     private Integer failTryings;
+    private List<FishingKitEntity> kits;
     private List<Color> firstColors;
     private List<Color> secondColors;
     private List<Color> thirdColors;
 
 
-    public FishingOptionsModel(Map<String, Object> config) {
+    public FishingOptionsEntity(Map<String, Object> config) {
+        kits = new ArrayList<>();
+
         Object fishKeyObject = config.get("fishingKey");
         if (fishKeyObject != null) {
             fishKey = fishKeyObject.toString();

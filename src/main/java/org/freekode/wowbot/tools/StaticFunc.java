@@ -184,6 +184,47 @@ public class StaticFunc {
         return null;
     }
 
+    public static String buildCsvFile(List<CharacterRecordEntity> records) {
+        StringBuilder out = new StringBuilder();
+
+        for (CharacterRecordEntity record : records) {
+            out.append(record.getDate().getTime()).append(";")
+                    .append(record.getCoordinates().getX()).append(";")
+                    .append(record.getCoordinates().getY()).append(";")
+                    .append(record.getAction()).append("\n");
+        }
+
+        return out.toString();
+    }
+
+    public static List<CharacterRecordEntity> parseCsvFile(File file) {
+        Pattern pattern = Pattern.compile("([\\d\\.]*);([\\d\\.]*);([\\d\\.]*);(.*)");
+        List<CharacterRecordEntity> records = new LinkedList<>();
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                Matcher matcher = pattern.matcher(line);
+
+                if (matcher.find()) {
+
+                    Date date = new Date(new Long(matcher.group(1)));
+                    Double x = new Double(matcher.group(2));
+                    Double y = new Double(matcher.group(3));
+                    CharacterRecordEntity.Action action = CharacterRecordEntity.Action.valueOf(matcher.group(4));
+
+                    records.add(new CharacterRecordEntity(date, new Vector3D(x, y, 0), action));
+                }
+            }
+
+            return records;
+        } catch (IOException e) {
+            return new LinkedList<>();
+        }
+    }
+
     public static Map<String, Object> loadProperties(String prefix) {
         Map<String, Object> out = new HashMap<>();
 

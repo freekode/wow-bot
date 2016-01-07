@@ -4,9 +4,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.ai.FishingAI;
 import org.freekode.wowbot.beans.ai.Intelligence;
+import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
+import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
+import org.freekode.wowbot.entity.fishing.FishingTableEntity;
 import org.freekode.wowbot.modules.Module;
-import org.freekode.wowbot.tools.ColorRenderer;
+import org.freekode.wowbot.tools.ColorCellRenderer;
 import org.freekode.wowbot.tools.DateRenderer;
+import org.freekode.wowbot.tools.StaticFunc;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +19,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class FishingModule extends Module implements ActionListener {
     private static final Logger logger = LogManager.getLogger(FishingModule.class);
@@ -29,9 +34,8 @@ public class FishingModule extends Module implements ActionListener {
 
 
     public FishingModule() {
-        optionsModel = new FishingOptionsEntity();
         Map<String, Object> config = StaticFunc.loadProperties("fishing");
-        optionsModel = new FishingOptionsModel(config);
+        optionsModel = new FishingOptionsEntity(config);
 
         ui = buildInterface();
         buildAI();
@@ -130,7 +134,7 @@ public class FishingModule extends Module implements ActionListener {
             }
         }
 
-        FishingTableModel model = (FishingTableModel) recordsTable.getModel();
+        FishingTableEntity model = (FishingTableEntity) recordsTable.getModel();
         Integer index = model.updateOrAdd(record);
         recordsTable.scrollRectToVisible(recordsTable.getCellRect(index, 0, true));
     }
