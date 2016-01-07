@@ -54,33 +54,32 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
         GridBagConstraints c = new GridBagConstraints();
 
 
-        c.anchor = GridBagConstraints.PAGE_START;
-        c.insets = new Insets(10, 10, 10, 10);
         c.gridx = 0;
         c.gridy = 0;
+        c.insets = new Insets(10, 10, 10, 10);
+        c.anchor = GridBagConstraints.LINE_START;
         pane.add(getFirstPart(), c);
 
-        c.anchor = GridBagConstraints.PAGE_START;
-        c.insets = new Insets(0, 10, 10, 10);
         c.gridx = 0;
         c.gridy = 1;
-        pane.add(getKitList(), c);
-
-        c.anchor = GridBagConstraints.PAGE_START;
-        c.insets = new Insets(0, 10, 10, 10);
-        c.gridx = 0;
-        c.gridy = 2;
-        c.fill = GridBagConstraints.BOTH;
         c.weightx = 1;
         c.weighty = 1;
-        pane.add(getSecondPart(), c);
-
-        c.anchor = GridBagConstraints.LINE_START;
+        c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(0, 10, 10, 10);
+        pane.add(getKitList(), c);
+
+        c.gridx = 0;
+        c.gridy = 2;
+        c.fill = GridBagConstraints.NONE;
+        pane.add(getColorCheckList(), c);
+
         c.gridx = 0;
         c.gridy = 3;
-        c.fill = GridBagConstraints.NONE;
-        pane.add(getThirdPart(), c);
+        pane.add(getKitControl(), c);
+
+        c.gridx = 0;
+        c.gridy = 4;
+        pane.add(getControl(), c);
     }
 
     public JPanel getFirstPart() {
@@ -138,7 +137,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
 
         c.gridx = 0;
         c.gridy = 0;
-        c.gridwidth = 4;
+        c.gridwidth = 3;
         panel.add(new JLabel("Kit list"), c);
 
         DefaultListModel<FishingKitEntity> model = new DefaultListModel<>();
@@ -153,6 +152,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
         c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(new JScrollPane(kitList), c);
+
 
         JButton addButton = new JButton("Add");
         addButton.addActionListener(this);
@@ -169,17 +169,10 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
         c.gridy = 2;
         panel.add(editButton, c);
 
-        JButton saveButton = new JButton("Save kit");
-        saveButton.addActionListener(this);
-        saveButton.setActionCommand("saveKit");
-        c.gridx = 2;
-        c.gridy = 2;
-        panel.add(saveButton, c);
-
         JButton deleteButton = new JButton("Delete");
         deleteButton.addActionListener(this);
         deleteButton.setActionCommand("deleteKit");
-        c.gridx = 3;
+        c.gridx = 2;
         c.gridy = 2;
         panel.add(deleteButton, c);
 
@@ -187,7 +180,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
         return panel;
     }
 
-    public JPanel getSecondPart() {
+    public JPanel getColorCheckList() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -231,7 +224,22 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
         return panel;
     }
 
-    public JPanel getThirdPart() {
+    public JPanel getKitControl() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+
+        JButton saveButton = new JButton("Save kit");
+        saveButton.addActionListener(this);
+        saveButton.setActionCommand("saveKit");
+        c.gridx = 0;
+        c.gridy = 0;
+        panel.add(saveButton, c);
+
+        return panel;
+    }
+
+    public JPanel getControl() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 

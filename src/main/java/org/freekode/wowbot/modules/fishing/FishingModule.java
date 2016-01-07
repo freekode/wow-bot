@@ -95,7 +95,9 @@ public class FishingModule extends Module implements ActionListener {
         recordsTable = new JTable(new FishingTableModel());
         recordsTable.setDefaultRenderer(Date.class, new DateRenderer("yyyy-MM-dd HH:mm:ss"));
         recordsTable.setDefaultRenderer(Color.class, new ColorCellRenderer());
-        JScrollPane scrollPane = new JScrollPane(recordsTable);
+        recordsTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
+        recordsTable.getColumnModel().getColumn(0).setPreferredWidth(150);
+        recordsTable.getColumnModel().getColumn(1).setPreferredWidth(25);
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
         c.gridy = 3;
@@ -103,7 +105,7 @@ public class FishingModule extends Module implements ActionListener {
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
-        panel.add(scrollPane, c);
+        panel.add(new JScrollPane(recordsTable), c);
 
 
         return panel;
