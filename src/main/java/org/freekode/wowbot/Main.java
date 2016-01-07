@@ -14,8 +14,8 @@ public class Main {
         MainUI mainUI = new MainUI(hotKey);
         mainUI.addModule(new FishingModule());
 //        mainUI.addModule(new TestModule());
-        mainUI.addModule(new TestMovingModule());
-        mainUI.addModule(new MoveModule());
+//        mainUI.addModule(new TestMovingModule());
+//        mainUI.addModule(new MoveModule());
         mainUI.start();
     }
 

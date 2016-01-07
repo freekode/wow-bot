@@ -4,10 +4,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.entity.fishing.FishingKitEntity;
 import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
-import org.freekode.wowbot.tools.ColorListRenderer;
-import org.freekode.wowbot.tools.StaticFunc;
+import org.freekode.wowbot.tools.ColorCellRenderer;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,17 +16,19 @@ import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class FishingOptionsUI extends JFrame implements ActionListener {
+public class FishingOptionsUI extends JFrame implements ActionListener, ListSelectionListener {
     private static final Logger logger = LogManager.getLogger(FishingOptionsUI.class);
     private FishingOptionsEntity optionsModel;
     private JFormattedTextField fishKey;
     private JFormattedTextField failTryings;
     private JList<FishingKitEntity> kitList;
-    private JList<Color> firstColorList;
-    private JList<Color> secondColorList;
-    private JList<Color> thirdColorList;
+    private ColorTable firstColorTable;
+    private ColorTable secondColorTable;
+    private ColorTable thirdColorTable;
 
 
     public void init(FishingOptionsEntity optionsModel) {
@@ -128,23 +131,101 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         return panel;
     }
 
+    public JPanel getKitList() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 4;
+        panel.add(new JLabel("Kit list"), c);
+
+        DefaultListModel<FishingKitEntity> model = new DefaultListModel<>();
+        for (FishingKitEntity elem : optionsModel.getKits()) {
+            model.addElement(elem);
+        }
+        kitList = new JList<>(model);
+        kitList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        kitList.addListSelectionListener(this);
+        c.gridx = 0;
+        c.gridy = 1;
+        c.weightx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(new JScrollPane(kitList), c);
+
+        JButton addButton = new JButton("Add");
+        addButton.addActionListener(this);
+        addButton.setActionCommand("addKit");
+        c.gridx = 0;
+        c.gridy = 2;
+        c.gridwidth = 1;
+        panel.add(addButton, c);
+
+        JButton editButton = new JButton("Edit");
+        editButton.addActionListener(this);
+        editButton.setActionCommand("editKit");
+        c.gridx = 1;
+        c.gridy = 2;
+        panel.add(editButton, c);
+
+        JButton saveButton = new JButton("Save kit");
+        saveButton.addActionListener(this);
+        saveButton.setActionCommand("saveKit");
+        c.gridx = 2;
+        c.gridy = 2;
+        panel.add(saveButton, c);
+
+        JButton deleteButton = new JButton("Delete");
+        deleteButton.addActionListener(this);
+        deleteButton.setActionCommand("deleteKit");
+        c.gridx = 3;
+        c.gridy = 2;
+        panel.add(deleteButton, c);
+
+
+        return panel;
+    }
+
     public JPanel getSecondPart() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
+
+        Set<Color> firstColorSet = new HashSet<>();
+        Set<Color> secondColorSet = new HashSet<>();
+        Set<Color> thirdColorSet = new HashSet<>();
+        for (FishingKitEntity kit : optionsModel.getKits()) {
+            for (Color color : kit.getFirstColors()) {
+                firstColorSet.add(color);
+            }
+
+            for (Color color : kit.getSecondColors()) {
+                secondColorSet.add(color);
+            }
+
+            for (Color color : kit.getThirdColors()) {
+                thirdColorSet.add(color);
+            }
+        }
+
+
+        firstColorTable = new ColorTable("Red", new ArrayList<>(firstColorSet));
         c.gridx = 0;
         c.gridy = 0;
         c.insets = new Insets(0, 0, 0, 10);
-        panel.add(getFirstColorList(), c);
+        panel.add(firstColorTable, c);
 
+        secondColorTable = new ColorTable("Blue", new ArrayList<>(secondColorSet));
         c.gridx = 1;
         c.gridy = 0;
-        panel.add(getSecondColorList(), c);
+        panel.add(secondColorTable, c);
 
+        thirdColorTable = new ColorTable("WhYe", new ArrayList<>(thirdColorSet));
         c.gridx = 2;
         c.gridy = 0;
         c.insets = new Insets(0, 0, 0, 0);
-        panel.add(getThirdColorList(), c);
+        panel.add(thirdColorTable, c);
 
 
         return panel;
@@ -176,174 +257,6 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         return panel;
     }
 
-    public JPanel getKitList() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-
-
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 2;
-        panel.add(new JLabel("Kit list"), c);
-
-        DefaultListModel<FishingKitEntity> listModel = new DefaultListModel<>();
-        for (FishingKitEntity elem : optionsModel.getKits()) {
-            listModel.addElement(elem);
-        }
-        kitList = new JList<>(listModel);
-        kitList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        c.gridx = 0;
-        c.gridy = 1;
-        panel.add(new JScrollPane(kitList), c);
-
-        JButton addButton = new JButton("Add");
-        addButton.addActionListener(this);
-        addButton.setActionCommand("addKit");
-        c.gridx = 0;
-        c.gridy = 2;
-        c.gridwidth = 1;
-        panel.add(addButton, c);
-
-        JButton removeButton = new JButton("-");
-        removeButton.addActionListener(this);
-        removeButton.setActionCommand("removeKit");
-        c.gridx = 1;
-        c.gridy = 2;
-        panel.add(removeButton, c);
-
-
-        return panel;
-    }
-
-    public JPanel getFirstColorList() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 2;
-        panel.add(new JLabel("Red"), c);
-
-        DefaultListModel<Color> listFirstModel = new DefaultListModel<>();
-        for (Color elem : optionsModel.getFirstColors()) {
-            listFirstModel.addElement(elem);
-        }
-        firstColorList = new JList<>(listFirstModel);
-        firstColorList.setCellRenderer(new ColorListRenderer());
-        firstColorList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        c.gridx = 0;
-        c.gridy = 1;
-        panel.add(new JScrollPane(firstColorList), c);
-
-        JButton addFirstColorButton = new JButton("+");
-        addFirstColorButton.addActionListener(this);
-        addFirstColorButton.setActionCommand("addFirstColor");
-        addFirstColorButton.setPreferredSize(new Dimension(20, 20));
-        addFirstColorButton.setMargin(new Insets(0, 0, 0, 0));
-        c.gridx = 0;
-        c.gridy = 2;
-        c.gridwidth = 1;
-        panel.add(addFirstColorButton, c);
-
-        JButton removeFirstColorButton = new JButton("-");
-        removeFirstColorButton.addActionListener(this);
-        removeFirstColorButton.setActionCommand("removeFirstColor");
-        removeFirstColorButton.setPreferredSize(new Dimension(20, 20));
-        removeFirstColorButton.setMargin(new Insets(0, 0, 0, 0));
-        c.gridx = 1;
-        c.gridy = 2;
-        panel.add(removeFirstColorButton, c);
-
-
-        return panel;
-    }
-
-    public JPanel getSecondColorList() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 2;
-        panel.add(new JLabel("Blue"), c);
-
-        DefaultListModel<Color> listModel = new DefaultListModel<>();
-        for (Color elem : optionsModel.getSecondColors()) {
-            listModel.addElement(elem);
-        }
-        secondColorList = new JList<>(listModel);
-        secondColorList.setCellRenderer(new ColorListRenderer());
-        secondColorList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        c.gridx = 0;
-        c.gridy = 1;
-        panel.add(new JScrollPane(secondColorList), c);
-
-        JButton addColorButton = new JButton("+");
-        addColorButton.addActionListener(this);
-        addColorButton.setActionCommand("addSecondColor");
-        addColorButton.setPreferredSize(new Dimension(20, 20));
-        addColorButton.setMargin(new Insets(0, 0, 0, 0));
-        c.gridx = 0;
-        c.gridy = 2;
-        c.gridwidth = 1;
-        panel.add(addColorButton, c);
-
-        JButton removeColorButton = new JButton("-");
-        removeColorButton.addActionListener(this);
-        removeColorButton.setActionCommand("removeSecondColor");
-        removeColorButton.setPreferredSize(new Dimension(20, 20));
-        removeColorButton.setMargin(new Insets(0, 0, 0, 0));
-        c.gridx = 1;
-        c.gridy = 2;
-        panel.add(removeColorButton, c);
-
-
-        return panel;
-    }
-
-    public JPanel getThirdColorList() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 2;
-        panel.add(new JLabel("WhYe"), c);
-
-        DefaultListModel<Color> listModel = new DefaultListModel<>();
-        for (Color elem : optionsModel.getThirdColors()) {
-            listModel.addElement(elem);
-        }
-        thirdColorList = new JList<>(listModel);
-        thirdColorList.setCellRenderer(new ColorListRenderer());
-        thirdColorList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        c.gridx = 0;
-        c.gridy = 1;
-        panel.add(new JScrollPane(thirdColorList), c);
-
-        JButton addColorButton = new JButton("+");
-        addColorButton.addActionListener(this);
-        addColorButton.setActionCommand("addThirdColor");
-        addColorButton.setPreferredSize(new Dimension(20, 20));
-        addColorButton.setMargin(new Insets(0, 0, 0, 0));
-        c.gridx = 0;
-        c.gridy = 2;
-        c.gridwidth = 1;
-        panel.add(addColorButton, c);
-
-        JButton removeColorButton = new JButton("-");
-        removeColorButton.addActionListener(this);
-        removeColorButton.setActionCommand("removeThirdColor");
-        removeColorButton.setPreferredSize(new Dimension(20, 20));
-        removeColorButton.setMargin(new Insets(0, 0, 0, 0));
-        c.gridx = 1;
-        c.gridy = 2;
-        panel.add(removeColorButton, c);
-
-
-        return panel;
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if ("saveOptions".equals(e.getActionCommand())) {
@@ -351,70 +264,14 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
             dispose();
         } else if ("close".equals(e.getActionCommand())) {
             dispose();
-        } else if ("addFirstColor".equals(e.getActionCommand())) {
-            addFirstColor();
-        } else if ("removeFirstColor".equals(e.getActionCommand())) {
-            removeFirstColor();
-        } else if ("addSecondColor".equals(e.getActionCommand())) {
-            addSecondColor();
-        } else if ("removeSecondColor".equals(e.getActionCommand())) {
-            removeSecondColor();
-        } else if ("addThirdColor".equals(e.getActionCommand())) {
-            addThirdColor();
-        } else if ("removeThirdColor".equals(e.getActionCommand())) {
-            removeThirdColor();
         } else if ("addKit".equals(e.getActionCommand())) {
             addKit();
-        } else if ("removeKit".equals(e.getActionCommand())) {
-            removeKit();
-        }
-    }
-
-    public void addFirstColor() {
-        Color newColor = JColorChooser.showDialog(this, "Add first color", null);
-        if (newColor != null) {
-            DefaultListModel<Color> model = (DefaultListModel<Color>) firstColorList.getModel();
-            model.addElement(newColor);
-        }
-    }
-
-    public void removeFirstColor() {
-        int index = firstColorList.getSelectedIndex();
-        if (index > -1) {
-            DefaultListModel<Color> model = (DefaultListModel<Color>) firstColorList.getModel();
-            model.remove(index);
-        }
-    }
-
-    public void addSecondColor() {
-        Color newColor = JColorChooser.showDialog(this, "Add first color", null);
-        if (newColor != null) {
-            DefaultListModel<Color> model = (DefaultListModel<Color>) secondColorList.getModel();
-            model.addElement(newColor);
-        }
-    }
-
-    public void removeSecondColor() {
-        int index = secondColorList.getSelectedIndex();
-        if (index > -1) {
-            DefaultListModel<Color> model = (DefaultListModel<Color>) secondColorList.getModel();
-            model.remove(index);
-        }
-    }
-
-    public void addThirdColor() {
-        Color newColor = JColorChooser.showDialog(this, "Add third color", null);
-        if (newColor != null) {
-            DefaultListModel<Color> model = (DefaultListModel<Color>) thirdColorList.getModel();
-            model.addElement(newColor);
-        }
-    }
-
-    public void removeThirdColor() {
-        int index = thirdColorList.getSelectedIndex();
-        if (index > -1) {
-            DefaultListModel<Color> model = (DefaultListModel<Color>) thirdColorList.getModel();
-            model.remove(index);
+        } else if ("deleteKit".equals(e.getActionCommand())) {
+            deleteKit();
+        } else if ("editKit".equals(e.getActionCommand())) {
+            editKit();
+        } else if ("saveKit".equals(e.getActionCommand())) {
+            saveKit();
         }
     }
 
@@ -422,29 +279,12 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         optionsModel.setFailTryings(Integer.valueOf(failTryings.getText()));
         optionsModel.setFishKey(fishKey.getText());
 
-        DefaultListModel<Color> modelFirst = (DefaultListModel<Color>) firstColorList.getModel();
-        List<Color> colors = new ArrayList<>();
-        for (int i = 0; i < modelFirst.getSize(); i++) {
-            colors.add(modelFirst.get(i));
+        DefaultListModel<FishingKitEntity> kitListModel = (DefaultListModel<FishingKitEntity>) kitList.getModel();
+        List<FishingKitEntity> kitList = new ArrayList<>();
+        for (int i = 0; i < kitListModel.size(); i++) {
+            kitList.add(kitListModel.get(i));
         }
-        optionsModel.setFirstColors(colors);
-
-        DefaultListModel<Color> modelSecond = (DefaultListModel<Color>) secondColorList.getModel();
-        colors = new ArrayList<>();
-        for (int i = 0; i < modelSecond.getSize(); i++) {
-            colors.add(modelSecond.get(i));
-        }
-        optionsModel.setSecondColors(colors);
-
-        DefaultListModel<Color> modelThird = (DefaultListModel<Color>) thirdColorList.getModel();
-        colors = new ArrayList<>();
-        for (int i = 0; i < modelThird.getSize(); i++) {
-            colors.add(modelThird.get(i));
-        }
-        optionsModel.setThirdColors(colors);
-
-
-        StaticFunc.saveProperties("fishing", optionsModel.getMap());
+        optionsModel.setKits(kitList);
 
 
         firePropertyChange("saveOptions", null, optionsModel);
@@ -452,15 +292,143 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
 
     public void addKit() {
         String name = JOptionPane.showInputDialog(this, "Input name", "Add kit", JOptionPane.PLAIN_MESSAGE);
-        DefaultListModel<FishingKitEntity> model = (DefaultListModel<FishingKitEntity>) kitList.getModel();
-        model.addElement(new FishingKitEntity(name));
+        if (name != null) {
+            DefaultListModel<FishingKitEntity> model = (DefaultListModel<FishingKitEntity>) kitList.getModel();
+            FishingKitEntity newKit = new FishingKitEntity(name);
+            model.addElement(newKit);
+            kitList.setSelectedValue(newKit, true);
+        }
     }
 
-    public void removeKit() {
+    public void editKit() {
+    }
+
+    public void saveKit() {
+        DefaultListModel<FishingKitEntity> model = (DefaultListModel<FishingKitEntity>) kitList.getModel();
+        int index = kitList.getSelectedIndex();
+        if (index > -1) {
+            FishingKitEntity kit = model.get(index);
+            kit.setFirstColors(firstColorTable.getSelectedColors());
+            kit.setSecondColors(secondColorTable.getSelectedColors());
+            kit.setThirdColors(thirdColorTable.getSelectedColors());
+        }
+    }
+
+    public void deleteKit() {
         int index = kitList.getSelectedIndex();
         if (index > -1) {
             DefaultListModel<FishingKitEntity> model = (DefaultListModel<FishingKitEntity>) kitList.getModel();
             model.remove(index);
+        }
+    }
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        DefaultListModel<FishingKitEntity> model = (DefaultListModel<FishingKitEntity>) kitList.getModel();
+        int index = kitList.getSelectedIndex();
+        if (index > -1) {
+            FishingKitEntity kit = model.get(index);
+            firstColorTable.setSelectedColors(kit.getFirstColors());
+            secondColorTable.setSelectedColors(kit.getSecondColors());
+            thirdColorTable.setSelectedColors(kit.getThirdColors());
+        }
+    }
+
+    public class ColorTable extends JPanel {
+        private JTable table;
+
+
+        public ColorTable(String title, List<Color> colors) {
+            setLayout(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+
+            c.gridx = 0;
+            c.gridy = 0;
+            c.gridwidth = 2;
+            add(new JLabel(title), c);
+
+            CheckColorModel model = new CheckColorModel();
+            for (Color elem : colors) {
+                model.add(false, elem);
+            }
+            table = new JTable(model);
+            table.setDefaultRenderer(Color.class, new ColorCellRenderer());
+            table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            table.getColumnModel().getColumn(0).setPreferredWidth(26);
+            table.setTableHeader(null);
+            JScrollPane scrollPane = new JScrollPane(table);
+            scrollPane.setPreferredSize(new Dimension(80, 165));
+            c.insets = new Insets(0, 0, 0, 0);
+            c.gridx = 0;
+            c.gridy = 1;
+            add(scrollPane, c);
+
+
+            ActionColorListener colorListener = new ActionColorListener(table);
+
+            JButton addButton = new JButton("Add");
+            addButton.addActionListener(colorListener);
+            addButton.setActionCommand("add");
+//            addButton.setPreferredSize(new Dimension(20, 20));
+            addButton.setMargin(new Insets(0, 5, 0, 5));
+            c.gridx = 0;
+            c.gridy = 2;
+            c.gridwidth = 1;
+            add(addButton, c);
+
+            JButton deleteButton = new JButton("Del");
+            deleteButton.addActionListener(colorListener);
+            deleteButton.setActionCommand("delete");
+//            deleteButton.setPreferredSize(new Dimension(20, 20));
+            deleteButton.setMargin(new Insets(0, 5, 0, 5));
+            c.anchor = GridBagConstraints.LINE_END;
+            c.gridx = 1;
+            c.gridy = 2;
+            add(deleteButton, c);
+        }
+
+        public List<Color> getSelectedColors() {
+            CheckColorModel model = (CheckColorModel) table.getModel();
+            return model.getSelected();
+        }
+
+        public void setSelectedColors(List<Color> colors) {
+            CheckColorModel model = (CheckColorModel) table.getModel();
+            model.setSelected(colors);
+        }
+
+        public class ActionColorListener implements ActionListener {
+            private JTable table;
+
+
+            public ActionColorListener(JTable table) {
+                this.table = table;
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if ("add".equals(e.getActionCommand())) {
+                    add();
+                } else if ("delete".equals(e.getActionCommand())) {
+                    delete();
+                }
+            }
+
+            public void add() {
+                Color newColor = JColorChooser.showDialog(FishingOptionsUI.this, "Add color", null);
+                if (newColor != null) {
+                    CheckColorModel model = (CheckColorModel) table.getModel();
+                    model.add(false, newColor);
+                }
+            }
+
+            public void delete() {
+                int index = table.getSelectedRow();
+                if (index > -1) {
+                    CheckColorModel model = (CheckColorModel) table.getModel();
+                    model.delete(index);
+                }
+            }
         }
     }
 }

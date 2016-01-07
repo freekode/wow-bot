@@ -1,5 +1,8 @@
 package org.freekode.wowbot.tools;
 
+import com.esotericsoftware.yamlbeans.YamlException;
+import com.esotericsoftware.yamlbeans.YamlReader;
+import com.esotericsoftware.yamlbeans.YamlWriter;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
@@ -254,5 +257,33 @@ public class StaticFunc {
         } catch (ConfigurationException e) {
             logger.info("saving config has failed");
         }
+    }
+
+    public static Map<String, Object> loadYaml(String filename, String prefix) {
+        try {
+            YamlReader reader = new YamlReader(new FileReader(filename));
+            Map<String, Object> map = (Map<String, Object>) ((Map) reader.read()).get(prefix);
+            if (map != null) {
+                return map;
+            }
+        } catch (FileNotFoundException | YamlException e) {
+            logger.info("loading config has failed");
+        }
+
+        return new HashMap<>();
+    }
+
+    public static void saveYaml(String filename, String prefix, Map<String, Object> values) {
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put(prefix, values);
+
+            YamlWriter writer = new YamlWriter(new FileWriter(filename));
+            writer.write(map);
+            writer.close();
+        } catch (IOException e) {
+            logger.info("saving config has failed");
+        }
+
     }
 }

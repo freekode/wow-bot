@@ -6,9 +6,9 @@ import org.freekode.wowbot.beans.ai.FishingAI;
 import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
 import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
-import org.freekode.wowbot.entity.fishing.FishingTableEntity;
 import org.freekode.wowbot.modules.Module;
 import org.freekode.wowbot.tools.ColorCellRenderer;
+import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.DateRenderer;
 import org.freekode.wowbot.tools.StaticFunc;
 
@@ -34,8 +34,9 @@ public class FishingModule extends Module implements ActionListener {
 
 
     public FishingModule() {
-        Map<String, Object> config = StaticFunc.loadProperties("fishing");
-        optionsModel = new FishingOptionsEntity(config);
+        Map<String, Object> config = StaticFunc.loadYaml(ConfigKeys.YAML_CONFIG_FILENAME, "fishing");
+        optionsModel = new FishingOptionsEntity();
+        optionsModel.parse(config);
 
         ui = buildInterface();
         buildAI();
@@ -91,7 +92,7 @@ public class FishingModule extends Module implements ActionListener {
 
 
         // row 3
-        recordsTable = new JTable(new FishingTableEntity());
+        recordsTable = new JTable(new FishingTableModel());
         recordsTable.setDefaultRenderer(Date.class, new DateRenderer("yyyy-MM-dd HH:mm:ss"));
         recordsTable.setDefaultRenderer(Color.class, new ColorCellRenderer());
         JScrollPane scrollPane = new JScrollPane(recordsTable);
@@ -134,7 +135,7 @@ public class FishingModule extends Module implements ActionListener {
             }
         }
 
-        FishingTableEntity model = (FishingTableEntity) recordsTable.getModel();
+        FishingTableModel model = (FishingTableModel) recordsTable.getModel();
         Integer index = model.updateOrAdd(record);
         recordsTable.scrollRectToVisible(recordsTable.getCellRect(index, 0, true));
     }
@@ -162,6 +163,8 @@ public class FishingModule extends Module implements ActionListener {
     }
 
     public void saveOptions(FishingOptionsEntity options) {
+//        StaticFunc.saveProperties("fishing", optionsModel.getMap());
+        StaticFunc.saveYaml(ConfigKeys.YAML_CONFIG_FILENAME, "fishing", optionsModel.getMap());
         optionsModel = options;
         buildAI();
 

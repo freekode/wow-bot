@@ -13,71 +13,14 @@ public class FishingOptionsEntity {
     private List<Color> thirdColors;
 
 
-    public FishingOptionsEntity(Map<String, Object> config) {
+    public FishingOptionsEntity() {
+        fishKey = "=";
+        failTryings = 5;
         kits = new ArrayList<>();
 
-        Object fishKeyObject = config.get("fishingKey");
-        if (fishKeyObject != null) {
-            fishKey = fishKeyObject.toString();
-        } else {
-            fishKey = "=";
-        }
-
-
-        Object failTryingsObject = config.get("failTryings");
-        if (failTryingsObject != null) {
-            failTryings = Integer.valueOf(failTryingsObject.toString());
-        } else {
-            failTryings = 5;
-        }
-
-
-        firstColors = new LinkedList<>();
-        Object firstColorsObject = config.get("firstColors");
-        if (firstColorsObject != null) {
-            for (String hexColor : (List<String>) firstColorsObject) {
-                firstColors.add(Color.decode(hexColor));
-            }
-        } else {
-            firstColors.add(Color.decode("#6b240e"));
-            firstColors.add(Color.decode("#4d160e"));
-            firstColors.add(Color.decode("#c62f12"));
-            firstColors.add(Color.decode("#94260b"));
-            firstColors.add(Color.decode("#49150a"));
-            firstColors.add(Color.decode("#341209"));
-        }
-
-
-        secondColors = new LinkedList<>();
-        Object secondColorObject = config.get("secondColors");
-        if (secondColorObject != null) {
-            for (String hexColor : (List<String>) secondColorObject) {
-                secondColors.add(Color.decode(hexColor));
-            }
-        } else {
-            secondColors.add(Color.decode("#353c59"));
-            secondColors.add(Color.decode("#2f3756"));
-            secondColors.add(Color.decode("#4d5363"));
-            secondColors.add(Color.decode("#626574"));
-            secondColors.add(Color.decode("#1e2d4a"));
-            secondColors.add(Color.decode("#17263d"));
-        }
-
-
-        thirdColors = new LinkedList<>();
-        Object thirdColorObject = config.get("thirdColors");
-        if (thirdColorObject != null) {
-            for (String hexColor : (List<String>) thirdColorObject) {
-                thirdColors.add(Color.decode(hexColor));
-            }
-        } else {
-            thirdColors.add(Color.decode("#6a5344"));
-            thirdColors.add(Color.decode("#756051"));
-            thirdColors.add(Color.decode("#4d4030"));
-            thirdColors.add(Color.decode("#624d38"));
-            thirdColors.add(Color.decode("#504d3e"));
-            thirdColors.add(Color.decode("#42453a"));
-        }
+        firstColors = new ArrayList<>();
+        secondColors = new ArrayList<>();
+        thirdColors = new ArrayList<>();
     }
 
     public String getFishKey() {
@@ -120,35 +63,78 @@ public class FishingOptionsEntity {
         this.thirdColors = thirdColors;
     }
 
+    public List<FishingKitEntity> getKits() {
+        return kits;
+    }
+
+    public void setKits(List<FishingKitEntity> kits) {
+        this.kits = kits;
+    }
+
+    public void parse(Map<String, Object> config) {
+        kits = new ArrayList<>();
+
+        Object fishKeyObject = config.get("fishingKey");
+        if (fishKeyObject != null) {
+            fishKey = fishKeyObject.toString();
+        }
+
+
+        Object failTryingsObject = config.get("failTryings");
+        if (failTryingsObject != null) {
+            failTryings = Integer.valueOf(failTryingsObject.toString());
+        }
+
+
+        kits = new ArrayList<>();
+        List<Map<String, Object>> kitsMap = (List<Map<String, Object>>) config.get("kits");
+        for (Map<String, Object> kitMap : kitsMap) {
+            FishingKitEntity kit = new FishingKitEntity();
+            kit.parse(kitMap);
+            kits.add(kit);
+        }
+
+
+//        firstColors = new LinkedList<>();
+//        firstColors.add(Color.decode("#6b240e"));
+//        firstColors.add(Color.decode("#4d160e"));
+//        firstColors.add(Color.decode("#c62f12"));
+//        firstColors.add(Color.decode("#94260b"));
+//        firstColors.add(Color.decode("#49150a"));
+//        firstColors.add(Color.decode("#341209"));
+//
+//
+//        secondColors = new LinkedList<>();
+//        secondColors.add(Color.decode("#353c59"));
+//        secondColors.add(Color.decode("#2f3756"));
+//        secondColors.add(Color.decode("#4d5363"));
+//        secondColors.add(Color.decode("#626574"));
+//        secondColors.add(Color.decode("#1e2d4a"));
+//        secondColors.add(Color.decode("#17263d"));
+//
+//
+//        thirdColors = new LinkedList<>();
+//        thirdColors.add(Color.decode("#6a5344"));
+//        thirdColors.add(Color.decode("#756051"));
+//        thirdColors.add(Color.decode("#4d4030"));
+//        thirdColors.add(Color.decode("#624d38"));
+//        thirdColors.add(Color.decode("#504d3e"));
+//        thirdColors.add(Color.decode("#42453a"));
+    }
+
     public Map<String, Object> getMap() {
         Map<String, Object> out = new HashMap<>();
 
         out.put("fishKey", fishKey);
         out.put("failTryings", failTryings);
 
-        List<String> firstColorHex = new ArrayList<>();
-        for (Color color : firstColors) {
-            firstColorHex.add(String.format("#%06X", (0xFFFFFF & color.getRGB())));
+        List<Object> kitsList = new ArrayList<>();
+        for (FishingKitEntity kit : kits) {
+            kitsList.add(kit.getMap());
         }
-        out.put("firstColors", firstColorHex);
-
-        List<String> secondColorHex = new ArrayList<>();
-        for (Color color : secondColors) {
-            secondColorHex.add(String.format("#%06X", (0xFFFFFF & color.getRGB())));
-        }
-        out.put("secondColors", secondColorHex);
-
-        List<String> thirdColorHex = new ArrayList<>();
-        for (Color color : thirdColors) {
-            thirdColorHex.add(String.format("#%06X", (0xFFFFFF & color.getRGB())));
-        }
-        out.put("thirdColors", thirdColorHex);
+        out.put("kits", kitsList);
 
 
         return out;
-    }
-
-    public List<FishingKitEntity> getKits() {
-        return kits;
     }
 }

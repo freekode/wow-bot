@@ -1,4 +1,6 @@
-package org.freekode.wowbot.entity.fishing;
+package org.freekode.wowbot.modules.fishing;
+
+import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
 
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
@@ -6,7 +8,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FishingTableEntity extends AbstractTableModel {
+public class FishingTableModel extends AbstractTableModel {
     private String[] columnNames = {"Date", "Caught", "1", "2", "3"};
     private Class[] columnClasses = {Date.class, Boolean.class, Color.class, Color.class, Color.class};
     private List<FishingRecordEntity> data = new LinkedList<>();
