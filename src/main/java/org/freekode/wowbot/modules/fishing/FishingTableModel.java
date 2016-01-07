@@ -9,8 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FishingTableModel extends AbstractTableModel {
-    private String[] columnNames = {"Date", "Caught", "1", "2", "3"};
-    private Class[] columnClasses = {Date.class, Boolean.class, Color.class, Color.class, Color.class};
+    private String[] columnNames = {"Date", "Kit name",  "Caught", "1", "2", "3"};
+    private Class[] columnClasses = {Date.class, String.class, Boolean.class, Color.class, Color.class, Color.class};
     private List<FishingRecordEntity> data = new LinkedList<>();
 
 

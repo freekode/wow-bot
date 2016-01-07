@@ -7,8 +7,8 @@ import java.util.List;
 
 public class FishingRecordEntity {
     private Date date;
-    private Boolean caught;
     private String kitName;
+    private Boolean caught;
     private Color first;
     private Color second;
     private Color third;
@@ -65,6 +65,7 @@ public class FishingRecordEntity {
     public List<Object> toList() {
         List<Object> list = new LinkedList<>();
         list.add(date);
+        list.add(kitName);
         list.add(caught);
         list.add(first);
         list.add(second);

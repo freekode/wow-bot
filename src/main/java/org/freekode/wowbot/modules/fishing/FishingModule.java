@@ -97,7 +97,8 @@ public class FishingModule extends Module implements ActionListener {
         recordsTable.setDefaultRenderer(Color.class, new ColorCellRenderer());
         recordsTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
         recordsTable.getColumnModel().getColumn(0).setPreferredWidth(120);
-        recordsTable.getColumnModel().getColumn(1).setPreferredWidth(25);
+        recordsTable.getColumnModel().getColumn(1).setPreferredWidth(120);
+        recordsTable.getColumnModel().getColumn(2).setPreferredWidth(30);
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
         c.gridy = 3;

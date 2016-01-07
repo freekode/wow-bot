@@ -75,6 +75,7 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
             Color redColor = new Color(bobberPoint[2]);
             logger.info("first color found = " + redColor.toString());
             record.setFirst(redColor);
+            record.setKitName(currentKit.getName());
             send(record);
 
 
