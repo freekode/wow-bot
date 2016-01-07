@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 
 public class Driver {
     private static final Logger logger = LogManager.getLogger(Driver.class);
+    private static final int AUTO_DELAY_MS = 40;
     private static Driver INSTANCE;
     /**
      * operated rectangle of window
@@ -27,7 +28,7 @@ public class Driver {
 
         try {
             robot = new Robot();
-            robot.setAutoDelay(50);
+//            robot.setAutoDelay(50);
         } catch (AWTException e) {
             logger.error("exception during creating of robot", e);
         }
@@ -41,13 +42,13 @@ public class Driver {
         return INSTANCE;
     }
 
-    public void centerMouse() {
+    public void centerMouse() throws InterruptedException {
         int centerX = (int) (window.getX() + window.getWidth() / 2);
         int centerY = (int) (window.getY() + window.getHeight() / 2) - 11;
         mouse(centerX, centerY);
     }
 
-    public void mouseForGather(int stepNum, Integer steps) {
+    public void mouseForGather(int stepNum, Integer steps) throws InterruptedException {
         if (steps == null) {
             steps = 5;
         }
@@ -81,8 +82,9 @@ public class Driver {
         Thread.sleep(500);
     }
 
-    public void mouse(int x, int y) {
+    public void mouse(int x, int y) throws InterruptedException {
         robot.mouseMove(x, y);
+        Thread.sleep(AUTO_DELAY_MS);
     }
 
     public void run(double distance) throws InterruptedException {
@@ -113,47 +115,58 @@ public class Driver {
      *
      * @param rad difference of angle
      */
-    public void mouseYaw(double rad) {
+    public void mouseYaw(double rad) throws InterruptedException {
         int interval = ((int) (rad / 0.005)) * ConfigKeys.MOUSE_YAW_DOUBLE_O_ONE;
 
         centerMouse();
         Point mousePoint = MouseInfo.getPointerInfo().getLocation();
 
         robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
+        Thread.sleep(AUTO_DELAY_MS);
         robot.mouseMove(mousePoint.x + interval, mousePoint.y);
+        Thread.sleep(AUTO_DELAY_MS);
         robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
+        Thread.sleep(AUTO_DELAY_MS);
     }
 
-    public void pitchInit() {
+    public void pitchInit() throws InterruptedException {
         mousePitch(-0.01);
         mousePitch(0.01);
     }
 
-    public void mousePitch(double rad) {
+    public void mousePitch(double rad) throws InterruptedException {
         int interval = ((int) (rad / 0.01)) * ConfigKeys.MOUSE_PITCH_DOUBLE_O_TWO;
 
         centerMouse();
         Point mousePoint = MouseInfo.getPointerInfo().getLocation();
 
         robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
+        Thread.sleep(AUTO_DELAY_MS);
         robot.mouseMove(mousePoint.x, mousePoint.y + interval);
+        Thread.sleep(AUTO_DELAY_MS);
         robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
+        Thread.sleep(AUTO_DELAY_MS);
     }
 
     public void fpv() throws InterruptedException {
         robot.keyPress(KeyEvent.VK_END);
+        Thread.sleep(AUTO_DELAY_MS);
         robot.keyRelease(KeyEvent.VK_END);
 
         robot.keyPress(KeyEvent.VK_HOME);
+        Thread.sleep(AUTO_DELAY_MS);
         robot.keyRelease(KeyEvent.VK_HOME);
 
         robot.keyPress(KeyEvent.VK_HOME);
+        Thread.sleep(AUTO_DELAY_MS);
         robot.keyRelease(KeyEvent.VK_HOME);
 
         robot.keyPress(KeyEvent.VK_HOME);
+        Thread.sleep(AUTO_DELAY_MS);
         robot.keyRelease(KeyEvent.VK_HOME);
 
         robot.keyPress(KeyEvent.VK_HOME);
+        Thread.sleep(AUTO_DELAY_MS);
         robot.keyRelease(KeyEvent.VK_HOME);
 
         Thread.sleep(3500);
@@ -186,9 +199,11 @@ public class Driver {
         }
     }
 
-    public void pressKey(int keyCode) {
+    public void pressKey(int keyCode) throws InterruptedException {
         robot.keyPress(keyCode);
+        Thread.sleep(AUTO_DELAY_MS);
         robot.keyRelease(keyCode);
+        Thread.sleep(AUTO_DELAY_MS);
     }
 
     public Robot getRobot() {

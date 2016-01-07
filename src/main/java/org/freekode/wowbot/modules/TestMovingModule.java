@@ -160,11 +160,10 @@ public class TestMovingModule extends Module implements ActionListener {
 
         try {
             ai.setAzimuth(newAzimuth);
+            logger.info("current azimuth = " + ai.getController().getReceiver().getAzimuth());
         } catch (InterruptedException e) {
             logger.info("azimuth test exception", e);
         }
-
-        logger.info("current azimuth = " + ai.getController().getReceiver().getAzimuth());
     }
 
     public void setAzimuthByKey() {
@@ -173,20 +172,22 @@ public class TestMovingModule extends Module implements ActionListener {
 
         try {
             ai.setAzimuthByKey(newAzimuth);
+            logger.info("current azimuth = " + ai.getController().getReceiver().getAzimuth());
         } catch (InterruptedException e) {
             logger.info("azimuth test exception", e);
         }
-
-        logger.info("current azimuth = " + ai.getController().getReceiver().getAzimuth());
     }
 
     public void setPitch() {
         Double newPitch = new Double(pitchField.getText());
         logger.info("new pitch = " + newPitch);
 
-        ai.setPitch(newPitch);
-
-        logger.info("current pitch = " + ai.getController().getReceiver().getPitch());
+        try {
+            ai.setPitch(newPitch);
+            logger.info("current pitch = " + ai.getController().getReceiver().getPitch());
+        } catch (InterruptedException e) {
+            logger.info("pitch test exception", e);
+        }
     }
 
     public void run() {
@@ -196,12 +197,12 @@ public class TestMovingModule extends Module implements ActionListener {
 
         try {
             ai.run(distance);
+
+            Vector3D newLocation = ai.getController().getCoordinates();
+            logger.info("real distance = " + Vector3D.distance(currentLocation, newLocation));
         } catch (InterruptedException e) {
             logger.info("run test exception", e);
         }
-
-        Vector3D newLocation = ai.getController().getCoordinates();
-        logger.info("real distance = " + Vector3D.distance(currentLocation, newLocation));
     }
 
     public void gatherHerb() {

@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.entity.fishing.FishingKitEntity;
 import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
 import org.freekode.wowbot.tools.ColorListRenderer;
+import org.freekode.wowbot.tools.StaticFunc;
 
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
@@ -116,7 +117,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
 
         failTryings = new JFormattedTextField(NumberFormat.getNumberInstance());
         failTryings.setPreferredSize(new Dimension(40, 20));
-        failTryings.setValue(Integer.valueOf(optionsModel.getFailTryings()));
+        failTryings.setValue(optionsModel.getFailTryings());
         c.gridx = 1;
         c.gridy = 1;
         c.insets = new Insets(0, 0, 0, 0);
@@ -418,7 +419,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
     }
 
     public void saveOptions() {
-        optionsModel.setFailTryings(failTryings.getText());
+        optionsModel.setFailTryings(Integer.valueOf(failTryings.getText()));
         optionsModel.setFishKey(fishKey.getText());
 
         DefaultListModel<Color> modelFirst = (DefaultListModel<Color>) firstColorList.getModel();
@@ -441,6 +442,9 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
             colors.add(modelThird.get(i));
         }
         optionsModel.setThirdColors(colors);
+
+
+        StaticFunc.saveProperties("fishing", optionsModel.getMap());
 
 
         firePropertyChange("saveOptions", null, optionsModel);

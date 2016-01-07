@@ -2,6 +2,7 @@ package org.freekode.wowbot.tools;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class ColorListRenderer extends JLabel implements ListCellRenderer<Color> {
@@ -12,9 +13,10 @@ public class ColorListRenderer extends JLabel implements ListCellRenderer<Color>
     @Override
     public Component getListCellRendererComponent(JList<? extends Color> list, Color value, int index, boolean isSelected, boolean cellHasFocus) {
         setBackground(value);
-//        setText(String.format("#%06X", (0xFFFFFF & value.getRGB())));
+        setText(String.format("#%06X", (0xFFFFFF & value.getRGB())));
+        setForeground(new Color((0xFFFFFF - value.getRGB())));
 
-        setPreferredSize(new Dimension(20, 20));
+//        setPreferredSize(new Dimension(20, 20));
 
         if (isSelected) {
             Border selectedBorder = BorderFactory.createMatteBorder(2, 2, 2, 2, list.getSelectionBackground());

@@ -3,6 +3,9 @@ package org.freekode.wowbot.tools;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,6 +18,9 @@ import java.awt.image.DataBufferByte;
 import java.io.*;
 import java.util.Date;
 import java.util.LinkedList;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -178,44 +184,34 @@ public class StaticFunc {
         return null;
     }
 
-    public static String buildCsvFile(List<CharacterRecordEntity> records) {
-        StringBuilder out = new StringBuilder();
-
-        for (CharacterRecordEntity record : records) {
-            out.append(record.getDate().getTime()).append(";")
-                    .append(record.getCoordinates().getX()).append(";")
-                    .append(record.getCoordinates().getY()).append(";")
-                    .append(record.getAction()).append("\n");
-        }
-
-        return out.toString();
-    }
-
-    public static List<CharacterRecordEntity> parseCsvFile(File file) {
-        Pattern pattern = Pattern.compile("([\\d\\.]*);([\\d\\.]*);([\\d\\.]*);(.*)");
-        List<CharacterRecordEntity> records = new LinkedList<>();
+    public static Map<String, Object> loadProperties(String prefix) {
+        Map<String, Object> out = new HashMap<>();
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-            String line;
+            Configuration configuration = new PropertiesConfiguration(ConfigKeys.PROPERTIES_FILENAME);
+            Iterator<String> iterator = configuration.getKeys(prefix);
+            while (iterator.hasNext()) {
+                String key = iterator.next();
+                Object value = configuration.getProperty(key);
 
-            while ((line = reader.readLine()) != null) {
-                Matcher matcher = pattern.matcher(line);
-
-                if (matcher.find()) {
-
-                    Date date = new Date(new Long(matcher.group(1)));
-                    Double x = new Double(matcher.group(2));
-                    Double y = new Double(matcher.group(3));
-                    CharacterRecordEntity.Action action = CharacterRecordEntity.Action.valueOf(matcher.group(4));
-
-                    records.add(new CharacterRecordEntity(date, new Vector3D(x, y, 0), action));
-                }
+                out.put(key.replaceFirst("^\\w*\\.", ""), value);
             }
+        } catch (ConfigurationException e) {
+            logger.info("loading config has failed");
+        }
 
-            return records;
-        } catch (IOException e) {
-            return new LinkedList<>();
+        return out;
+    }
+
+    public static void saveProperties(String prefix, Map<String, Object> values) {
+        try {
+            PropertiesConfiguration configuration = new PropertiesConfiguration(ConfigKeys.PROPERTIES_FILENAME);
+            for (Map.Entry<String, Object> entry : values.entrySet()) {
+                configuration.setProperty(prefix + "." + entry.getKey(), entry.getValue());
+            }
+            configuration.save();
+        } catch (ConfigurationException e) {
+            logger.info("saving config has failed");
         }
     }
 }
