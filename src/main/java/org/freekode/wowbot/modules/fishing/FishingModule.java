@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.ai.FishingAI;
 import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.modules.Module;
-import org.freekode.wowbot.tools.ColorRenderer;
+import org.freekode.wowbot.tools.ColorCellRenderer;
 import org.freekode.wowbot.tools.DateRenderer;
 import org.freekode.wowbot.tools.StaticFunc;
 
@@ -90,7 +90,7 @@ public class FishingModule extends Module implements ActionListener {
         // row 3
         recordsTable = new JTable(new FishingTableModel());
         recordsTable.setDefaultRenderer(Date.class, new DateRenderer("yyyy-MM-dd HH:mm:ss"));
-        recordsTable.setDefaultRenderer(Color.class, new ColorRenderer());
+        recordsTable.setDefaultRenderer(Color.class, new ColorCellRenderer());
         JScrollPane scrollPane = new JScrollPane(recordsTable);
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
@@ -132,7 +132,8 @@ public class FishingModule extends Module implements ActionListener {
         }
 
         FishingTableModel model = (FishingTableModel) recordsTable.getModel();
-        model.updateOrAdd(record);
+        Integer index = model.updateOrAdd(record);
+        recordsTable.scrollRectToVisible(recordsTable.getCellRect(index, 0, true));
     }
 
     @Override

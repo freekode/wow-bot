@@ -124,9 +124,10 @@ public class Controller {
      *
      * @param rad new pitch in radians
      */
-    public void pitch(double rad) {
+    public void pitch(double rad) throws InterruptedException {
         double currentPitch = getReceiver().getPitch();
         while (Math.abs(currentPitch - rad) > ConfigKeys.PITCH_TOLERANCE) {
+            Thread.sleep(20);
             double changeRad = currentPitch - rad;
             driver.mousePitch(changeRad);
 
