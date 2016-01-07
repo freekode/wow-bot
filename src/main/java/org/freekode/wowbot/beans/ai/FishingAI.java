@@ -2,7 +2,7 @@ package org.freekode.wowbot.beans.ai;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.modules.fishing.FishingRecordModel;
+import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
 import org.freekode.wowbot.tools.StaticFunc;
 
 import java.awt.*;
@@ -11,12 +11,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class FishingAI extends Intelligence<FishingRecordModel> {
+public class FishingAI extends Intelligence<FishingRecordEntity> {
     private static final Logger logger = LogManager.getLogger(FishingAI.class);
     private static final int FISHING_TIME_SEC = 20;
     private static final int CHECK_IF_CAUGHT_SEC = 2;
     private final Rectangle SEARCH_SQUARE = new Rectangle(400, 110, 440, 390);
-    private FishingRecordModel record;
+    private FishingRecordEntity record;
     // red colors
     private List<Color> firstColors;
     // blue colors
@@ -53,7 +53,7 @@ public class FishingAI extends Intelligence<FishingRecordModel> {
             mouseOut();
             fish();
 
-            record = new FishingRecordModel(new Date());
+            record = new FishingRecordEntity(new Date());
             send(record);
 
             Rectangle imageRect = StaticFunc.calculateCutSquare(getWindowArea(), SEARCH_SQUARE);

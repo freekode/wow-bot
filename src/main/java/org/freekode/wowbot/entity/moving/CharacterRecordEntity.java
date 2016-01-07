@@ -1,4 +1,4 @@
-package org.freekode.wowbot.modules.moving;
+package org.freekode.wowbot.entity.moving;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
@@ -6,18 +6,18 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CharacterRecordModel {
+public class CharacterRecordEntity {
     private String state = "";
     private Date date;
     private Vector3D coordinates;
     private Action action;
 
 
-    public CharacterRecordModel(Vector3D coordinates) {
+    public CharacterRecordEntity(Vector3D coordinates) {
         this.coordinates = coordinates;
     }
 
-    public CharacterRecordModel(Date date, Vector3D coordinates, Action action) {
+    public CharacterRecordEntity(Date date, Vector3D coordinates, Action action) {
         this.date = date;
         this.coordinates = coordinates;
         this.action = action;
@@ -64,7 +64,7 @@ public class CharacterRecordModel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        CharacterRecordModel that = (CharacterRecordModel) o;
+        CharacterRecordEntity that = (CharacterRecordEntity) o;
 
         return coordinates.equals(that.coordinates);
 

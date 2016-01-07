@@ -1,17 +1,19 @@
-package org.freekode.wowbot.modules.fishing;
+package org.freekode.wowbot.entity.fishing;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FishingOptionsModel {
+public class FishingOptionsEntity {
     private String fishKey;
     private String failTryings;
+    private List<FishingKitEntity> kits;
     private List<Color> firstColors;
     private List<Color> secondColors;
     private List<Color> thirdColors;
 
-    public FishingOptionsModel() {
+    public FishingOptionsEntity() {
         fishKey = "=";
         failTryings = "5";
 
@@ -38,6 +40,8 @@ public class FishingOptionsModel {
         thirdColors.add(Color.decode("#624d38"));
         thirdColors.add(Color.decode("#504d3e"));
         thirdColors.add(Color.decode("#42453a"));
+
+        kits = new ArrayList<>();
     }
 
     public String getFishKey() {
@@ -78,5 +82,9 @@ public class FishingOptionsModel {
 
     public void setThirdColors(List<Color> thirdColors) {
         this.thirdColors = thirdColors;
+    }
+
+    public List<FishingKitEntity> getKits() {
+        return kits;
     }
 }

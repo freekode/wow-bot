@@ -5,6 +5,9 @@ import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.ai.FishingAI;
 import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.modules.Module;
+import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
+import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
+import org.freekode.wowbot.entity.fishing.FishingTableEntity;
 import org.freekode.wowbot.tools.ColorRenderer;
 import org.freekode.wowbot.tools.DateRenderer;
 
@@ -18,7 +21,7 @@ import java.util.List;
 
 public class FishingModule extends Module implements ActionListener {
     private static final Logger logger = LogManager.getLogger(FishingModule.class);
-    private FishingOptionsModel optionsModel;
+    private FishingOptionsEntity optionsModel;
     private Component ui;
     private Intelligence ai;
     private Integer catches = 0;
@@ -29,7 +32,7 @@ public class FishingModule extends Module implements ActionListener {
 
 
     public FishingModule() {
-        optionsModel = new FishingOptionsModel();
+        optionsModel = new FishingOptionsEntity();
 
         ui = buildInterface();
         buildAI();
@@ -85,7 +88,7 @@ public class FishingModule extends Module implements ActionListener {
 
 
         // row 3
-        recordsTable = new JTable(new FishingTableModel());
+        recordsTable = new JTable(new FishingTableEntity());
         recordsTable.setDefaultRenderer(Date.class, new DateRenderer("yyyy-MM-dd HH:mm:ss"));
         recordsTable.setDefaultRenderer(Color.class, new ColorRenderer());
         JScrollPane scrollPane = new JScrollPane(recordsTable);
@@ -116,7 +119,7 @@ public class FishingModule extends Module implements ActionListener {
 
     @Override
     public void property(PropertyChangeEvent e) {
-        FishingRecordModel record = (FishingRecordModel) e.getNewValue();
+        FishingRecordEntity record = (FishingRecordEntity) e.getNewValue();
 
         if (record.getCaught() != null) {
             if (record.getCaught()) {
@@ -128,7 +131,7 @@ public class FishingModule extends Module implements ActionListener {
             }
         }
 
-        FishingTableModel model = (FishingTableModel) recordsTable.getModel();
+        FishingTableEntity model = (FishingTableEntity) recordsTable.getModel();
         model.updateOrAdd(record);
     }
 
@@ -150,11 +153,11 @@ public class FishingModule extends Module implements ActionListener {
         super.propertyChange(e);
 
         if ("saveOptions".equals(e.getPropertyName())) {
-            saveOptions((FishingOptionsModel) e.getNewValue());
+            saveOptions((FishingOptionsEntity) e.getNewValue());
         }
     }
 
-    public void saveOptions(FishingOptionsModel options) {
+    public void saveOptions(FishingOptionsEntity options) {
         optionsModel = options;
         buildAI();
 

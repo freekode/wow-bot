@@ -2,6 +2,8 @@ package org.freekode.wowbot.modules.fishing;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.freekode.wowbot.entity.fishing.FishingKitEntity;
+import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
 import org.freekode.wowbot.tools.ColorListRenderer;
 
 import javax.swing.*;
@@ -16,15 +18,16 @@ import java.util.List;
 
 public class FishingOptionsUI extends JFrame implements ActionListener {
     private static final Logger logger = LogManager.getLogger(FishingOptionsUI.class);
-    private FishingOptionsModel optionsModel;
+    private FishingOptionsEntity optionsModel;
     private JFormattedTextField fishKey;
     private JFormattedTextField failTryings;
+    private JList<FishingKitEntity> kitList;
     private JList<Color> firstColorList;
     private JList<Color> secondColorList;
     private JList<Color> thirdColorList;
 
 
-    public void init(FishingOptionsModel optionsModel) {
+    public void init(FishingOptionsEntity optionsModel) {
         this.optionsModel = optionsModel;
 
         setTitle("Fishing options");
@@ -57,6 +60,12 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         c.insets = new Insets(0, 10, 10, 10);
         c.gridx = 0;
         c.gridy = 1;
+        pane.add(getKitList(), c);
+
+        c.anchor = GridBagConstraints.PAGE_START;
+        c.insets = new Insets(0, 10, 10, 10);
+        c.gridx = 0;
+        c.gridy = 2;
         c.fill = GridBagConstraints.BOTH;
         c.weightx = 1;
         c.weighty = 1;
@@ -65,7 +74,8 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         c.anchor = GridBagConstraints.LINE_START;
         c.insets = new Insets(0, 10, 10, 10);
         c.gridx = 0;
-        c.gridy = 2;
+        c.gridy = 3;
+        c.fill = GridBagConstraints.NONE;
         pane.add(getThirdPart(), c);
     }
 
@@ -161,6 +171,45 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
         c.gridy = 0;
         c.insets = new Insets(0, 0, 0, 0);
         panel.add(closeButton, c);
+
+        return panel;
+    }
+
+    public JPanel getKitList() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 2;
+        panel.add(new JLabel("Kit list"), c);
+
+        DefaultListModel<FishingKitEntity> listModel = new DefaultListModel<>();
+        for (FishingKitEntity elem : optionsModel.getKits()) {
+            listModel.addElement(elem);
+        }
+        kitList = new JList<>(listModel);
+        kitList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        c.gridx = 0;
+        c.gridy = 1;
+        panel.add(new JScrollPane(kitList), c);
+
+        JButton addButton = new JButton("Add");
+        addButton.addActionListener(this);
+        addButton.setActionCommand("addKit");
+        c.gridx = 0;
+        c.gridy = 2;
+        c.gridwidth = 1;
+        panel.add(addButton, c);
+
+        JButton removeButton = new JButton("-");
+        removeButton.addActionListener(this);
+        removeButton.setActionCommand("removeKit");
+        c.gridx = 1;
+        c.gridy = 2;
+        panel.add(removeButton, c);
+
 
         return panel;
     }
@@ -313,6 +362,10 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
             addThirdColor();
         } else if ("removeThirdColor".equals(e.getActionCommand())) {
             removeThirdColor();
+        } else if ("addKit".equals(e.getActionCommand())) {
+            addKit();
+        } else if ("removeKit".equals(e.getActionCommand())) {
+            removeKit();
         }
     }
 
@@ -391,6 +444,20 @@ public class FishingOptionsUI extends JFrame implements ActionListener {
 
 
         firePropertyChange("saveOptions", null, optionsModel);
+    }
+
+    public void addKit() {
+        String name = JOptionPane.showInputDialog(this, "Input name", "Add kit", JOptionPane.PLAIN_MESSAGE);
+        DefaultListModel<FishingKitEntity> model = (DefaultListModel<FishingKitEntity>) kitList.getModel();
+        model.addElement(new FishingKitEntity(name));
+    }
+
+    public void removeKit() {
+        int index = kitList.getSelectedIndex();
+        if (index > -1) {
+            DefaultListModel<FishingKitEntity> model = (DefaultListModel<FishingKitEntity>) kitList.getModel();
+            model.remove(index);
+        }
     }
 }
 

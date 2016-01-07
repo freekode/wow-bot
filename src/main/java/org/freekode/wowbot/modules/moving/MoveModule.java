@@ -7,9 +7,12 @@ import org.freekode.wowbot.beans.ai.GatherAI;
 import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.beans.ai.MovingAI;
 import org.freekode.wowbot.beans.ai.RecordingAI;
+import org.freekode.wowbot.entity.moving.CharacterRecordEntity;
+import org.freekode.wowbot.entity.moving.RecordTableEntity;
 import org.freekode.wowbot.modules.Module;
 import org.freekode.wowbot.tools.DateRenderer;
 import org.freekode.wowbot.tools.DoubleRenderer;
+import org.freekode.wowbot.tools.StaticFunc;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,9 +60,9 @@ public class MoveModule extends Module implements ActionListener {
 
     public void buildMoveUI() {
         List<Vector3D> points = new ArrayList<>();
-        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
+        RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
 
-        for (CharacterRecordModel record : model.getData()) {
+        for (CharacterRecordEntity record : model.getData()) {
             points.add(record.getCoordinates());
         }
 
@@ -73,9 +76,9 @@ public class MoveModule extends Module implements ActionListener {
     }
 
     public void buildGatherUI() {
-        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
+        RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
 
-        List<CharacterRecordModel> records = new LinkedList<>(model.getData());
+        List<CharacterRecordEntity> records = new LinkedList<>(model.getData());
         int selectedIndex = recordsTable.getSelectedRow();
         if (selectedIndex > -1) {
             records = records.subList(selectedIndex, records.size());
@@ -125,7 +128,7 @@ public class MoveModule extends Module implements ActionListener {
         buttonGroup.add(gatherRadio);
 
 
-        recordsTable = new JTable(new RecordTableModel());
+        recordsTable = new JTable(new RecordTableEntity());
         recordsTable.setDefaultRenderer(Date.class, new DateRenderer());
         recordsTable.setDefaultRenderer(Double.class, new DoubleRenderer());
         recordsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -209,8 +212,8 @@ public class MoveModule extends Module implements ActionListener {
 
     @Override
     public void property(PropertyChangeEvent e) {
-        CharacterRecordModel record = (CharacterRecordModel) e.getNewValue();
-        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
+        CharacterRecordEntity record = (CharacterRecordEntity) e.getNewValue();
+        RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
 
         if (currentType == ModuleType.RECORD) {
             Integer index = model.add(record);
@@ -249,8 +252,8 @@ public class MoveModule extends Module implements ActionListener {
     }
 
     public void save() {
-        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
-        String csv = CsvTools.buildCsvFile(model.getData());
+        RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
+        String csv = StaticFunc.buildCsvFile(model.getData());
 
         int returnVal = fc.showSaveDialog(ui);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -272,9 +275,9 @@ public class MoveModule extends Module implements ActionListener {
         int returnVal = fc.showOpenDialog(ui);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            List<CharacterRecordModel> records = CsvTools.parseCsvFile(fc.getSelectedFile());
-            RecordTableModel model = (RecordTableModel) recordsTable.getModel();
-            for (CharacterRecordModel record : records) {
+            List<CharacterRecordEntity> records = StaticFunc.parseCsvFile(fc.getSelectedFile());
+            RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
+            for (CharacterRecordEntity record : records) {
                 model.add(record);
             }
             buildAI();
@@ -282,7 +285,7 @@ public class MoveModule extends Module implements ActionListener {
     }
 
     public void delete() {
-        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
+        RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
         int selectedIndex = recordsTable.getSelectedRow();
         if (selectedIndex != -1) {
             model.delete(selectedIndex);
@@ -290,12 +293,12 @@ public class MoveModule extends Module implements ActionListener {
     }
 
     public void clear() {
-        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
+        RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
         model.clear();
     }
 
     public void reverse() {
-        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
+        RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
         model.reverse();
     }
 
@@ -315,8 +318,8 @@ public class MoveModule extends Module implements ActionListener {
     }
 
     public void showMap() {
-        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
-        List<CharacterRecordModel> records = model.getData();
+        RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
+        List<CharacterRecordEntity> records = model.getData();
 
         MapUI optionsWindow = new MapUI();
         optionsWindow.init(records);
