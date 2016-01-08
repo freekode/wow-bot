@@ -341,17 +341,6 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
         }
     }
 
-//    @Override
-//    public void valueChanged(ListSelectionEvent e) {
-//        DefaultListModel<FishingKitEntity> model = (DefaultListModel<FishingKitEntity>) kitList.getModel();
-//        int index = kitList.getSelectedIndex();
-//        if (index > -1) {
-//            FishingKitEntity kit = model.get(index);
-//            firstColorTable.setSelectedColors(kit.getFirstColors());
-//            secondColorTable.setSelectedColors(kit.getSecondColors());
-//            thirdColorTable.setSelectedColors(kit.getThirdColors());
-//        }
-
     @Override
     public void valueChanged(ListSelectionEvent e) {
         KitTableModel model = (KitTableModel) kitTable.getModel();

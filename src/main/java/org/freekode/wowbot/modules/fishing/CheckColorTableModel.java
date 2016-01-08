@@ -47,9 +47,14 @@ public class CheckColorTableModel extends AbstractTableModel {
     }
 
     public Integer add(Boolean state, Color color) {
-        data.add(new Record(state, color));
-        fireTableRowsInserted(data.size(), data.size());
-        return data.size();
+        Record record = new Record(state, color);
+        if (!data.contains(record)) {
+            data.add(record);
+            fireTableRowsInserted(data.size(), data.size());
+            return data.size();
+        }
+
+        return null;
     }
 
     public void delete(int index) {
@@ -111,6 +116,22 @@ public class CheckColorTableModel extends AbstractTableModel {
             list.add(color);
 
             return list;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Record record = (Record) o;
+
+            return color.equals(record.color);
+
+        }
+
+        @Override
+        public int hashCode() {
+            return color.hashCode();
         }
     }
 }
