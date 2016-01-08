@@ -1,10 +1,8 @@
 package org.freekode.wowbot.entity.fishing;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class FishingKitEntity {
     private String name;
@@ -15,6 +13,7 @@ public class FishingKitEntity {
 
 
     public FishingKitEntity() {
+        enable = true;
         firstColors = new ArrayList<>();
         secondColors = new ArrayList<>();
         thirdColors = new ArrayList<>();
@@ -58,9 +57,18 @@ public class FishingKitEntity {
         this.thirdColors = thirdColors;
     }
 
+    public Boolean getEnable() {
+        return enable;
+    }
+
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
+    }
+
     public Map<String, Object> getMap() {
         Map<String, Object> kitMap = new HashMap<>();
         kitMap.put("name", name);
+        kitMap.put("enable", enable.toString());
 
         List<String> firstColorsHex = new ArrayList<>();
         for (Color color : firstColors) {
@@ -85,6 +93,7 @@ public class FishingKitEntity {
 
     public void parse(Map<String, Object> config) {
         name = config.get("name").toString();
+        enable = Boolean.valueOf(config.get("enable").toString());
 
         List<String> firstColorHex = (List<String>) config.get("firstColors");
         for (String colorHex : firstColorHex) {
@@ -100,6 +109,23 @@ public class FishingKitEntity {
         for (String colorHex : thirdColorHex) {
             thirdColors.add(Color.decode(colorHex));
         }
+    }
+
+    public List<Object> toList() {
+        List<Object> list = new LinkedList<>();
+        list.add(enable);
+        list.add(name);
+        list.add(firstColors.size());
+        list.add(secondColors.size());
+        list.add(thirdColors.size());
+
+        return list;
+    }
+
+
+    @Override
+    public String toString() {
+        return name;
     }
 
     public static FishingKitEntity getStandard() {
@@ -126,18 +152,5 @@ public class FishingKitEntity {
         mainKit.getThirdColors().add(Color.decode("#42453a"));
 
         return mainKit;
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
-
-    public Boolean getEnable() {
-        return enable;
-    }
-
-    public void setEnable(Boolean enable) {
-        this.enable = enable;
     }
 }

@@ -25,7 +25,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
     private FishingOptionsEntity optionsModel;
     private JFormattedTextField fishKey;
     private JFormattedTextField failTryings;
-    private JList<FishingKitEntity> kitList;
+    private JTable kitTable;
     private ColorTable firstColorTable;
     private ColorTable secondColorTable;
     private ColorTable thirdColorTable;
@@ -66,10 +66,12 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(0, 10, 10, 10);
-        pane.add(getKitList(), c);
+        pane.add(getKitTable(), c);
 
         c.gridx = 0;
         c.gridy = 2;
+        c.weightx = 0;
+        c.weighty = 0;
         c.fill = GridBagConstraints.NONE;
         pane.add(getColorCheckList(), c);
 
@@ -130,7 +132,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
         return panel;
     }
 
-    public JPanel getKitList() {
+    public JPanel getKitTable() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -140,18 +142,25 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
         c.gridwidth = 3;
         panel.add(new JLabel("Kit list"), c);
 
-        DefaultListModel<FishingKitEntity> model = new DefaultListModel<>();
+
+        KitTableModel model = new KitTableModel();
         for (FishingKitEntity elem : optionsModel.getKits()) {
-            model.addElement(elem);
+            model.add(elem);
         }
-        kitList = new JList<>(model);
-        kitList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        kitList.addListSelectionListener(this);
+        kitTable = new JTable(model);
+        kitTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        kitTable.getColumnModel().getColumn(0).setPreferredWidth(26);
+        kitTable.setTableHeader(null);
+        kitTable.setPreferredScrollableViewportSize(kitTable.getPreferredSize());
+        kitTable.getSelectionModel().addListSelectionListener(this);
+        JScrollPane scrollPane = new JScrollPane(kitTable);
+//        kitTable.setFillsViewportHeight(true);
         c.gridx = 0;
         c.gridy = 1;
         c.weightx = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(new JScrollPane(kitList), c);
+        c.weighty = 1;
+        c.fill = GridBagConstraints.BOTH;
+        panel.add(scrollPane, c);
 
 
         JButton addButton = new JButton("Add");
@@ -160,6 +169,9 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
         c.gridx = 0;
         c.gridy = 2;
         c.gridwidth = 1;
+        c.weightx = 1;
+        c.weighty = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(addButton, c);
 
         JButton editButton = new JButton("Edit");
@@ -287,12 +299,8 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
         optionsModel.setFailTryings(Integer.valueOf(failTryings.getText()));
         optionsModel.setFishKey(fishKey.getText());
 
-        DefaultListModel<FishingKitEntity> kitListModel = (DefaultListModel<FishingKitEntity>) kitList.getModel();
-        List<FishingKitEntity> kitList = new ArrayList<>();
-        for (int i = 0; i < kitListModel.size(); i++) {
-            kitList.add(kitListModel.get(i));
-        }
-        optionsModel.setKits(kitList);
+        KitTableModel model = (KitTableModel) kitTable.getModel();
+        optionsModel.setKits(model.getData());
 
 
         firePropertyChange("saveOptions", null, optionsModel);
@@ -301,10 +309,13 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
     public void addKit() {
         String name = JOptionPane.showInputDialog(this, "Input name", "Add kit", JOptionPane.PLAIN_MESSAGE);
         if (name != null) {
-            DefaultListModel<FishingKitEntity> model = (DefaultListModel<FishingKitEntity>) kitList.getModel();
+            KitTableModel model = (KitTableModel) kitTable.getModel();
             FishingKitEntity newKit = new FishingKitEntity(name);
-            model.addElement(newKit);
-            kitList.setSelectedValue(newKit, true);
+            Integer index = model.add(newKit);
+
+//            kitTable.changeSelection(index, 0, false, false);
+            kitTable.setRowSelectionInterval(index - 1, index - 1);
+            kitTable.scrollRectToVisible(kitTable.getCellRect(index, 0, true));
         }
     }
 
@@ -312,10 +323,10 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
     }
 
     public void saveKit() {
-        DefaultListModel<FishingKitEntity> model = (DefaultListModel<FishingKitEntity>) kitList.getModel();
-        int index = kitList.getSelectedIndex();
+        KitTableModel model = (KitTableModel) kitTable.getModel();
+        int index = kitTable.getSelectedRow();
         if (index > -1) {
-            FishingKitEntity kit = model.get(index);
+            FishingKitEntity kit = model.getData().get(index);
             kit.setFirstColors(firstColorTable.getSelectedColors());
             kit.setSecondColors(secondColorTable.getSelectedColors());
             kit.setThirdColors(thirdColorTable.getSelectedColors());
@@ -323,19 +334,30 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
     }
 
     public void deleteKit() {
-        int index = kitList.getSelectedIndex();
+        int index = kitTable.getSelectedRow();
         if (index > -1) {
-            DefaultListModel<FishingKitEntity> model = (DefaultListModel<FishingKitEntity>) kitList.getModel();
-            model.remove(index);
+            KitTableModel model = (KitTableModel) kitTable.getModel();
+            model.delete(index);
         }
     }
 
+//    @Override
+//    public void valueChanged(ListSelectionEvent e) {
+//        DefaultListModel<FishingKitEntity> model = (DefaultListModel<FishingKitEntity>) kitList.getModel();
+//        int index = kitList.getSelectedIndex();
+//        if (index > -1) {
+//            FishingKitEntity kit = model.get(index);
+//            firstColorTable.setSelectedColors(kit.getFirstColors());
+//            secondColorTable.setSelectedColors(kit.getSecondColors());
+//            thirdColorTable.setSelectedColors(kit.getThirdColors());
+//        }
+
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        DefaultListModel<FishingKitEntity> model = (DefaultListModel<FishingKitEntity>) kitList.getModel();
-        int index = kitList.getSelectedIndex();
+        KitTableModel model = (KitTableModel) kitTable.getModel();
+        int index = kitTable.getSelectedRow();
         if (index > -1) {
-            FishingKitEntity kit = model.get(index);
+            FishingKitEntity kit = model.getData().get(index);
             firstColorTable.setSelectedColors(kit.getFirstColors());
             secondColorTable.setSelectedColors(kit.getSecondColors());
             thirdColorTable.setSelectedColors(kit.getThirdColors());
@@ -355,7 +377,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
             c.gridwidth = 2;
             add(new JLabel(title), c);
 
-            CheckColorModel model = new CheckColorModel();
+            CheckColorTableModel model = new CheckColorTableModel();
             for (Color elem : colors) {
                 model.add(false, elem);
             }
@@ -396,12 +418,12 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
         }
 
         public List<Color> getSelectedColors() {
-            CheckColorModel model = (CheckColorModel) table.getModel();
+            CheckColorTableModel model = (CheckColorTableModel) table.getModel();
             return model.getSelected();
         }
 
         public void setSelectedColors(List<Color> colors) {
-            CheckColorModel model = (CheckColorModel) table.getModel();
+            CheckColorTableModel model = (CheckColorTableModel) table.getModel();
             model.setSelected(colors);
         }
 
@@ -425,15 +447,15 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
             public void add() {
                 Color newColor = JColorChooser.showDialog(FishingOptionsUI.this, "Add color", null);
                 if (newColor != null) {
-                    CheckColorModel model = (CheckColorModel) table.getModel();
-                    model.add(false, newColor);
+                    CheckColorTableModel model = (CheckColorTableModel) table.getModel();
+                    model.add(true, newColor);
                 }
             }
 
             public void delete() {
                 int index = table.getSelectedRow();
                 if (index > -1) {
-                    CheckColorModel model = (CheckColorModel) table.getModel();
+                    CheckColorTableModel model = (CheckColorTableModel) table.getModel();
                     model.delete(index);
                 }
             }

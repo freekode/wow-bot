@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.ai.FishingAI;
 import org.freekode.wowbot.beans.ai.Intelligence;
+import org.freekode.wowbot.entity.fishing.FishingKitEntity;
 import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
 import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
 import org.freekode.wowbot.modules.Module;
@@ -18,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -117,7 +119,14 @@ public class FishingModule extends Module implements ActionListener {
         int fishButtonValue = KeyStroke.getKeyStroke(optionsModel.getFishKey().charAt(0), 0).getKeyCode();
         int failTryingsValue = optionsModel.getFailTryings();
 
-        ai = new FishingAI(fishButtonValue, failTryingsValue, optionsModel.getKits());
+        List<FishingKitEntity> enabledKits = new LinkedList<>();
+        for (FishingKitEntity kit : optionsModel.getKits()) {
+            if (kit.getEnable()) {
+                enabledKits.add(kit);
+            }
+        }
+
+        ai = new FishingAI(fishButtonValue, failTryingsValue, enabledKits);
         ai.addPropertyChangeListener(this);
     }
 

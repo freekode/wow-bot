@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CheckColorModel extends AbstractTableModel {
+public class CheckColorTableModel extends AbstractTableModel {
     private Class[] columnClasses = {Boolean.class, Color.class};
     private List<Record> data = new LinkedList<>();
 
