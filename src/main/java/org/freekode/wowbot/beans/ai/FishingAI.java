@@ -8,7 +8,6 @@ import org.freekode.wowbot.tools.StaticFunc;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;

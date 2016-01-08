@@ -4,7 +4,6 @@ import org.freekode.wowbot.entity.fishing.FishingKitEntity;
 
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 

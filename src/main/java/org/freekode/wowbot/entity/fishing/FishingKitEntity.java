@@ -25,6 +25,32 @@ public class FishingKitEntity {
         this.name = name;
     }
 
+    public static FishingKitEntity getStandard() {
+        FishingKitEntity mainKit = new FishingKitEntity("Standard");
+        mainKit.getFirstColors().add(Color.decode("#6b240e"));
+        mainKit.getFirstColors().add(Color.decode("#4d160e"));
+        mainKit.getFirstColors().add(Color.decode("#c62f12"));
+        mainKit.getFirstColors().add(Color.decode("#94260b"));
+        mainKit.getFirstColors().add(Color.decode("#49150a"));
+        mainKit.getFirstColors().add(Color.decode("#341209"));
+
+        mainKit.getSecondColors().add(Color.decode("#353c59"));
+        mainKit.getSecondColors().add(Color.decode("#2f3756"));
+        mainKit.getSecondColors().add(Color.decode("#4d5363"));
+        mainKit.getSecondColors().add(Color.decode("#626574"));
+        mainKit.getSecondColors().add(Color.decode("#1e2d4a"));
+        mainKit.getSecondColors().add(Color.decode("#17263d"));
+
+        mainKit.getThirdColors().add(Color.decode("#6a5344"));
+        mainKit.getThirdColors().add(Color.decode("#756051"));
+        mainKit.getThirdColors().add(Color.decode("#4d4030"));
+        mainKit.getThirdColors().add(Color.decode("#624d38"));
+        mainKit.getThirdColors().add(Color.decode("#504d3e"));
+        mainKit.getThirdColors().add(Color.decode("#42453a"));
+
+        return mainKit;
+    }
+
     public String getName() {
         return name;
     }
@@ -122,35 +148,8 @@ public class FishingKitEntity {
         return list;
     }
 
-
     @Override
     public String toString() {
         return name;
-    }
-
-    public static FishingKitEntity getStandard() {
-        FishingKitEntity mainKit = new FishingKitEntity("Standard");
-        mainKit.getFirstColors().add(Color.decode("#6b240e"));
-        mainKit.getFirstColors().add(Color.decode("#4d160e"));
-        mainKit.getFirstColors().add(Color.decode("#c62f12"));
-        mainKit.getFirstColors().add(Color.decode("#94260b"));
-        mainKit.getFirstColors().add(Color.decode("#49150a"));
-        mainKit.getFirstColors().add(Color.decode("#341209"));
-
-        mainKit.getSecondColors().add(Color.decode("#353c59"));
-        mainKit.getSecondColors().add(Color.decode("#2f3756"));
-        mainKit.getSecondColors().add(Color.decode("#4d5363"));
-        mainKit.getSecondColors().add(Color.decode("#626574"));
-        mainKit.getSecondColors().add(Color.decode("#1e2d4a"));
-        mainKit.getSecondColors().add(Color.decode("#17263d"));
-
-        mainKit.getThirdColors().add(Color.decode("#6a5344"));
-        mainKit.getThirdColors().add(Color.decode("#756051"));
-        mainKit.getThirdColors().add(Color.decode("#4d4030"));
-        mainKit.getThirdColors().add(Color.decode("#624d38"));
-        mainKit.getThirdColors().add(Color.decode("#504d3e"));
-        mainKit.getThirdColors().add(Color.decode("#42453a"));
-
-        return mainKit;
     }
 }
