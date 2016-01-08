@@ -1,7 +1,6 @@
 package org.freekode.wowbot.modules.fishing;
 
 import org.freekode.wowbot.entity.fishing.FishingKitEntity;
-import org.freekode.wowbot.entity.moving.CharacterRecordEntity;
 
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
