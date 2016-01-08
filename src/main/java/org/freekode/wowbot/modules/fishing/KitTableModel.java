@@ -1,6 +1,7 @@
 package org.freekode.wowbot.modules.fishing;
 
 import org.freekode.wowbot.entity.fishing.FishingKitEntity;
+import org.freekode.wowbot.entity.moving.CharacterRecordEntity;
 
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
@@ -8,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class KitTableModel extends AbstractTableModel {
+    private String[] columnNames = {"Enable", "Name"};
     private Class[] columnClasses = {Boolean.class, Color.class};
     private List<FishingKitEntity> data = new LinkedList<>();
 
@@ -23,7 +25,7 @@ public class KitTableModel extends AbstractTableModel {
 
     @Override
     public String getColumnName(int column) {
-        return null;
+        return columnNames[column];
     }
 
     @Override
@@ -56,6 +58,18 @@ public class KitTableModel extends AbstractTableModel {
     public void delete(int index) {
         data.remove(index);
         fireTableRowsDeleted(index, index);
+    }
+
+    public Integer update(FishingKitEntity kit) {
+        for (int i = 0; i < data.size(); i++) {
+            FishingKitEntity element = data.get(i);
+            if (kit.equals(element)) {
+                fireTableRowsUpdated(i, i);
+                return i;
+            }
+        }
+
+        return null;
     }
 
     public List<FishingKitEntity> getData() {

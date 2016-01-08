@@ -25,6 +25,26 @@ public class FishingKitEntity {
         this.name = name;
     }
 
+    public FishingKitEntity(FishingKitEntity copy) {
+        name = copy.getName();
+        enable = copy.getEnable();
+
+        firstColors = new ArrayList<>();
+        for (Color color : copy.getFirstColors()) {
+            firstColors.add(color);
+        }
+
+        secondColors = new ArrayList<>();
+        for (Color color : copy.getSecondColors()) {
+            secondColors.add(color);
+        }
+
+        thirdColors = new ArrayList<>();
+        for (Color color : copy.getThirdColors()) {
+            thirdColors.add(color);
+        }
+    }
+
     public static FishingKitEntity getStandard() {
         FishingKitEntity mainKit = new FishingKitEntity("Standard");
         mainKit.getFirstColors().add(Color.decode("#6b240e"));

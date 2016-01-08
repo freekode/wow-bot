@@ -8,7 +8,6 @@ import org.freekode.wowbot.beans.ai.Intelligence;
 import org.freekode.wowbot.beans.ai.MovingAI;
 import org.freekode.wowbot.beans.ai.RecordingAI;
 import org.freekode.wowbot.entity.moving.CharacterRecordEntity;
-import org.freekode.wowbot.entity.moving.RecordTableEntity;
 import org.freekode.wowbot.modules.Module;
 import org.freekode.wowbot.tools.DateRenderer;
 import org.freekode.wowbot.tools.DoubleRenderer;
@@ -60,7 +59,7 @@ public class MoveModule extends Module implements ActionListener {
 
     public void buildMoveUI() {
         List<Vector3D> points = new ArrayList<>();
-        RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
 
         for (CharacterRecordEntity record : model.getData()) {
             points.add(record.getCoordinates());
@@ -76,7 +75,7 @@ public class MoveModule extends Module implements ActionListener {
     }
 
     public void buildGatherUI() {
-        RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
 
         List<CharacterRecordEntity> records = new LinkedList<>(model.getData());
         int selectedIndex = recordsTable.getSelectedRow();
@@ -128,7 +127,7 @@ public class MoveModule extends Module implements ActionListener {
         buttonGroup.add(gatherRadio);
 
 
-        recordsTable = new JTable(new RecordTableEntity());
+        recordsTable = new JTable(new RecordTableModel());
         recordsTable.setDefaultRenderer(Date.class, new DateRenderer());
         recordsTable.setDefaultRenderer(Double.class, new DoubleRenderer());
         recordsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -213,7 +212,7 @@ public class MoveModule extends Module implements ActionListener {
     @Override
     public void property(PropertyChangeEvent e) {
         CharacterRecordEntity record = (CharacterRecordEntity) e.getNewValue();
-        RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
 
         if (currentType == ModuleType.RECORD) {
             Integer index = model.add(record);
@@ -252,7 +251,7 @@ public class MoveModule extends Module implements ActionListener {
     }
 
     public void save() {
-        RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
         String csv = StaticFunc.buildCsvFile(model.getData());
 
         int returnVal = fc.showSaveDialog(ui);
@@ -276,7 +275,7 @@ public class MoveModule extends Module implements ActionListener {
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             List<CharacterRecordEntity> records = StaticFunc.parseCsvFile(fc.getSelectedFile());
-            RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
+            RecordTableModel model = (RecordTableModel) recordsTable.getModel();
             for (CharacterRecordEntity record : records) {
                 model.add(record);
             }
@@ -285,7 +284,7 @@ public class MoveModule extends Module implements ActionListener {
     }
 
     public void delete() {
-        RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
         int selectedIndex = recordsTable.getSelectedRow();
         if (selectedIndex != -1) {
             model.delete(selectedIndex);
@@ -293,12 +292,12 @@ public class MoveModule extends Module implements ActionListener {
     }
 
     public void clear() {
-        RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
         model.clear();
     }
 
     public void reverse() {
-        RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
         model.reverse();
     }
 
@@ -318,7 +317,7 @@ public class MoveModule extends Module implements ActionListener {
     }
 
     public void showMap() {
-        RecordTableEntity model = (RecordTableEntity) recordsTable.getModel();
+        RecordTableModel model = (RecordTableModel) recordsTable.getModel();
         List<CharacterRecordEntity> records = model.getData();
 
         MapUI optionsWindow = new MapUI();

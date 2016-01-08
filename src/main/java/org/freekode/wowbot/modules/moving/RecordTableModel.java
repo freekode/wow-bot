@@ -1,15 +1,16 @@
-package org.freekode.wowbot.entity.moving;
+package org.freekode.wowbot.modules.moving;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.freekode.wowbot.entity.moving.CharacterRecordEntity;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class RecordTableEntity extends AbstractTableModel {
-    private static final Logger logger = LogManager.getLogger(RecordTableEntity.class);
+public class RecordTableModel extends AbstractTableModel {
+    private static final Logger logger = LogManager.getLogger(RecordTableModel.class);
     private String[] columnNames = {"State", "Date", "X", "Y", "Action"};
     private List<CharacterRecordEntity> data = new LinkedList<>();
 

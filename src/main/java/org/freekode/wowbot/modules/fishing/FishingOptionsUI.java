@@ -148,19 +148,19 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
             model.add(elem);
         }
         kitTable = new JTable(model);
-        kitTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        kitTable.getColumnModel().getColumn(0).setPreferredWidth(26);
-        kitTable.setTableHeader(null);
-        kitTable.setPreferredScrollableViewportSize(kitTable.getPreferredSize());
         kitTable.getSelectionModel().addListSelectionListener(this);
-        JScrollPane scrollPane = new JScrollPane(kitTable);
-//        kitTable.setFillsViewportHeight(true);
+        kitTable.getColumnModel().getColumn(0).setPreferredWidth(26);
+        kitTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
+        kitTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        kitTable.setPreferredScrollableViewportSize(kitTable.getPreferredSize());
+        kitTable.setFillsViewportHeight(true);
+        c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
         c.gridy = 1;
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
-        panel.add(scrollPane, c);
+        panel.add(new JScrollPane(kitTable), c);
 
 
         JButton addButton = new JButton("Add");
@@ -320,6 +320,16 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
     }
 
     public void editKit() {
+        KitTableModel model = (KitTableModel) kitTable.getModel();
+        int index = kitTable.getSelectedRow();
+        if (index > -1) {
+            FishingKitEntity kit = model.getData().get(index);
+            String name = JOptionPane.showInputDialog(this, "Input name", kit.getName());
+            if (name != null) {
+                kit.setName(name);
+                model.update(kit);
+            }
+        }
     }
 
     public void saveKit() {

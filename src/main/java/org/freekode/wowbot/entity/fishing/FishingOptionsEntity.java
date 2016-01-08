@@ -19,6 +19,16 @@ public class FishingOptionsEntity {
         kits.add(FishingKitEntity.getStandard());
     }
 
+    public FishingOptionsEntity(FishingOptionsEntity copy) {
+        fishKey = copy.getFishKey();
+        failTryings = copy.failTryings;
+
+        kits = new ArrayList<>();
+        for (FishingKitEntity kit : copy.getKits()) {
+            kits.add(new FishingKitEntity(kit));
+        }
+    }
+
     public String getFishKey() {
         return fishKey;
     }
