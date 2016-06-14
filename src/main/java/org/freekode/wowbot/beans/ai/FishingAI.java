@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.entity.fishing.FishingKitEntity;
 import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
+import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.StaticFunc;
 
 import java.awt.*;
@@ -19,7 +20,11 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
     private static final double FIRST_COLOR_TOLERANCE = 7;
     private static final double SECOND_COLOR_TOLERANCE = 6;
     private static final double THIRD_COLOR_TOLERANCE = 5;
-    private final Rectangle SEARCH_SQUARE = new Rectangle(400, 110, 440, 390);
+    private int SEARCH_SQUARE_X1_OFFSET = 400;
+    private int SEARCH_SQUARE_Y1_OFFSET = 100;
+    private int SEARCH_SQUARE_X2_OFFSET = 400;
+    private int SEARCH_SQUARE_Y2_OFFSET = 220;
+    private Rectangle calculatedSearchSquare ;
     private FishingRecordEntity record;
     private List<FishingKitEntity> kits;
     private int fishKey;
@@ -37,6 +42,7 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
     @Override
     public Boolean processing() throws InterruptedException {
         getController().init();
+        getController().pitch(-0.35);
         startFishing();
 
         return true;
@@ -44,6 +50,15 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
 
     public void startFishing() throws InterruptedException {
         logger.info("start fishing");
+
+        // calculate search square, to work with different window sizes
+        int searchSquareWidth = (int) (getWindowArea().getWidth() - SEARCH_SQUARE_X1_OFFSET - SEARCH_SQUARE_X2_OFFSET);
+        int searchSquareHeight = (int) (getWindowArea().getHeight() - SEARCH_SQUARE_Y1_OFFSET - SEARCH_SQUARE_Y2_OFFSET);
+        calculatedSearchSquare = new Rectangle(SEARCH_SQUARE_X1_OFFSET, SEARCH_SQUARE_Y2_OFFSET, searchSquareWidth, searchSquareHeight);
+        logger.info("searching rectangle = " + calculatedSearchSquare);
+
+        // fishing rectangle where is our bobber can be located in the window
+        Rectangle imageRect = StaticFunc.calculateCutSquare(getWindowArea(), calculatedSearchSquare);
 
         for (int i = 0; i < failTryings; i++) {
             logger.info("try = " + i);
@@ -53,9 +68,6 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
             record = new FishingRecordEntity(new Date());
             send(record);
 
-
-            // fishing rectangle where is our bobber can be located in the window
-            Rectangle imageRect = StaticFunc.calculateCutSquare(getWindowArea(), SEARCH_SQUARE);
             BufferedImage image = StaticFunc.cutImage(imageRect);
 
             // lets find first color, and kit from which that red color
@@ -81,7 +93,7 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
             // lets find second color, and we must find it only within small rectangle
             Rectangle bobberSquare = new Rectangle(bobberPoint[0] - 30, bobberPoint[1] - 20, 80, 50);
             Rectangle bobberRect = StaticFunc.calculateCutSquare(getWindowArea(),
-                    StaticFunc.calculateCutSquare(SEARCH_SQUARE, bobberSquare));
+                    StaticFunc.calculateCutSquare(calculatedSearchSquare, bobberSquare));
             BufferedImage bobberImage = StaticFunc.cutImage(bobberRect);
             int[] bobberPart = findColor(bobberImage, currentKit.getSecondColors(), SECOND_COLOR_TOLERANCE);
             if (bobberPart == null) {
@@ -107,7 +119,7 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
             // everything found, track for changes
             Rectangle stickSquare = new Rectangle(bobberCoordinates[0] - 10, bobberCoordinates[1] - 5, 22, 22);
             Rectangle trackRect = StaticFunc.calculateCutSquare(getWindowArea(),
-                    StaticFunc.calculateCutSquare(SEARCH_SQUARE,
+                    StaticFunc.calculateCutSquare(calculatedSearchSquare,
                             StaticFunc.calculateCutSquare(bobberSquare, stickSquare)));
 
             StaticFunc.cutImage(trackRect);
@@ -158,8 +170,8 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
     }
 
     public void mouseOut() throws InterruptedException {
-        int x = (int) (getWindowArea().getX() + SEARCH_SQUARE.getX() + SEARCH_SQUARE.getWidth() + 20);
-        int y = (int) (getWindowArea().getY() + SEARCH_SQUARE.getY());
+        int x = (int) (getWindowArea().getX() + calculatedSearchSquare.getX() + calculatedSearchSquare.getWidth() + 20);
+        int y = (int) (getWindowArea().getY() + calculatedSearchSquare.getY());
         getController().getDriver().mouse(x, y);
         Thread.sleep(100);
     }

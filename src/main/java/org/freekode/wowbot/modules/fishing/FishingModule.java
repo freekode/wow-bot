@@ -28,10 +28,10 @@ public class FishingModule extends Module implements ActionListener {
     private FishingOptionsEntity optionsModel;
     private Component ui;
     private Intelligence ai;
+    private Integer bobberThrows = 0;
     private Integer catches = 0;
     private Integer fails = 0;
-    private JLabel catchesCountLabel;
-    private JLabel failsCountLabel;
+    private JLabel statusLabel;
     private JTable recordsTable;
 
 
@@ -60,37 +60,21 @@ public class FishingModule extends Module implements ActionListener {
 
 
         // row 1
-        JLabel catchesLabel = new JLabel("Catches");
-        catchesLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        JLabel statusTitleLabel = new JLabel("Throws/Catches/Fails");
+        statusTitleLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         c.gridx = 0;
         c.gridy = 0;
         c.insets = new Insets(0, 0, 0, 10);
         c.anchor = GridBagConstraints.LINE_END;
-        panel.add(catchesLabel, c);
+        panel.add(statusTitleLabel, c);
 
-        catchesCountLabel = new JLabel(catches.toString());
+        statusLabel = new JLabel();
         c.gridx = 1;
         c.gridy = 0;
         c.insets = new Insets(0, 0, 0, 0);
         c.anchor = GridBagConstraints.LINE_START;
-        panel.add(catchesCountLabel, c);
-
-
-        // row 2
-        JLabel failsLabel = new JLabel("Fails");
-        failsLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        c.gridx = 0;
-        c.gridy = 1;
-        c.insets = new Insets(0, 0, 5, 10);
-        c.anchor = GridBagConstraints.LINE_END;
-        panel.add(failsLabel, c);
-
-        failsCountLabel = new JLabel(fails.toString());
-        c.gridx = 1;
-        c.gridy = 1;
-        c.insets = new Insets(0, 0, 5, 0);
-        c.anchor = GridBagConstraints.LINE_START;
-        panel.add(failsCountLabel, c);
+        panel.add(statusLabel, c);
+        updateStatus();
 
 
         // row 3
@@ -103,7 +87,7 @@ public class FishingModule extends Module implements ActionListener {
         recordsTable.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
-        c.gridy = 3;
+        c.gridy = 2;
         c.gridwidth = 3;
         c.weightx = 1;
         c.weighty = 1;
@@ -132,21 +116,26 @@ public class FishingModule extends Module implements ActionListener {
 
     @Override
     public void property(PropertyChangeEvent e) {
+        FishingTableModel model = (FishingTableModel) recordsTable.getModel();
         FishingRecordEntity record = (FishingRecordEntity) e.getNewValue();
 
+        bobberThrows = model.getRowCount();
         if (record.getCaught() != null) {
             if (record.getCaught()) {
                 catches++;
-                catchesCountLabel.setText(catches.toString());
             } else {
                 fails++;
-                failsCountLabel.setText(fails.toString());
             }
         }
+        updateStatus();
 
-        FishingTableModel model = (FishingTableModel) recordsTable.getModel();
+
         Integer index = model.updateOrAdd(record);
         recordsTable.scrollRectToVisible(recordsTable.getCellRect(index, 0, true));
+    }
+
+    public void updateStatus() {
+        statusLabel.setText(bobberThrows.toString() + "/" + catches.toString() + "/" + fails.toString());
     }
 
     @Override
@@ -173,7 +162,7 @@ public class FishingModule extends Module implements ActionListener {
 
     public void saveOptions(FishingOptionsEntity options) {
 //        StaticFunc.saveProperties("fishing", optionsModel.getMap());
-        StaticFunc.saveYaml(ConfigKeys.YAML_CONFIG_FILENAME, "fishing", optionsModel.getMap());
+        StaticFunc.saveYaml(ConfigKeys.YAML_CONFIG_FILENAME, "fishing", options.getMap());
         optionsModel = options;
         buildAI();
 

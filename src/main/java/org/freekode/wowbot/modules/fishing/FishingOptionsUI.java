@@ -35,13 +35,13 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
         this.optionsModel = optionsModel;
 
         setTitle("Fishing options");
-        setSize(300, 400);
+        setSize(400, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setLocation(50, 100);
 
         buildInterface();
-        pack();
+//        pack();
 
 
         setVisible(true);
