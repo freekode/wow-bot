@@ -35,9 +35,9 @@
             <version>1.3.9</version>
         </dependency>
         <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
-            <version>1.10</version>
+            <groupId>com.esotericsoftware.yamlbeans</groupId>
+            <artifactId>yamlbeans</artifactId>
+            <version>1.09</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

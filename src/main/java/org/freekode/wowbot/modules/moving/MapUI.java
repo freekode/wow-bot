@@ -3,6 +3,7 @@ package org.freekode.wowbot.modules.moving;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.freekode.wowbot.entity.moving.CharacterRecordEntity;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,10 +14,10 @@ import java.util.List;
 
 public class MapUI extends JFrame implements ActionListener {
     private static final Logger logger = LogManager.getLogger(MapUI.class);
-    private List<CharacterRecordModel> records;
+    private List<CharacterRecordEntity> records;
 
 
-    public void init(List<CharacterRecordModel> records) {
+    public void init(List<CharacterRecordEntity> records) {
         this.records = records;
 
 
@@ -89,12 +90,12 @@ public class MapUI extends JFrame implements ActionListener {
             }
 
 
-            for (CharacterRecordModel record : records) {
+            for (CharacterRecordEntity record : records) {
                 Vector3D point = record.getCoordinates();
 
-                if (record.getAction() == CharacterRecordModel.Action.MOVE) {
+                if (record.getAction() == CharacterRecordEntity.Action.MOVE) {
                     g2d.setPaint(new Color(255, 0, 0));
-                } else if (record.getAction() == CharacterRecordModel.Action.GATHER) {
+                } else if (record.getAction() == CharacterRecordEntity.Action.GATHER) {
                     g2d.setPaint(new Color(0, 255, 0));
                 }
 

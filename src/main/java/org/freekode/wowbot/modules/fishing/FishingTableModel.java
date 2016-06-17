@@ -1,5 +1,7 @@
 package org.freekode.wowbot.modules.fishing;
 
+import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
+
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.util.Date;
@@ -7,9 +9,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FishingTableModel extends AbstractTableModel {
-    private String[] columnNames = {"Date", "Caught", "1", "2", "3"};
-    private Class[] columnClasses = {Date.class, Boolean.class, Color.class, Color.class, Color.class};
-    private List<FishingRecordModel> data = new LinkedList<>();
+    private String[] columnNames = {"Date", "Kit name", "Caught", "1", "2", "3"};
+    private Class[] columnClasses = {Date.class, String.class, Boolean.class, Color.class, Color.class, Color.class};
+    private List<FishingRecordEntity> data = new LinkedList<>();
 
 
     @Override
@@ -37,7 +39,7 @@ public class FishingTableModel extends AbstractTableModel {
         return columnClasses[columnIndex];
     }
 
-    public Integer updateOrAdd(FishingRecordModel newRecord) {
+    public Integer updateOrAdd(FishingRecordEntity newRecord) {
         Integer updateIndex = update(newRecord);
         if (updateIndex != null) {
             return updateIndex;
@@ -48,9 +50,9 @@ public class FishingTableModel extends AbstractTableModel {
         return data.size();
     }
 
-    public Integer update(FishingRecordModel newRecord) {
+    public Integer update(FishingRecordEntity newRecord) {
         for (int i = 0; i < data.size(); i++) {
-            FishingRecordModel element = data.get(i);
+            FishingRecordEntity element = data.get(i);
             if (newRecord.equals(element)) {
                 element.setFirst(newRecord.getFirst());
                 element.setSecond(newRecord.getSecond());
@@ -71,7 +73,7 @@ public class FishingTableModel extends AbstractTableModel {
         fireTableRowsDeleted(0, size);
     }
 
-    public List<FishingRecordModel> getData() {
+    public List<FishingRecordEntity> getData() {
         return data;
     }
 }

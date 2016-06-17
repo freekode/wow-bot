@@ -4,8 +4,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.beans.ai.FishingAI;
 import org.freekode.wowbot.beans.ai.Intelligence;
+import org.freekode.wowbot.entity.fishing.FishingKitEntity;
+import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
+import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
 import org.freekode.wowbot.modules.Module;
 import org.freekode.wowbot.tools.ColorCellRenderer;
+import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.DateRenderer;
 import org.freekode.wowbot.tools.StaticFunc;
 
@@ -15,24 +19,26 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public class FishingModule extends Module implements ActionListener {
     private static final Logger logger = LogManager.getLogger(FishingModule.class);
-    private FishingOptionsModel optionsModel;
+    private FishingOptionsEntity optionsModel;
     private Component ui;
     private Intelligence ai;
+    private Integer bobberThrows = 0;
     private Integer catches = 0;
     private Integer fails = 0;
-    private JLabel catchesCountLabel;
-    private JLabel failsCountLabel;
+    private JLabel statusLabel;
     private JTable recordsTable;
 
 
     public FishingModule() {
-        Map<String, Object> config = StaticFunc.loadProperties("fishing");
-        optionsModel = new FishingOptionsModel(config);
+        Map<String, Object> config = StaticFunc.loadYaml(ConfigKeys.YAML_CONFIG_FILENAME, "fishing");
+        optionsModel = new FishingOptionsEntity();
+        optionsModel.parse(config);
 
         ui = buildInterface();
         buildAI();
@@ -54,52 +60,39 @@ public class FishingModule extends Module implements ActionListener {
 
 
         // row 1
-        JLabel catchesLabel = new JLabel("Catches");
-        catchesLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        JLabel statusTitleLabel = new JLabel("Throws/Catches/Fails");
+        statusTitleLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         c.gridx = 0;
         c.gridy = 0;
         c.insets = new Insets(0, 0, 0, 10);
         c.anchor = GridBagConstraints.LINE_END;
-        panel.add(catchesLabel, c);
+        panel.add(statusTitleLabel, c);
 
-        catchesCountLabel = new JLabel(catches.toString());
+        statusLabel = new JLabel();
         c.gridx = 1;
         c.gridy = 0;
         c.insets = new Insets(0, 0, 0, 0);
         c.anchor = GridBagConstraints.LINE_START;
-        panel.add(catchesCountLabel, c);
-
-
-        // row 2
-        JLabel failsLabel = new JLabel("Fails");
-        failsLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        c.gridx = 0;
-        c.gridy = 1;
-        c.insets = new Insets(0, 0, 5, 10);
-        c.anchor = GridBagConstraints.LINE_END;
-        panel.add(failsLabel, c);
-
-        failsCountLabel = new JLabel(fails.toString());
-        c.gridx = 1;
-        c.gridy = 1;
-        c.insets = new Insets(0, 0, 5, 0);
-        c.anchor = GridBagConstraints.LINE_START;
-        panel.add(failsCountLabel, c);
+        panel.add(statusLabel, c);
+        updateStatus();
 
 
         // row 3
         recordsTable = new JTable(new FishingTableModel());
         recordsTable.setDefaultRenderer(Date.class, new DateRenderer("yyyy-MM-dd HH:mm:ss"));
         recordsTable.setDefaultRenderer(Color.class, new ColorCellRenderer());
-        JScrollPane scrollPane = new JScrollPane(recordsTable);
+        recordsTable.getColumnModel().getColumn(0).setPreferredWidth(120);
+        recordsTable.getColumnModel().getColumn(1).setPreferredWidth(120);
+        recordsTable.getColumnModel().getColumn(2).setPreferredWidth(30);
+        recordsTable.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 0;
-        c.gridy = 3;
+        c.gridy = 2;
         c.gridwidth = 3;
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
-        panel.add(scrollPane, c);
+        panel.add(new JScrollPane(recordsTable), c);
 
 
         return panel;
@@ -109,31 +102,40 @@ public class FishingModule extends Module implements ActionListener {
     public void buildAI() {
         int fishButtonValue = KeyStroke.getKeyStroke(optionsModel.getFishKey().charAt(0), 0).getKeyCode();
         int failTryingsValue = optionsModel.getFailTryings();
-        List<Color> firstColors = optionsModel.getFirstColors();
-        List<Color> secondColors = optionsModel.getSecondColors();
-        List<Color> thirdColors = optionsModel.getThirdColors();
 
-        ai = new FishingAI(fishButtonValue, failTryingsValue, firstColors, secondColors, thirdColors);
+        List<FishingKitEntity> enabledKits = new LinkedList<>();
+        for (FishingKitEntity kit : optionsModel.getKits()) {
+            if (kit.getEnable()) {
+                enabledKits.add(kit);
+            }
+        }
+
+        ai = new FishingAI(fishButtonValue, failTryingsValue, enabledKits);
         ai.addPropertyChangeListener(this);
     }
 
     @Override
     public void property(PropertyChangeEvent e) {
-        FishingRecordModel record = (FishingRecordModel) e.getNewValue();
+        FishingTableModel model = (FishingTableModel) recordsTable.getModel();
+        FishingRecordEntity record = (FishingRecordEntity) e.getNewValue();
 
+        bobberThrows = model.getRowCount();
         if (record.getCaught() != null) {
             if (record.getCaught()) {
                 catches++;
-                catchesCountLabel.setText(catches.toString());
             } else {
                 fails++;
-                failsCountLabel.setText(fails.toString());
             }
         }
+        updateStatus();
 
-        FishingTableModel model = (FishingTableModel) recordsTable.getModel();
+
         Integer index = model.updateOrAdd(record);
         recordsTable.scrollRectToVisible(recordsTable.getCellRect(index, 0, true));
+    }
+
+    public void updateStatus() {
+        statusLabel.setText(bobberThrows.toString() + "/" + catches.toString() + "/" + fails.toString());
     }
 
     @Override
@@ -145,7 +147,7 @@ public class FishingModule extends Module implements ActionListener {
 
     public void showOptions() {
         FishingOptionsUI optionsWindow = new FishingOptionsUI();
-        optionsWindow.init(optionsModel);
+        optionsWindow.init(new FishingOptionsEntity(optionsModel));
         optionsWindow.addPropertyChangeListener(this);
     }
 
@@ -154,11 +156,13 @@ public class FishingModule extends Module implements ActionListener {
         super.propertyChange(e);
 
         if ("saveOptions".equals(e.getPropertyName())) {
-            saveOptions((FishingOptionsModel) e.getNewValue());
+            saveOptions((FishingOptionsEntity) e.getNewValue());
         }
     }
 
-    public void saveOptions(FishingOptionsModel options) {
+    public void saveOptions(FishingOptionsEntity options) {
+//        StaticFunc.saveProperties("fishing", optionsModel.getMap());
+        StaticFunc.saveYaml(ConfigKeys.YAML_CONFIG_FILENAME, "fishing", options.getMap());
         optionsModel = options;
         buildAI();
 

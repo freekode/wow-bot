@@ -1,5 +1,6 @@
 package org.freekode.wowbot;
 
+import org.freekode.wowbot.modules.TestModule;
 import org.freekode.wowbot.modules.TestMovingModule;
 import org.freekode.wowbot.modules.fishing.FishingModule;
 import org.freekode.wowbot.modules.moving.MoveModule;
@@ -13,7 +14,7 @@ public class Main {
 
         MainUI mainUI = new MainUI(hotKey);
         mainUI.addModule(new FishingModule());
-//        mainUI.addModule(new TestModule());
+        mainUI.addModule(new TestModule());
         mainUI.addModule(new TestMovingModule());
         mainUI.addModule(new MoveModule());
         mainUI.start();

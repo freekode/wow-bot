@@ -3,11 +3,11 @@ package org.freekode.wowbot.beans.ai;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.modules.moving.CharacterRecordModel;
+import org.freekode.wowbot.entity.moving.CharacterRecordEntity;
 
 import java.util.List;
 
-public class MovingAI extends Intelligence<CharacterRecordModel> {
+public class MovingAI extends Intelligence<CharacterRecordEntity> {
     private static final Logger logger = LogManager.getLogger(MovingAI.class);
     private List<Vector3D> points;
 
@@ -19,7 +19,7 @@ public class MovingAI extends Intelligence<CharacterRecordModel> {
     @Override
     public Boolean processing() throws InterruptedException {
         for (Vector3D point : points) {
-            CharacterRecordModel record = new CharacterRecordModel(point);
+            CharacterRecordEntity record = new CharacterRecordEntity(point);
             record.setState("started");
             send(record);
 

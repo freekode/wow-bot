@@ -1,23 +1,25 @@
 package org.freekode.wowbot.tools;
 
+import com.esotericsoftware.yamlbeans.YamlException;
+import com.esotericsoftware.yamlbeans.YamlReader;
+import com.esotericsoftware.yamlbeans.YamlWriter;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.freekode.wowbot.entity.moving.CharacterRecordEntity;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StaticFunc {
     private static final Logger logger = LogManager.getLogger(StaticFunc.class);
@@ -178,34 +180,72 @@ public class StaticFunc {
         return null;
     }
 
-    public static Map<String, Object> loadProperties(String prefix) {
-        Map<String, Object> out = new HashMap<>();
+    public static String buildCsvFile(List<CharacterRecordEntity> records) {
+        StringBuilder out = new StringBuilder();
+
+        for (CharacterRecordEntity record : records) {
+            out.append(record.getDate().getTime()).append(";")
+                    .append(record.getCoordinates().getX()).append(";")
+                    .append(record.getCoordinates().getY()).append(";")
+                    .append(record.getAction()).append("\n");
+        }
+
+        return out.toString();
+    }
+
+    public static List<CharacterRecordEntity> parseCsvFile(File file) {
+        Pattern pattern = Pattern.compile("([\\d\\.]*);([\\d\\.]*);([\\d\\.]*);(.*)");
+        List<CharacterRecordEntity> records = new LinkedList<>();
 
         try {
-            Configuration configuration = new PropertiesConfiguration(ConfigKeys.PROPERTIES_FILENAME);
-            Iterator<String> iterator = configuration.getKeys(prefix);
-            while (iterator.hasNext()) {
-                String key = iterator.next();
-                Object value = configuration.getProperty(key);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+            String line;
 
-                out.put(key.replaceFirst("^\\w*\\.", ""), value);
+            while ((line = reader.readLine()) != null) {
+                Matcher matcher = pattern.matcher(line);
+
+                if (matcher.find()) {
+
+                    Date date = new Date(new Long(matcher.group(1)));
+                    Double x = new Double(matcher.group(2));
+                    Double y = new Double(matcher.group(3));
+                    CharacterRecordEntity.Action action = CharacterRecordEntity.Action.valueOf(matcher.group(4));
+
+                    records.add(new CharacterRecordEntity(date, new Vector3D(x, y, 0), action));
+                }
             }
-        } catch (ConfigurationException e) {
+
+            return records;
+        } catch (IOException e) {
+            return new LinkedList<>();
+        }
+    }
+
+    public static Map<String, Object> loadYaml(String filename, String prefix) {
+        try {
+            YamlReader reader = new YamlReader(new FileReader(filename));
+            Map<String, Object> map = (Map<String, Object>) ((Map) reader.read()).get(prefix);
+            if (map != null) {
+                return map;
+            }
+        } catch (FileNotFoundException | YamlException e) {
             logger.info("loading config has failed");
         }
 
-        return out;
+        return new HashMap<>();
     }
 
-    public static void saveProperties(String prefix, Map<String, Object> values) {
+    public static void saveYaml(String filename, String prefix, Map<String, Object> values) {
         try {
-            PropertiesConfiguration configuration = new PropertiesConfiguration(ConfigKeys.PROPERTIES_FILENAME);
-            for (Map.Entry<String, Object> entry : values.entrySet()) {
-                configuration.setProperty(prefix + "." + entry.getKey(), entry.getValue());
-            }
-            configuration.save();
-        } catch (ConfigurationException e) {
+            Map<String, Object> map = new HashMap<>();
+            map.put(prefix, values);
+
+            YamlWriter writer = new YamlWriter(new FileWriter(filename));
+            writer.write(map);
+            writer.close();
+        } catch (IOException e) {
             logger.info("saving config has failed");
         }
+
     }
 }

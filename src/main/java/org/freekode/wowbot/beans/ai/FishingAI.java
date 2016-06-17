@@ -2,7 +2,9 @@ package org.freekode.wowbot.beans.ai;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.modules.fishing.FishingRecordModel;
+import org.freekode.wowbot.entity.fishing.FishingKitEntity;
+import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
+import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.StaticFunc;
 
 import java.awt.*;
@@ -11,36 +13,36 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class FishingAI extends Intelligence<FishingRecordModel> {
+public class FishingAI extends Intelligence<FishingRecordEntity> {
     private static final Logger logger = LogManager.getLogger(FishingAI.class);
     private static final int FISHING_TIME_SEC = 20;
     private static final int CHECK_IF_CAUGHT_SEC = 2;
-    private final Rectangle SEARCH_SQUARE = new Rectangle(400, 110, 440, 390);
-    private FishingRecordModel record;
-    // red colors
-    private List<Color> firstColors;
-    // blue colors
-    private List<Color> secondColors;
-    // white-yellow colors
-    private List<Color> thirdColors;
+    private static final double FIRST_COLOR_TOLERANCE = 7;
+    private static final double SECOND_COLOR_TOLERANCE = 6;
+    private static final double THIRD_COLOR_TOLERANCE = 5;
+    private int SEARCH_SQUARE_X1_OFFSET = 400;
+    private int SEARCH_SQUARE_Y1_OFFSET = 100;
+    private int SEARCH_SQUARE_X2_OFFSET = 400;
+    private int SEARCH_SQUARE_Y2_OFFSET = 220;
+    private Rectangle calculatedSearchSquare ;
+    private FishingRecordEntity record;
+    private List<FishingKitEntity> kits;
     private int fishKey;
     private int failTryings;
 
 
-    public FishingAI(int fishKey, int failTryings, List<Color> firstColors, List<Color> secondColors, List<Color> thirdColors) {
+    public FishingAI(int fishKey, int failTryings, List<FishingKitEntity> kits) {
         this.fishKey = fishKey;
         this.failTryings = failTryings;
-        this.firstColors = firstColors;
-        this.secondColors = secondColors;
-        this.thirdColors = thirdColors;
+        this.kits = kits;
 
-        logger.info("fish key = " + fishKey + "; fail tryings = " + failTryings +
-                "; [" + firstColors.size() + ", " + secondColors.size() + ", " + thirdColors.size() + "]");
+        logger.info("fish key = " + fishKey + "; fail tryings = " + failTryings + "; kits = " + kits.size());
     }
 
     @Override
     public Boolean processing() throws InterruptedException {
         getController().init();
+        getController().pitch(-0.35);
         startFishing();
 
         return true;
@@ -48,50 +50,76 @@ public class FishingAI extends Intelligence<FishingRecordModel> {
 
     public void startFishing() throws InterruptedException {
         logger.info("start fishing");
+
+        // calculate search square, to work with different window sizes
+        int searchSquareWidth = (int) (getWindowArea().getWidth() - SEARCH_SQUARE_X1_OFFSET - SEARCH_SQUARE_X2_OFFSET);
+        int searchSquareHeight = (int) (getWindowArea().getHeight() - SEARCH_SQUARE_Y1_OFFSET - SEARCH_SQUARE_Y2_OFFSET);
+        calculatedSearchSquare = new Rectangle(SEARCH_SQUARE_X1_OFFSET, SEARCH_SQUARE_Y2_OFFSET, searchSquareWidth, searchSquareHeight);
+        logger.info("searching rectangle = " + calculatedSearchSquare);
+
+        // fishing rectangle where is our bobber can be located in the window
+        Rectangle imageRect = StaticFunc.calculateCutSquare(getWindowArea(), calculatedSearchSquare);
+
         for (int i = 0; i < failTryings; i++) {
             logger.info("try = " + i);
             mouseOut();
             fish();
 
-            record = new FishingRecordModel(new Date());
+            record = new FishingRecordEntity(new Date());
             send(record);
 
-            Rectangle imageRect = StaticFunc.calculateCutSquare(getWindowArea(), SEARCH_SQUARE);
             BufferedImage image = StaticFunc.cutImage(imageRect);
-            int[] bobberPoint = findColor(image, firstColors, 7);
+
+            // lets find first color, and kit from which that red color
+            int[] bobberPoint = null;
+            FishingKitEntity currentKit = null;
+            for (FishingKitEntity kit : kits) {
+                bobberPoint = findColor(image, kit.getFirstColors(), FIRST_COLOR_TOLERANCE);
+                if (bobberPoint != null) {
+                    currentKit = kit;
+                    break;
+                }
+            }
             if (bobberPoint == null) {
                 continue;
             }
-            record.setFirst(new Color(bobberPoint[2]));
+            Color redColor = new Color(bobberPoint[2]);
+            logger.info("first color found = " + redColor.toString());
+            record.setFirst(redColor);
+            record.setKitName(currentKit.getName());
             send(record);
 
 
-            logger.info("first color found = " + new Color(bobberPoint[2]).toString());
+            // lets find second color, and we must find it only within small rectangle
             Rectangle bobberSquare = new Rectangle(bobberPoint[0] - 30, bobberPoint[1] - 20, 80, 50);
             Rectangle bobberRect = StaticFunc.calculateCutSquare(getWindowArea(),
-                    StaticFunc.calculateCutSquare(SEARCH_SQUARE, bobberSquare));
+                    StaticFunc.calculateCutSquare(calculatedSearchSquare, bobberSquare));
             BufferedImage bobberImage = StaticFunc.cutImage(bobberRect);
-            int[] bobberPart = findColor(bobberImage, secondColors, 6);
+            int[] bobberPart = findColor(bobberImage, currentKit.getSecondColors(), SECOND_COLOR_TOLERANCE);
             if (bobberPart == null) {
                 continue;
             }
-            record.setSecond(new Color(bobberPart[2]));
+            Color blueColor = new Color(bobberPart[2]);
+            logger.info("second color found = " + blueColor.toString());
+            record.setSecond(blueColor);
             send(record);
 
 
-            logger.info("second color found = " + new Color(bobberPart[2]).toString());
-            int[] bobberCoordinates = findColor(bobberImage, thirdColors, 5);
+            // last check that it is really the bobber, lets find the main part of the bobber
+            int[] bobberCoordinates = findColor(bobberImage, currentKit.getThirdColors(), THIRD_COLOR_TOLERANCE);
             if (bobberCoordinates == null) {
                 continue;
             }
-            record.setThird(new Color(bobberCoordinates[2]));
+            Color whiteYellowColor = new Color(bobberCoordinates[2]);
+            logger.info("third color found = " + whiteYellowColor.toString());
+            record.setThird(whiteYellowColor);
             send(record);
 
 
-            logger.info("third color found = " + new Color(bobberCoordinates[2]).toString());
+            // everything found, track for changes
             Rectangle stickSquare = new Rectangle(bobberCoordinates[0] - 10, bobberCoordinates[1] - 5, 22, 22);
             Rectangle trackRect = StaticFunc.calculateCutSquare(getWindowArea(),
-                    StaticFunc.calculateCutSquare(SEARCH_SQUARE,
+                    StaticFunc.calculateCutSquare(calculatedSearchSquare,
                             StaticFunc.calculateCutSquare(bobberSquare, stickSquare)));
 
             StaticFunc.cutImage(trackRect);
@@ -142,8 +170,8 @@ public class FishingAI extends Intelligence<FishingRecordModel> {
     }
 
     public void mouseOut() throws InterruptedException {
-        int x = (int) (getWindowArea().getX() + SEARCH_SQUARE.getX() + SEARCH_SQUARE.getWidth() + 20);
-        int y = (int) (getWindowArea().getY() + SEARCH_SQUARE.getY());
+        int x = (int) (getWindowArea().getX() + calculatedSearchSquare.getX() + calculatedSearchSquare.getWidth() + 20);
+        int y = (int) (getWindowArea().getY() + calculatedSearchSquare.getY());
         getController().getDriver().mouse(x, y);
         Thread.sleep(100);
     }

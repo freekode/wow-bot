@@ -2,6 +2,7 @@ package org.freekode.wowbot.modules.moving;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.freekode.wowbot.entity.moving.CharacterRecordEntity;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.Collections;
@@ -11,7 +12,7 @@ import java.util.List;
 public class RecordTableModel extends AbstractTableModel {
     private static final Logger logger = LogManager.getLogger(RecordTableModel.class);
     private String[] columnNames = {"State", "Date", "X", "Y", "Action"};
-    private List<CharacterRecordModel> data = new LinkedList<>();
+    private List<CharacterRecordEntity> data = new LinkedList<>();
 
 
     @Override
@@ -39,7 +40,7 @@ public class RecordTableModel extends AbstractTableModel {
         return getValueAt(0, columnIndex).getClass();
     }
 
-    public Integer add(CharacterRecordModel record) {
+    public Integer add(CharacterRecordEntity record) {
         data.add(record);
         fireTableRowsInserted(data.size(), data.size());
         return data.size();
@@ -62,9 +63,9 @@ public class RecordTableModel extends AbstractTableModel {
         fireTableRowsDeleted(0, data.size());
     }
 
-    public Integer update(CharacterRecordModel record) {
+    public Integer update(CharacterRecordEntity record) {
         for (int i = 0; i < data.size(); i++) {
-            CharacterRecordModel element = data.get(i);
+            CharacterRecordEntity element = data.get(i);
             if (record.equals(element)) {
                 element.setState(record.getState());
                 fireTableRowsUpdated(i, i);
@@ -75,7 +76,7 @@ public class RecordTableModel extends AbstractTableModel {
         return null;
     }
 
-    public List<CharacterRecordModel> getData() {
+    public List<CharacterRecordEntity> getData() {
         return data;
     }
 }
