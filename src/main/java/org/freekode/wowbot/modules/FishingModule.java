@@ -24,7 +24,6 @@ public class FishingModule extends Module {
     private static final Logger logger = LogManager.getLogger(FishingModule.class);
     private FishingOptionsEntity optionsEntity;
     private FishingUI ui;
-    private Intelligence ai;
 
 
     public FishingModule() {
@@ -65,14 +64,8 @@ public class FishingModule extends Module {
         ui.updateRecordsTable(record);
     }
 
-    @Override
-    public void done(PropertyChangeEvent e) {
-        fireUpdate(null, "done");
-    }
-
     public void showOptions() {
         FishingOptionsUI optionsWindow = new FishingOptionsUI();
-        optionsWindow.init(optionsEntity.copy());
         optionsWindow.addUpdateListener(new UpdateListener() {
             @Override
             public void updated(Object object, String command) {
@@ -81,6 +74,8 @@ public class FishingModule extends Module {
                 }
             }
         });
+
+        optionsWindow.init(optionsEntity.copy());
     }
 
     public void saveOptions(FishingOptionsEntity options) {

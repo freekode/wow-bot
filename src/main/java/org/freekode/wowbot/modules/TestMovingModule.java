@@ -3,7 +3,6 @@ package org.freekode.wowbot.modules;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.ai.Intelligence;
 import org.freekode.wowbot.ai.TestMovingAI;
 import org.freekode.wowbot.tools.ConfigKeys;
 
@@ -14,7 +13,6 @@ import java.awt.event.ActionListener;
 
 public class TestMovingModule extends Module implements ActionListener {
     private static final Logger logger = LogManager.getLogger(TestMovingModule.class);
-    private TestMovingAI ai;
     private Component ui;
 
     private JTextField azimuthField;
@@ -159,7 +157,7 @@ public class TestMovingModule extends Module implements ActionListener {
         logger.info("new azimuth = " + newAzimuth);
 
         try {
-            ai.setAzimuth(newAzimuth);
+            ((TestMovingAI) ai).setAzimuth(newAzimuth);
             logger.info("current azimuth = " + ai.getController().getReceiver().getAzimuth());
         } catch (InterruptedException e) {
             logger.info("azimuth test exception", e);
@@ -171,7 +169,7 @@ public class TestMovingModule extends Module implements ActionListener {
         logger.info("new azimuth = " + newAzimuth);
 
         try {
-            ai.setAzimuthByKey(newAzimuth);
+            ((TestMovingAI) ai).setAzimuthByKey(newAzimuth);
             logger.info("current azimuth = " + ai.getController().getReceiver().getAzimuth());
         } catch (InterruptedException e) {
             logger.info("azimuth test exception", e);
@@ -183,7 +181,7 @@ public class TestMovingModule extends Module implements ActionListener {
         logger.info("new pitch = " + newPitch);
 
         try {
-            ai.setPitch(newPitch);
+            ((TestMovingAI) ai).setPitch(newPitch);
             logger.info("current pitch = " + ai.getController().getReceiver().getPitch());
         } catch (InterruptedException e) {
             logger.info("pitch test exception", e);
@@ -196,7 +194,7 @@ public class TestMovingModule extends Module implements ActionListener {
         logger.info("run = " + distance);
 
         try {
-            ai.run(distance);
+            ((TestMovingAI) ai).run(distance);
 
             Vector3D newLocation = ai.getController().getCoordinates();
             logger.info("real distance = " + Vector3D.distance(currentLocation, newLocation));
@@ -209,7 +207,7 @@ public class TestMovingModule extends Module implements ActionListener {
         logger.info("gather herb");
 
         try {
-            ai.gatherHerb();
+            ((TestMovingAI) ai).gatherHerb();
         } catch (InterruptedException e) {
             logger.info("gather herb", e);
         }

@@ -15,6 +15,7 @@ public abstract class Module implements PropertyChangeListener {
     private List<UpdateListener> listeners = new ArrayList<>();
     protected Intelligence ai;
 
+
     /**
      * calling when we start our ai
      */

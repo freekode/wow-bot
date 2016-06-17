@@ -30,7 +30,6 @@ import java.util.List;
 public class MoveModule extends Module implements ActionListener {
     private static final Logger logger = LogManager.getLogger(MoveModule.class);
     private ModuleType currentType = ModuleType.RECORD;
-    private Intelligence ai;
     private Component ui;
     private JFileChooser fc;
     private JTable recordsTable;

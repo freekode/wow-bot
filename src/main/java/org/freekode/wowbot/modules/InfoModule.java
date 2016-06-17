@@ -1,7 +1,6 @@
 package org.freekode.wowbot.modules;
 
 import org.freekode.wowbot.ai.InfoAI;
-import org.freekode.wowbot.ai.Intelligence;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +8,6 @@ import java.beans.PropertyChangeEvent;
 
 public class InfoModule extends Module {
     private Component ui;
-    private Intelligence<InfoAI.InfoUpdate> ai;
     private JLabel xLabel = new JLabel("0");
     private JLabel yLabel = new JLabel("0");
     private JLabel azimuthLabel = new JLabel("0");
