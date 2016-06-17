@@ -10,19 +10,18 @@ import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
 import org.freekode.wowbot.modules.Module;
 import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.StaticFunc;
+import org.freekode.wowbot.ui.UpdateListener;
 import org.freekode.wowbot.ui.fishing.FishingOptionsUI;
 import org.freekode.wowbot.ui.fishing.FishingUI;
 
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class FishingModule extends Module implements PropertyChangeListener {
+public class FishingModule extends Module {
     private static final Logger logger = LogManager.getLogger(FishingModule.class);
     private FishingOptionsEntity optionsEntity;
     private FishingUI ui;
@@ -34,7 +33,14 @@ public class FishingModule extends Module implements PropertyChangeListener {
         optionsEntity = new FishingOptionsEntity(config);
 
         ui = new FishingUI();
-        ui.addPropertyChangeListener(this);
+        ui.addUpdateListener(new UpdateListener() {
+            @Override
+            public void updated(Object data, String command) {
+                if ("showOptions".equals(command)) {
+                    showOptions();
+                }
+            }
+        });
         buildAI();
     }
 
@@ -60,31 +66,21 @@ public class FishingModule extends Module implements PropertyChangeListener {
         ui.updateRecordsTable(record);
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent e) {
-        super.propertyChange(e);
-
-        if ("showOptions".equals(e.getPropertyName())) {
-            showOptions();
-        }
-
-        if ("saveOptions".equals(e.getPropertyName())) {
-            saveOptions((FishingOptionsEntity) e.getNewValue());
-        }
-    }
-
     public void showOptions() {
         FishingOptionsUI optionsWindow = new FishingOptionsUI();
         optionsWindow.init(optionsEntity.copy());
-        optionsWindow.addPropertyChangeListener(this);
+        optionsWindow.addUpdateListener(new UpdateListener() {
+            @Override
+            public void updated(Object data, String command) {
+                if ("saveOptions".equals(command)) {
+                    saveOptions((FishingOptionsEntity) data);
+                }
+            }
+        });
     }
 
     public void saveOptions(FishingOptionsEntity options) {
-        try {
-            StaticFunc.saveYaml(ConfigKeys.YAML_CONFIG_FILENAME, "fishing", options.getMap());
-        } catch (Exception e) {
-            logger.info("error save options", e);
-        }
+        StaticFunc.saveYaml(ConfigKeys.YAML_CONFIG_FILENAME, "fishing", options.getMap());
 
         optionsEntity = options;
         buildAI();

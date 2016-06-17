@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.entity.fishing.FishingKitEntity;
 import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
+import org.freekode.wowbot.ui.UpdateListener;
 import org.freekode.wowbot.ui.renderers.ColorCellRenderer;
 
 import javax.swing.*;
@@ -20,7 +21,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class FishingOptionsUI extends JFrame implements ActionListener, ListSelectionListener {
+public class FishingOptionsUI extends JDialog implements ActionListener {
+    private List<UpdateListener> updateListeners = new ArrayList<>();
+
     private static final Logger logger = LogManager.getLogger(FishingOptionsUI.class);
     private FishingOptionsEntity optionsModel;
     private JFormattedTextField fishKey;
@@ -34,10 +37,11 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
     public void init(FishingOptionsEntity optionsModel) {
         this.optionsModel = optionsModel;
 
+        setModal(true);
         setTitle("Fishing options");
-        setSize(400, 600);
+        setSize(500, 600);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocation(50, 100);
 
         buildInterface();
@@ -148,7 +152,19 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
             model.add(elem);
         }
         kitTable = new JTable(model);
-        kitTable.getSelectionModel().addListSelectionListener(this);
+        kitTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                KitTableModel model = (KitTableModel) kitTable.getModel();
+                int index = kitTable.getSelectedRow();
+                if (index > -1) {
+                    FishingKitEntity kit = model.getData().get(index);
+                    firstColorTable.setSelectedColors(kit.getFirstColors());
+                    secondColorTable.setSelectedColors(kit.getSecondColors());
+                    thirdColorTable.setSelectedColors(kit.getThirdColors());
+                }
+            }
+        });
         kitTable.getColumnModel().getColumn(0).setPreferredWidth(26);
         kitTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
         kitTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -281,6 +297,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
     public void actionPerformed(ActionEvent e) {
         if ("saveOptions".equals(e.getActionCommand())) {
             saveOptions();
+            setVisible(false);
             dispose();
         } else if ("close".equals(e.getActionCommand())) {
             dispose();
@@ -302,8 +319,7 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
         KitTableModel model = (KitTableModel) kitTable.getModel();
         optionsModel.setKits(model.getData());
 
-
-        firePropertyChange("saveOptions", null, optionsModel);
+        fireUpdate(optionsModel, "saveOptions");
     }
 
     public void addKit() {
@@ -351,15 +367,13 @@ public class FishingOptionsUI extends JFrame implements ActionListener, ListSele
         }
     }
 
-    @Override
-    public void valueChanged(ListSelectionEvent e) {
-        KitTableModel model = (KitTableModel) kitTable.getModel();
-        int index = kitTable.getSelectedRow();
-        if (index > -1) {
-            FishingKitEntity kit = model.getData().get(index);
-            firstColorTable.setSelectedColors(kit.getFirstColors());
-            secondColorTable.setSelectedColors(kit.getSecondColors());
-            thirdColorTable.setSelectedColors(kit.getThirdColors());
+    public void addUpdateListener(UpdateListener l) {
+        updateListeners.add(l);
+    }
+
+    public void fireUpdate(Object data, String command) {
+        for (UpdateListener listener : updateListeners) {
+            listener.updated(data, command);
         }
     }
 

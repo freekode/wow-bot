@@ -1,6 +1,7 @@
 package org.freekode.wowbot.ui.fishing;
 
 import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
+import org.freekode.wowbot.ui.UpdateListener;
 import org.freekode.wowbot.ui.renderers.ColorCellRenderer;
 import org.freekode.wowbot.ui.renderers.DateRenderer;
 
@@ -8,13 +9,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * ui for fishing module
  */
 public class FishingUI extends JPanel implements ActionListener {
+    private List<UpdateListener> updateListeners = new ArrayList<>();
     private Integer bobberThrows = 0;
     private Integer catches = 0;
     private Integer fails = 0;
@@ -99,8 +102,18 @@ public class FishingUI extends JPanel implements ActionListener {
         recordsTable.scrollRectToVisible(recordsTable.getCellRect(index, 0, true));
     }
 
+    public void addUpdateListener(UpdateListener l) {
+        updateListeners.add(l);
+    }
+
+    public void fireUpdate(Object data, String command) {
+        for (UpdateListener listener : updateListeners) {
+            listener.updated(data, command);
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        firePropertyChange("showOptions", null, null);
+        fireUpdate(null, "showOptions");
     }
 }
