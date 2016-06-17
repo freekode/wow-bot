@@ -1,9 +1,9 @@
-package org.freekode.wowbot.beans.ai;
+package org.freekode.wowbot.ai;
 
 import com.sun.jna.platform.win32.WinUser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.beans.service.Controller;
+import org.freekode.wowbot.controller.Controller;
 import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.StaticFunc;
 

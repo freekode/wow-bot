@@ -1,7 +1,7 @@
 package org.freekode.wowbot.modules;
 
-import org.freekode.wowbot.beans.ai.InfoAI;
-import org.freekode.wowbot.beans.ai.Intelligence;
+import org.freekode.wowbot.ai.InfoAI;
+import org.freekode.wowbot.ai.Intelligence;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package org.freekode.wowbot.beans.ai;
+package org.freekode.wowbot.ai;
 
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;

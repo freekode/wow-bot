@@ -3,8 +3,8 @@ package org.freekode.wowbot.modules;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.beans.ai.Intelligence;
-import org.freekode.wowbot.beans.ai.TestMovingAI;
+import org.freekode.wowbot.ai.Intelligence;
+import org.freekode.wowbot.ai.TestMovingAI;
 import org.freekode.wowbot.tools.ConfigKeys;
 
 import javax.swing.*;

@@ -1,4 +1,4 @@
-package org.freekode.wowbot.beans.ai;
+package org.freekode.wowbot.ai;
 
 public class InfoAI extends Intelligence<InfoAI.InfoUpdate> {
     @Override

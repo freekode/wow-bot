@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.entity.fishing.FishingKitEntity;
 import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
-import org.freekode.wowbot.tools.ColorCellRenderer;
+import org.freekode.wowbot.ui.renderers.ColorCellRenderer;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

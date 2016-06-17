@@ -1,4 +1,4 @@
-package org.freekode.wowbot.beans.service;
+package org.freekode.wowbot.controller;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

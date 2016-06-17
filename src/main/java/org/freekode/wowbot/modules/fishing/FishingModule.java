@@ -2,15 +2,15 @@ package org.freekode.wowbot.modules.fishing;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.beans.ai.FishingAI;
-import org.freekode.wowbot.beans.ai.Intelligence;
+import org.freekode.wowbot.ai.FishingAI;
+import org.freekode.wowbot.ai.Intelligence;
 import org.freekode.wowbot.entity.fishing.FishingKitEntity;
 import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
 import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
 import org.freekode.wowbot.modules.Module;
-import org.freekode.wowbot.tools.ColorCellRenderer;
+import org.freekode.wowbot.ui.renderers.ColorCellRenderer;
 import org.freekode.wowbot.tools.ConfigKeys;
-import org.freekode.wowbot.tools.DateRenderer;
+import org.freekode.wowbot.ui.renderers.DateRenderer;
 import org.freekode.wowbot.tools.StaticFunc;
 
 import javax.swing.*;

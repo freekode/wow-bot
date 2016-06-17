@@ -1,10 +1,9 @@
-package org.freekode.wowbot.beans.ai;
+package org.freekode.wowbot.ai;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.entity.fishing.FishingKitEntity;
 import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
-import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.StaticFunc;
 
 import java.awt.*;

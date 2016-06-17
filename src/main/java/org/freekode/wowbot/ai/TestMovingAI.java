@@ -1,4 +1,4 @@
-package org.freekode.wowbot.beans.ai;
+package org.freekode.wowbot.ai;
 
 import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.StaticFunc;
