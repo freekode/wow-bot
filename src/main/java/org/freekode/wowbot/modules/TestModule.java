@@ -2,7 +2,6 @@ package org.freekode.wowbot.modules;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.ai.Intelligence;
 import org.freekode.wowbot.ai.TestAI;
 
 import javax.swing.*;
@@ -12,7 +11,6 @@ import java.beans.PropertyChangeEvent;
 public class TestModule extends Module {
     private static final Logger logger = LogManager.getLogger(TestModule.class);
     private JLabel testLabel;
-    private Intelligence<String> ai;
     private Component ui;
 
 
@@ -41,11 +39,6 @@ public class TestModule extends Module {
     @Override
     public Component getUI() {
         return ui;
-    }
-
-    @Override
-    public Intelligence getAI() {
-        return ai;
     }
 
     @Override

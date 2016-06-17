@@ -1,4 +1,4 @@
-package org.freekode.wowbot.modules.fishing;
+package org.freekode.wowbot.modules;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,7 +7,6 @@ import org.freekode.wowbot.ai.Intelligence;
 import org.freekode.wowbot.entity.fishing.FishingKitEntity;
 import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
 import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
-import org.freekode.wowbot.modules.Module;
 import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.StaticFunc;
 import org.freekode.wowbot.ui.UpdateListener;
@@ -35,7 +34,7 @@ public class FishingModule extends Module {
         ui = new FishingUI();
         ui.addUpdateListener(new UpdateListener() {
             @Override
-            public void updated(Object data, String command) {
+            public void updated(Object object, String command) {
                 if ("showOptions".equals(command)) {
                     showOptions();
                 }
@@ -66,14 +65,19 @@ public class FishingModule extends Module {
         ui.updateRecordsTable(record);
     }
 
+    @Override
+    public void done(PropertyChangeEvent e) {
+        fireUpdate(null, "done");
+    }
+
     public void showOptions() {
         FishingOptionsUI optionsWindow = new FishingOptionsUI();
         optionsWindow.init(optionsEntity.copy());
         optionsWindow.addUpdateListener(new UpdateListener() {
             @Override
-            public void updated(Object data, String command) {
+            public void updated(Object object, String command) {
                 if ("saveOptions".equals(command)) {
-                    saveOptions((FishingOptionsEntity) data);
+                    saveOptions((FishingOptionsEntity) object);
                 }
             }
         });
@@ -81,7 +85,6 @@ public class FishingModule extends Module {
 
     public void saveOptions(FishingOptionsEntity options) {
         StaticFunc.saveYaml(ConfigKeys.YAML_CONFIG_FILENAME, "fishing", options.getMap());
-
         optionsEntity = options;
         buildAI();
 
@@ -91,11 +94,6 @@ public class FishingModule extends Module {
     @Override
     public Component getUI() {
         return ui;
-    }
-
-    @Override
-    public Intelligence getAI() {
-        return ai;
     }
 
     @Override

@@ -2,8 +2,8 @@ package org.freekode.wowbot;
 
 import org.freekode.wowbot.modules.TestModule;
 import org.freekode.wowbot.modules.TestMovingModule;
-import org.freekode.wowbot.modules.fishing.FishingModule;
-import org.freekode.wowbot.modules.moving.MoveModule;
+import org.freekode.wowbot.modules.FishingModule;
+import org.freekode.wowbot.modules.MoveModule;
 import org.freekode.wowbot.ui.MainUI;
 
 public class Main {

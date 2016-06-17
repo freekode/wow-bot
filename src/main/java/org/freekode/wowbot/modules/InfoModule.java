@@ -229,11 +229,6 @@ public class InfoModule extends Module {
     }
 
     @Override
-    public Intelligence getAI() {
-        return ai;
-    }
-
-    @Override
     public String getName() {
         return "Information";
     }

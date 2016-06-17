@@ -18,7 +18,7 @@ import java.awt.event.ItemListener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainUI implements ActionListener, HotkeyListener, ItemListener {
+public class MainUI implements HotkeyListener, UpdateListener {
     private static final Logger logger = LogManager.getLogger(MainUI.class);
     private InfoModule infoModule;
     private Module currentModule;
@@ -52,8 +52,6 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         frame.setLocation(0, 0);
 
         buildInterface(frame);
-
-//        frame.pack();
         frame.setVisible(true);
 
         statusBar.setText("initialized");
@@ -76,8 +74,13 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
 
 
         JButton startButton = new JButton("Start process");
-        startButton.setActionCommand("startThread");
-        startButton.addActionListener(this);
+        startButton.setActionCommand("startModule");
+        startButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startModule();
+            }
+        });
         c.anchor = GridBagConstraints.LINE_START;
         c.insets = new Insets(10, 10, 10, 5);
         c.gridx = 0;
@@ -85,8 +88,13 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         pane.add(startButton, c);
 
         JButton stopButton = new JButton("Stop process");
-        stopButton.setActionCommand("stopThread");
-        stopButton.addActionListener(this);
+        stopButton.setActionCommand("stopModule");
+        stopButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                stopModule();
+            }
+        });
         c.anchor = GridBagConstraints.LINE_END;
         c.insets = new Insets(10, 5, 10, 10);
         c.gridx = 1;
@@ -98,7 +106,21 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
         cards.setBorder(BorderFactory.createEtchedBorder());
 
         aiSelect = new JComboBox<>();
-        aiSelect.addItemListener(this);
+        aiSelect.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                CardLayout cl = (CardLayout) (cards.getLayout());
+                cl.show(cards, (String) e.getItem());
+                Module module = modules.get(e.getItem());
+
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    currentModule = module;
+                    currentModule.addUpdateListener(MainUI.this);
+                } else if (e.getStateChange() == ItemEvent.DESELECTED) {
+                    module.removeUpdateListener(MainUI.this);
+                }
+            }
+        });
         for (Map.Entry<String, Module> entry : modules.entrySet()) {
             aiSelect.addItem(entry.getKey());
             cards.add(entry.getValue().getUI(), entry.getKey());
@@ -148,68 +170,25 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
     }
 
     public void addModule(Module module) {
+        module.addUpdateListener(this);
         modules.put(module.getName(), module);
-    }
-
-    @Override
-    public void itemStateChanged(ItemEvent e) {
-        if (e.getStateChange() == ItemEvent.SELECTED) {
-            CardLayout cl = (CardLayout) (cards.getLayout());
-            cl.show(cards, (String) e.getItem());
-            currentModule = modules.get(e.getItem());
-        }
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if ("startThread".equals(e.getActionCommand())) {
-            startThread();
-        } else if ("stopThread".equals(e.getActionCommand())) {
-            stopThread();
-        }
     }
 
     @Override
     public void onHotKey(int i) {
         if (i == 1) {
-            startThread();
+            startModule();
         } else if (i == 2) {
-            stopThread();
+            stopModule();
         }
     }
 
-    public void startThread() {
-        currentModule.buildAI();
-        infoModule.buildAI();
-        Intelligence ai = currentModule.getAI();
-        Intelligence infoAi = infoModule.getAI();
-
-        if (!infoAi.isDone()) {
-            infoAi.execute();
-        }
-
-        if (!ai.isDone()) {
-            ai.execute();
-
-//            setEnableComponents(cards, false);
-            aiSelect.setEnabled(false);
-            statusBar.setText(currentModule.getName() + " - started");
-        } else {
-            statusBar.setText(currentModule.getName() + " - not started");
-        }
+    public void startModule() {
+        currentModule.startAI();
     }
 
-    public void stopThread() {
-        statusBar.setText(currentModule.getName() + " - stop");
-
-        Intelligence ai = currentModule.getAI();
-        Intelligence infoAi = infoModule.getAI();
-
-        infoAi.kill();
-        ai.kill();
-
-//        setEnableComponents(cards, true);
-        aiSelect.setEnabled(true);
+    public void stopModule() {
+        currentModule.stopAI();
     }
 
     public void setEnableComponents(Container container, boolean enable) {
@@ -221,6 +200,17 @@ public class MainUI implements ActionListener, HotkeyListener, ItemListener {
                 component.setEnabled(enable);
                 setEnableComponents((Container) component, enable);
             }
+        }
+    }
+
+    @Override
+    public void updated(Object object, String command) {
+        if ("started".equals(command)) {
+            statusBar.setText(currentModule.getName() + " - started");
+            aiSelect.setEnabled(false);
+        } else if ("done".equals(command)) {
+            aiSelect.setEnabled(true);
+            statusBar.setText(currentModule.getName() + " - done");
         }
     }
 }

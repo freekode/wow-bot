@@ -1,4 +1,4 @@
-package org.freekode.wowbot.modules.moving;
+package org.freekode.wowbot.modules;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
@@ -8,7 +8,6 @@ import org.freekode.wowbot.ai.Intelligence;
 import org.freekode.wowbot.ai.MovingAI;
 import org.freekode.wowbot.ai.RecordingAI;
 import org.freekode.wowbot.entity.moving.CharacterRecordEntity;
-import org.freekode.wowbot.modules.Module;
 import org.freekode.wowbot.ui.moving.MapUI;
 import org.freekode.wowbot.ui.moving.RecordTableModel;
 import org.freekode.wowbot.ui.renderers.DateRenderer;
@@ -330,11 +329,6 @@ public class MoveModule extends Module implements ActionListener {
     @Override
     public Component getUI() {
         return ui;
-    }
-
-    @Override
-    public Intelligence getAI() {
-        return ai;
     }
 
     @Override

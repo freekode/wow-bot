@@ -9,8 +9,8 @@ public interface UpdateListener extends EventListener {
     /**
      * calling when we need it
      *
-     * @param data    some data which we can send
+     * @param object  some object which we can send
      * @param command command what was
      */
-    void updated(Object data, String command);
+    void updated(Object object, String command);
 }

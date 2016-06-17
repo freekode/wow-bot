@@ -49,6 +49,10 @@ public abstract class Intelligence<T> extends SwingWorker<Boolean, Void> {
         firePropertyChange("custom", null, object);
     }
 
+    public void send(T object, String command) {
+        firePropertyChange(command, null, object);
+    }
+
     public void kill() {
         if (!isDone() || !isCancelled()) {
             logger.info("kill");

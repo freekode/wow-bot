@@ -221,11 +221,6 @@ public class TestMovingModule extends Module implements ActionListener {
     }
 
     @Override
-    public Intelligence getAI() {
-        return ai;
-    }
-
-    @Override
     public String getName() {
         return "Moving test";
     }
