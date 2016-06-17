@@ -232,7 +232,7 @@ public class InfoModule extends Module {
     }
 
     @Override
-    public void property(PropertyChangeEvent e) {
+    public void customProperty(PropertyChangeEvent e) {
         InfoAI.InfoUpdate update = (InfoAI.InfoUpdate) e.getNewValue();
 
         xLabel.setText(update.getX().toString());

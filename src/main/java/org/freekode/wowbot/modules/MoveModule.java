@@ -210,7 +210,7 @@ public class MoveModule extends Module implements ActionListener {
     }
 
     @Override
-    public void property(PropertyChangeEvent e) {
+    public void customProperty(PropertyChangeEvent e) {
         CharacterRecordEntity record = (CharacterRecordEntity) e.getNewValue();
         RecordTableModel model = (RecordTableModel) recordsTable.getModel();
 

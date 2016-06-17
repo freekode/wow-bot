@@ -59,7 +59,7 @@ public class FishingModule extends Module {
     }
 
     @Override
-    public void property(PropertyChangeEvent e) {
+    public void customProperty(PropertyChangeEvent e) {
         FishingRecordEntity record = (FishingRecordEntity) e.getNewValue();
         ui.updateRecordsTable(record);
     }
