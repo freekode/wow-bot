@@ -12,7 +12,7 @@ import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
 import java.util.List;
 
-public class MapUI extends JFrame implements ActionListener {
+public class MapUI extends JDialog implements ActionListener {
     private static final Logger logger = LogManager.getLogger(MapUI.class);
     private List<CharacterRecordEntity> records;
 
@@ -21,14 +21,14 @@ public class MapUI extends JFrame implements ActionListener {
         this.records = records;
 
 
+        setModal(true);
         setTitle("Map");
         setSize(1018, 705);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocation(50, 100);
 
         buildInterface();
-
         setVisible(true);
     }
 

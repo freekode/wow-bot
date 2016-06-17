@@ -45,9 +45,6 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
         setLocation(50, 100);
 
         buildInterface();
-//        pack();
-
-
         setVisible(true);
     }
 
