@@ -9,6 +9,8 @@ import org.freekode.wowbot.ai.MovingAI;
 import org.freekode.wowbot.ai.RecordingAI;
 import org.freekode.wowbot.entity.moving.CharacterRecordEntity;
 import org.freekode.wowbot.modules.Module;
+import org.freekode.wowbot.ui.moving.MapUI;
+import org.freekode.wowbot.ui.moving.RecordTableModel;
 import org.freekode.wowbot.ui.renderers.DateRenderer;
 import org.freekode.wowbot.ui.renderers.DoubleRenderer;
 import org.freekode.wowbot.tools.StaticFunc;
