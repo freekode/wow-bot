@@ -6,43 +6,46 @@ import java.util.List;
 
 public class FishingKitEntity {
     private String name;
-    private Boolean enable;
-    private List<Color> firstColors;
-    private List<Color> secondColors;
-    private List<Color> thirdColors;
+    private Boolean enable = true;
+    private List<Color> firstColors = new ArrayList<>();
+    private List<Color> secondColors = new ArrayList<>();
+    private List<Color> thirdColors = new ArrayList<>();
 
 
-    public FishingKitEntity() {
-        enable = true;
-        firstColors = new ArrayList<>();
-        secondColors = new ArrayList<>();
-        thirdColors = new ArrayList<>();
+    public FishingKitEntity(Map<String, Object> config) {
+        name = config.get("name").toString();
+        enable = Boolean.valueOf(config.get("enable").toString());
+
+        List<String> firstColorHex = (List<String>) config.get("firstColors");
+        for (String colorHex : firstColorHex) {
+            firstColors.add(Color.decode(colorHex));
+        }
+
+        List<String> secondColorHex = (List<String>) config.get("secondColors");
+        for (String colorHex : secondColorHex) {
+            secondColors.add(Color.decode(colorHex));
+        }
+
+        List<String> thirdColorHex = (List<String>) config.get("thirdColors");
+        for (String colorHex : thirdColorHex) {
+            thirdColors.add(Color.decode(colorHex));
+        }
     }
 
     public FishingKitEntity(String name) {
-        this();
-
         this.name = name;
     }
 
-    public FishingKitEntity(FishingKitEntity copy) {
-        name = copy.getName();
-        enable = copy.getEnable();
+    public FishingKitEntity(String name, Boolean enable, List<Color> firstColors, List<Color> secondColors, List<Color> thirdColors) {
+        this.name = name;
+        this.enable = enable;
+        this.firstColors = firstColors;
+        this.secondColors = secondColors;
+        this.thirdColors = thirdColors;
+    }
 
-        firstColors = new ArrayList<>();
-        for (Color color : copy.getFirstColors()) {
-            firstColors.add(color);
-        }
-
-        secondColors = new ArrayList<>();
-        for (Color color : copy.getSecondColors()) {
-            secondColors.add(color);
-        }
-
-        thirdColors = new ArrayList<>();
-        for (Color color : copy.getThirdColors()) {
-            thirdColors.add(color);
-        }
+    public FishingKitEntity copy() {
+        return new FishingKitEntity(name, enable, firstColors, secondColors, thirdColors);
     }
 
     public static FishingKitEntity getStandard() {
@@ -111,7 +114,7 @@ public class FishingKitEntity {
         this.enable = enable;
     }
 
-    public Map<String, Object> getMap() {
+    public Map<String, Object> toMap() {
         Map<String, Object> kitMap = new HashMap<>();
         kitMap.put("name", name);
         kitMap.put("enable", enable.toString());
@@ -135,26 +138,6 @@ public class FishingKitEntity {
         kitMap.put("thirdColors", thirdColorsHex);
 
         return kitMap;
-    }
-
-    public void parse(Map<String, Object> config) {
-        name = config.get("name").toString();
-        enable = Boolean.valueOf(config.get("enable").toString());
-
-        List<String> firstColorHex = (List<String>) config.get("firstColors");
-        for (String colorHex : firstColorHex) {
-            firstColors.add(Color.decode(colorHex));
-        }
-
-        List<String> secondColorHex = (List<String>) config.get("secondColors");
-        for (String colorHex : secondColorHex) {
-            secondColors.add(Color.decode(colorHex));
-        }
-
-        List<String> thirdColorHex = (List<String>) config.get("thirdColors");
-        for (String colorHex : thirdColorHex) {
-            thirdColors.add(Color.decode(colorHex));
-        }
     }
 
     public List<Object> toList() {

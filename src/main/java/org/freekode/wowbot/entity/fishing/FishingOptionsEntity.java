@@ -11,8 +11,10 @@ public class FishingOptionsEntity {
     private List<FishingKitEntity> kits = new ArrayList<>();
 
 
-    public FishingOptionsEntity() {
-        kits.add(FishingKitEntity.getStandard());
+    public FishingOptionsEntity(String fishKey, Integer failTryings, List<FishingKitEntity> kits) {
+        this.fishKey = fishKey;
+        this.failTryings = failTryings;
+        this.kits = kits;
     }
 
     public FishingOptionsEntity(Map<String, Object> config) {
@@ -29,11 +31,12 @@ public class FishingOptionsEntity {
                     continue;
                 }
 
-                FishingKitEntity kit = new FishingKitEntity();
-                kit.parse(kitMap);
+                FishingKitEntity kit = new FishingKitEntity(kitMap);
                 kits.add(kit);
             }
         }
+
+        kits.add(FishingKitEntity.getStandard());
     }
 
     public String getFishKey() {
@@ -61,17 +64,7 @@ public class FishingOptionsEntity {
     }
 
     public FishingOptionsEntity copy() {
-        FishingOptionsEntity newEntity = new FishingOptionsEntity();
-
-        newEntity.setFishKey(fishKey);
-        newEntity.setFailTryings(failTryings);
-
-        for (FishingKitEntity kit : this.kits) {
-            newEntity.getKits().add(new FishingKitEntity(kit));
-        }
-
-
-        return newEntity;
+        return new FishingOptionsEntity(fishKey, failTryings, kits);
     }
 
     public Map<String, Object> getMap() {
@@ -86,7 +79,7 @@ public class FishingOptionsEntity {
                 continue;
             }
 
-            kitsList.add(kit.getMap());
+            kitsList.add(kit.toMap());
         }
         out.put("kits", kitsList);
 

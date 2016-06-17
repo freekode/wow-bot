@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +80,12 @@ public class FishingModule extends Module implements PropertyChangeListener {
     }
 
     public void saveOptions(FishingOptionsEntity options) {
-        StaticFunc.saveYaml(ConfigKeys.YAML_CONFIG_FILENAME, "fishing", options.getMap());
+        try {
+            StaticFunc.saveYaml(ConfigKeys.YAML_CONFIG_FILENAME, "fishing", options.getMap());
+        } catch (Exception e) {
+            logger.info("error save options", e);
+        }
+
         optionsEntity = options;
         buildAI();
 
