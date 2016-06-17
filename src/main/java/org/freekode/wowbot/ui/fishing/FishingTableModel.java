@@ -1,4 +1,4 @@
-package org.freekode.wowbot.modules.fishing;
+package org.freekode.wowbot.ui.fishing;
 
 import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
 

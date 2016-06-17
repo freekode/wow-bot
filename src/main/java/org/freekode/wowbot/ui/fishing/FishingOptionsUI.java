@@ -1,4 +1,4 @@
-package org.freekode.wowbot.modules.fishing;
+package org.freekode.wowbot.ui.fishing;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -1,4 +1,4 @@
-package org.freekode.wowbot.modules.fishing;
+package org.freekode.wowbot.ui.fishing;
 
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
