@@ -23,7 +23,6 @@ public class InfoModule extends Module {
 
     public InfoModule() {
         ui = buildInterface();
-        buildAI();
     }
 
     public Component buildInterface() {

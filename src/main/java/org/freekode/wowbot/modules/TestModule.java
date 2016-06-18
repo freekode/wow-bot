@@ -17,7 +17,6 @@ public class TestModule extends Module {
 
     public TestModule() {
         ui = buildInterface();
-        buildAI();
     }
 
     public Component buildInterface() {

@@ -37,7 +37,6 @@ public class MoveModule extends Module implements ActionListener {
 
     public MoveModule() {
         ui = buildUI();
-        buildAI();
     }
 
     @Override

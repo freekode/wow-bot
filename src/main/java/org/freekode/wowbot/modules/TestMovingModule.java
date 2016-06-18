@@ -24,7 +24,6 @@ public class TestMovingModule extends Module implements ActionListener {
 
     public TestMovingModule() {
         ui = buildInterface();
-        buildAI();
     }
 
     @Override
