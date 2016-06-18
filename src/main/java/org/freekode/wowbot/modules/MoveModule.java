@@ -41,23 +41,21 @@ public class MoveModule extends Module implements ActionListener {
     }
 
     @Override
-    public void buildAI() {
+    public Intelligence buildAI() {
         if (currentType == ModuleType.RECORD) {
-            buildRecordUI();
+            return buildRecordAI();
         } else if (currentType == ModuleType.MOVE) {
-            buildMoveUI();
-        } else if (currentType == ModuleType.GATHER) {
-            buildGatherUI();
+            return buildMoveAI();
+        } else {
+            return buildGatherAI();
         }
-
     }
 
-    public void buildRecordUI() {
-        ai = new RecordingAI();
-        ai.addPropertyChangeListener(this);
+    public Intelligence buildRecordAI() {
+        return new RecordingAI();
     }
 
-    public void buildMoveUI() {
+    public Intelligence buildMoveAI() {
         List<Vector3D> points = new ArrayList<>();
         RecordTableModel model = (RecordTableModel) recordsTable.getModel();
 
@@ -70,11 +68,10 @@ public class MoveModule extends Module implements ActionListener {
             points = points.subList(selectedIndex, points.size());
         }
 
-        ai = new MovingAI(points);
-        ai.addPropertyChangeListener(this);
+        return new MovingAI(points);
     }
 
-    public void buildGatherUI() {
+    public Intelligence buildGatherAI() {
         RecordTableModel model = (RecordTableModel) recordsTable.getModel();
 
         List<CharacterRecordEntity> records = new LinkedList<>(model.getData());
@@ -83,8 +80,7 @@ public class MoveModule extends Module implements ActionListener {
             records = records.subList(selectedIndex, records.size());
         }
 
-        ai = new GatherAI(records);
-        ai.addPropertyChangeListener(this);
+        return new GatherAI(records);
     }
 
     public Component buildUI() {

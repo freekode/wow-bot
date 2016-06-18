@@ -2,6 +2,7 @@ package org.freekode.wowbot.modules;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.freekode.wowbot.ai.Intelligence;
 import org.freekode.wowbot.ai.TestAI;
 
 import javax.swing.*;
@@ -29,11 +30,8 @@ public class TestModule extends Module {
     }
 
     @Override
-    public void buildAI() {
-        if (ai == null || ai.isDone() || ai.isCancelled()) {
-            ai = new TestAI();
-            ai.addPropertyChangeListener(this);
-        }
+    public Intelligence buildAI() {
+        return new TestAI();
     }
 
     @Override

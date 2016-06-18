@@ -13,14 +13,15 @@ import java.util.List;
 
 public abstract class Module implements PropertyChangeListener {
     private List<UpdateListener> listeners = new ArrayList<>();
-    protected Intelligence ai;
+    private Intelligence ai;
 
 
     /**
      * calling when we start our ai
      */
     public void startAI() {
-        buildAI();
+        ai = buildAI();
+        ai.addPropertyChangeListener(this);
 
         if (!ai.isDone()) {
             ai.execute();
@@ -37,7 +38,7 @@ public abstract class Module implements PropertyChangeListener {
     /**
      * need to restart the thread after kill
      */
-    public abstract void buildAI();
+    public abstract Intelligence buildAI();
 
     /**
      * catch what ai send

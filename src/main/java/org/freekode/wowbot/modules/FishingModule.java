@@ -43,7 +43,7 @@ public class FishingModule extends Module {
     }
 
     @Override
-    public void buildAI() {
+    public Intelligence buildAI() {
         int fishButtonValue = KeyStroke.getKeyStroke(optionsEntity.getFishKey().charAt(0), 0).getKeyCode();
         int failTryingsValue = optionsEntity.getFailTryings();
 
@@ -54,8 +54,7 @@ public class FishingModule extends Module {
             }
         }
 
-        ai = new FishingAI(fishButtonValue, failTryingsValue, enabledKits);
-        ai.addPropertyChangeListener(this);
+        return new FishingAI(fishButtonValue, failTryingsValue, enabledKits);
     }
 
     @Override

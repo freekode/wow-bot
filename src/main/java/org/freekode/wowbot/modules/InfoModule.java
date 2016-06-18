@@ -1,6 +1,7 @@
 package org.freekode.wowbot.modules;
 
 import org.freekode.wowbot.ai.InfoAI;
+import org.freekode.wowbot.ai.Intelligence;
 
 import javax.swing.*;
 import java.awt.*;
@@ -214,11 +215,8 @@ public class InfoModule extends Module {
     }
 
     @Override
-    public void buildAI() {
-        if (ai == null || ai.isDone() || ai.isCancelled()) {
-            ai = new InfoAI();
-            ai.addPropertyChangeListener(this);
-        }
+    public Intelligence buildAI() {
+        return new InfoAI();
     }
 
     @Override
