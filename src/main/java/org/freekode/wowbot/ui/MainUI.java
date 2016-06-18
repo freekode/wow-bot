@@ -184,10 +184,12 @@ public class MainUI implements HotkeyListener, UpdateListener {
     }
 
     public void startModule() {
+        infoModule.startAI();
         currentModule.startAI();
     }
 
     public void stopModule() {
+        infoModule.stopAI();
         currentModule.stopAI();
     }
 
