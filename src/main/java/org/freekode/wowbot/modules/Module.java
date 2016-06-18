@@ -1,6 +1,7 @@
 package org.freekode.wowbot.modules;
 
 import org.freekode.wowbot.ai.Intelligence;
+import org.freekode.wowbot.ui.UpdateListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public abstract class Module implements PropertyChangeListener {
-    private List<ModuleListener> listeners = new ArrayList<>();
+    private List<UpdateListener> listeners = new ArrayList<>();
     protected Intelligence ai;
 
 
@@ -67,30 +68,30 @@ public abstract class Module implements PropertyChangeListener {
     }
 
     public void progress(PropertyChangeEvent e) {
-        fireProgress(e);
+        fireUpdate(e, "progress");
     }
 
     public void customProperty(PropertyChangeEvent e) {
     }
 
     public void started(PropertyChangeEvent e) {
-        fireStarted(e);
+        fireUpdate(e, "started");
     }
 
     public void pending(PropertyChangeEvent e) {
-        firePending(e);
+        fireUpdate(e, "pending");
     }
 
     public void done(PropertyChangeEvent e) {
-        fireDone(e);
+        fireUpdate(e, "done");
     }
 
-    public void addUpdateListener(ModuleListener l) {
+    public void addUpdateListener(UpdateListener l) {
         listeners.add(l);
     }
 
-    public void removeUpdateListener(ModuleListener l) {
-        Iterator<ModuleListener> iterator = listeners.iterator();
+    public void removeUpdateListener(UpdateListener l) {
+        Iterator<UpdateListener> iterator = listeners.iterator();
         while (iterator.hasNext()) {
             if (iterator.next().equals(l)) {
                 iterator.remove();
@@ -98,33 +99,9 @@ public abstract class Module implements PropertyChangeListener {
         }
     }
 
-    public void fireProgress(Object data) {
-        for (ModuleListener listener : listeners) {
-            listener.progress(data);
-        }
-    }
-
-    public void fireStarted(Object data) {
-        for (ModuleListener listener : listeners) {
-            listener.started(data);
-        }
-    }
-
-    public void fireDone(Object data) {
-        for (ModuleListener listener : listeners) {
-            listener.done(data);
-        }
-    }
-
-    public void fireCustom(Object data, String command) {
-        for (ModuleListener listener : listeners) {
-            listener.custom(data, command);
-        }
-    }
-
-    public void firePending(Object data) {
-        for (ModuleListener listener : listeners) {
-            listener.pending(data);
+    public void fireUpdate(Object data, String command) {
+        for (UpdateListener listener : listeners) {
+            listener.updated(data, command);
         }
     }
 
