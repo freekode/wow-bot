@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.entity.fishing.FishingKitEntity;
 import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
 import org.freekode.wowbot.ui.UpdateListener;
-import org.freekode.wowbot.ui.renderers.ColorCellRenderer;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -39,7 +38,7 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
 
         setModal(true);
         setTitle("Fishing options");
-        setSize(500, 600);
+        setSize(600, 700);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocation(50, 100);
@@ -74,7 +73,7 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
         c.weightx = 0;
         c.weighty = 0;
         c.fill = GridBagConstraints.NONE;
-        pane.add(getColorCheckList(), c);
+        pane.add(getColorList(), c);
 
         c.gridx = 0;
         c.gridy = 3;
@@ -85,6 +84,9 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
         pane.add(getControl(), c);
     }
 
+    /**
+     * just simple configs inputs and labels
+     */
     public JPanel getFirstPart() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -133,6 +135,9 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
         return panel;
     }
 
+    /**
+     * contains table with kits and enabling them
+     */
     public JPanel getKitTable() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -205,7 +210,10 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
         return panel;
     }
 
-    public JPanel getColorCheckList() {
+    /**
+     * colors of the kits with checkbox
+     */
+    public JPanel getColorList() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -249,6 +257,10 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
         return panel;
     }
 
+    /**
+     * save kit
+     * TODO remove it
+     */
     public JPanel getKitControl() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -264,6 +276,9 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
         return panel;
     }
 
+    /**
+     * save and close without saving
+     */
     public JPanel getControl() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -371,104 +386,6 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
     public void fireUpdate(Object data, String command) {
         for (UpdateListener listener : updateListeners) {
             listener.updated(data, command);
-        }
-    }
-
-    public class ColorTable extends JPanel {
-        private JTable table;
-
-
-        public ColorTable(String title, List<Color> colors) {
-            setLayout(new GridBagLayout());
-            GridBagConstraints c = new GridBagConstraints();
-
-            c.gridx = 0;
-            c.gridy = 0;
-            c.gridwidth = 2;
-            add(new JLabel(title), c);
-
-            CheckColorTableModel model = new CheckColorTableModel();
-            for (Color elem : colors) {
-                model.add(false, elem);
-            }
-            table = new JTable(model);
-            table.setDefaultRenderer(Color.class, new ColorCellRenderer());
-            table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            table.getColumnModel().getColumn(0).setPreferredWidth(26);
-            table.setTableHeader(null);
-            JScrollPane scrollPane = new JScrollPane(table);
-            scrollPane.setPreferredSize(new Dimension(80, 165));
-            c.insets = new Insets(0, 0, 0, 0);
-            c.gridx = 0;
-            c.gridy = 1;
-            add(scrollPane, c);
-
-
-            ActionColorListener colorListener = new ActionColorListener(table);
-
-            JButton addButton = new JButton("Add");
-            addButton.addActionListener(colorListener);
-            addButton.setActionCommand("add");
-//            addButton.setPreferredSize(new Dimension(20, 20));
-            addButton.setMargin(new Insets(0, 5, 0, 5));
-            c.gridx = 0;
-            c.gridy = 2;
-            c.gridwidth = 1;
-            add(addButton, c);
-
-            JButton deleteButton = new JButton("Del");
-            deleteButton.addActionListener(colorListener);
-            deleteButton.setActionCommand("delete");
-//            deleteButton.setPreferredSize(new Dimension(20, 20));
-            deleteButton.setMargin(new Insets(0, 5, 0, 5));
-            c.anchor = GridBagConstraints.LINE_END;
-            c.gridx = 1;
-            c.gridy = 2;
-            add(deleteButton, c);
-        }
-
-        public List<Color> getSelectedColors() {
-            CheckColorTableModel model = (CheckColorTableModel) table.getModel();
-            return model.getSelected();
-        }
-
-        public void setSelectedColors(List<Color> colors) {
-            CheckColorTableModel model = (CheckColorTableModel) table.getModel();
-            model.setSelected(colors);
-        }
-
-        public class ActionColorListener implements ActionListener {
-            private JTable table;
-
-
-            public ActionColorListener(JTable table) {
-                this.table = table;
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if ("add".equals(e.getActionCommand())) {
-                    add();
-                } else if ("delete".equals(e.getActionCommand())) {
-                    delete();
-                }
-            }
-
-            public void add() {
-                Color newColor = JColorChooser.showDialog(FishingOptionsUI.this, "Add color", null);
-                if (newColor != null) {
-                    CheckColorTableModel model = (CheckColorTableModel) table.getModel();
-                    model.add(true, newColor);
-                }
-            }
-
-            public void delete() {
-                int index = table.getSelectedRow();
-                if (index > -1) {
-                    CheckColorTableModel model = (CheckColorTableModel) table.getModel();
-                    model.delete(index);
-                }
-            }
         }
     }
 }

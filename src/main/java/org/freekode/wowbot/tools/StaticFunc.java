@@ -248,4 +248,8 @@ public class StaticFunc {
         }
 
     }
+
+    public static String encodeColor(Color color) {
+        return String.format("#%06X", (0xFFFFFF & color.getRGB()));
+    }
 }

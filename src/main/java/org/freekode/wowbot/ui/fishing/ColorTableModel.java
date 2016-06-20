@@ -1,13 +1,15 @@
 package org.freekode.wowbot.ui.fishing;
 
+import org.freekode.wowbot.tools.StaticFunc;
+
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CheckColorTableModel extends AbstractTableModel {
-    private Class[] columnClasses = {Boolean.class, Color.class};
+public class ColorTableModel extends AbstractTableModel {
+    private Class[] columnClasses = {Boolean.class, Color.class, String.class};
     private List<Record> data = new LinkedList<>();
 
     @Override
@@ -88,10 +90,13 @@ public class CheckColorTableModel extends AbstractTableModel {
     public class Record {
         private Boolean state;
         private Color color;
+        private String title;
+
 
         public Record(Boolean state, Color color) {
             this.state = state;
             this.color = color;
+            this.title = StaticFunc.encodeColor(color);
         }
 
         public Boolean getState() {
@@ -114,8 +119,17 @@ public class CheckColorTableModel extends AbstractTableModel {
             List<Object> list = new LinkedList<>();
             list.add(state);
             list.add(color);
+            list.add(title);
 
             return list;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
         }
 
         @Override

@@ -14,11 +14,6 @@ public class ColorCellRenderer extends JLabel implements TableCellRenderer {
         Color color = (Color) value;
         setBackground(color);
 
-        if (color != null) {
-            String colorText = String.format("#%06X", (0xFFFFFF & color.getRGB()));
-            setToolTipText(colorText);
-        }
-
         return this;
     }
 }
