@@ -4,8 +4,8 @@ import org.freekode.wowbot.entity.fishing.FishingKitEntity;
 import org.freekode.wowbot.gui.models.KitTableModel;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,10 +23,9 @@ public class KitTablePanel extends JPanel implements ActionListener {
     }
 
     public void init(String title, List<FishingKitEntity> kits) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        panel.setBorder(BorderFactory.createTitledBorder(title));
+        setBorder(BorderFactory.createTitledBorder(title));
 
 
         KitTableModel model = new KitTableModel();
@@ -34,25 +33,12 @@ public class KitTablePanel extends JPanel implements ActionListener {
             model.add(elem);
         }
         table = new JTable(model);
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                KitTableModel model = (KitTableModel) table.getModel();
-                int index = table.getSelectedRow();
-                if (index > -1) {
-                    FishingKitEntity kit = model.getData().get(index);
-//                    firstColorTablePanel.setSelectedColors(kit.getFirstColors());
-//                    secondColorTablePanel.setSelectedColors(kit.getSecondColors());
-//                    thirdColorTablePanel.setSelectedColors(kit.getThirdColors());
-                }
-            }
-        });
 //        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 //        table.getColumnModel().getColumn(0).setPreferredWidth(26);
 //        table.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
 //        table.setPreferredScrollableViewportSize(table.getPreferredSize());
 //        table.setFillsViewportHeight(true);
-        panel.add(table);
+        add(table);
 
 
         JPanel controlPanel = new JPanel();
@@ -74,7 +60,7 @@ public class KitTablePanel extends JPanel implements ActionListener {
         controlPanel.add(deleteButton);
 
 
-        panel.add(controlPanel);
+        add(controlPanel);
     }
 
     public JTable getTable() {

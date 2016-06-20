@@ -6,6 +6,7 @@ import org.freekode.wowbot.entity.fishing.FishingKitEntity;
 import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
 import org.freekode.wowbot.gui.UpdateListener;
 import org.freekode.wowbot.gui.components.ColorTablePanel;
+import org.freekode.wowbot.gui.components.KitTablePanel;
 import org.freekode.wowbot.gui.models.KitTableModel;
 
 import javax.swing.*;
@@ -28,7 +29,7 @@ public class FishingOptionsDialog extends JDialog implements ActionListener {
     private FishingOptionsEntity optionsEntity;
     private JFormattedTextField fishKey;
     private JFormattedTextField failTryings;
-    private JTable kitTable;
+    private KitTablePanel kitTablePanel;
     private ColorTablePanel firstColorTablePanel;
     private ColorTablePanel secondColorTablePanel;
     private ColorTablePanel thirdColorTablePanel;
@@ -113,22 +114,12 @@ public class FishingOptionsDialog extends JDialog implements ActionListener {
      * contains table with kits and enabling them
      */
     public JPanel getKitTable() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-        panel.setBorder(BorderFactory.createTitledBorder("Kit List"));
-
-
-        KitTableModel model = new KitTableModel();
-        for (FishingKitEntity elem : optionsEntity.getKits()) {
-            model.add(elem);
-        }
-        kitTable = new JTable(model);
-        kitTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        kitTablePanel = new KitTablePanel("Kit List", optionsEntity.getKits());
+        kitTablePanel.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                KitTableModel model = (KitTableModel) kitTable.getModel();
-                int index = kitTable.getSelectedRow();
+                KitTableModel model = (KitTableModel) kitTablePanel.getTable().getModel();
+                int index = kitTablePanel.getTable().getSelectedRow();
                 if (index > -1) {
                     FishingKitEntity kit = model.getData().get(index);
                     firstColorTablePanel.setSelectedColors(kit.getFirstColors());
@@ -137,37 +128,8 @@ public class FishingOptionsDialog extends JDialog implements ActionListener {
                 }
             }
         });
-//        kitTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//        kitTable.getColumnModel().getColumn(0).setPreferredWidth(26);
-//        kitTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
-//        kitTable.setPreferredScrollableViewportSize(kitTable.getPreferredSize());
-//        kitTable.setFillsViewportHeight(true);
-        panel.add(kitTable);
 
-
-        JPanel controlPanel = new JPanel();
-        controlPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JButton addButton = new JButton("Add");
-        addButton.addActionListener(this);
-        addButton.setActionCommand("addKit");
-        controlPanel.add(addButton);
-
-        JButton editButton = new JButton("Edit");
-        editButton.addActionListener(this);
-        editButton.setActionCommand("editKit");
-        controlPanel.add(editButton);
-
-        JButton deleteButton = new JButton("Delete");
-        deleteButton.addActionListener(this);
-        deleteButton.setActionCommand("deleteKit");
-        controlPanel.add(deleteButton);
-
-
-        panel.add(controlPanel);
-
-
-        return panel;
+        return kitTablePanel;
     }
 
     /**
@@ -265,12 +227,6 @@ public class FishingOptionsDialog extends JDialog implements ActionListener {
         } else if ("close".equals(e.getActionCommand())) {
             setVisible(false);
             dispose();
-        } else if ("addKit".equals(e.getActionCommand())) {
-            addKit();
-        } else if ("deleteKit".equals(e.getActionCommand())) {
-            deleteKit();
-        } else if ("editKit".equals(e.getActionCommand())) {
-            editKit();
         }
     }
 
@@ -278,49 +234,15 @@ public class FishingOptionsDialog extends JDialog implements ActionListener {
         optionsEntity.setFailTryings(Integer.valueOf(failTryings.getText()));
         optionsEntity.setFishKey(fishKey.getText());
 
-        KitTableModel model = (KitTableModel) kitTable.getModel();
+        KitTableModel model = (KitTableModel) kitTablePanel.getTable().getModel();
         optionsEntity.setKits(model.getData());
 
         fireUpdate(optionsEntity, "saveOptions");
     }
 
-    public void addKit() {
-        String name = JOptionPane.showInputDialog(this, "Input name", "Add kit", JOptionPane.PLAIN_MESSAGE);
-        if (name != null) {
-            KitTableModel model = (KitTableModel) kitTable.getModel();
-            FishingKitEntity newKit = new FishingKitEntity(name);
-            Integer index = model.add(newKit);
-
-//            kitTable.changeSelection(index, 0, false, false);
-            kitTable.setRowSelectionInterval(index - 1, index - 1);
-            kitTable.scrollRectToVisible(kitTable.getCellRect(index, 0, true));
-        }
-    }
-
-    public void editKit() {
-        KitTableModel model = (KitTableModel) kitTable.getModel();
-        int index = kitTable.getSelectedRow();
-        if (index > -1) {
-            FishingKitEntity kit = model.getData().get(index);
-            String name = JOptionPane.showInputDialog(this, "Input name", kit.getName());
-            if (name != null) {
-                kit.setName(name);
-                model.update(kit);
-            }
-        }
-    }
-
-    public void deleteKit() {
-        int index = kitTable.getSelectedRow();
-        if (index > -1) {
-            KitTableModel model = (KitTableModel) kitTable.getModel();
-            model.delete(index);
-        }
-    }
-
     public void saveKitColors() {
-        KitTableModel model = (KitTableModel) kitTable.getModel();
-        int index = kitTable.getSelectedRow();
+        KitTableModel model = (KitTableModel) kitTablePanel.getTable().getModel();
+        int index = kitTablePanel.getTable().getSelectedRow();
         if (index > -1) {
             FishingKitEntity kit = model.getData().get(index);
             kit.setFirstColors(firstColorTablePanel.getSelectedColors());
