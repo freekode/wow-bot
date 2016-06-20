@@ -12,6 +12,8 @@ import org.freekode.wowbot.gui.models.KitTableModel;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -159,28 +161,43 @@ public class FishingOptionsDialog extends JDialog implements ActionListener {
 
 
         firstColorTablePanel = new ColorTablePanel("Red", new ArrayList<>(firstColorSet));
-        firstColorTablePanel.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        firstColorTablePanel.getTable().getModel().addTableModelListener(new TableModelListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
-                saveKitColors();
+            public void tableChanged(TableModelEvent e) {
+                KitTableModel model = (KitTableModel) kitTablePanel.getTable().getModel();
+                int index = kitTablePanel.getTable().getSelectedRow();
+                if (index > -1) {
+                    FishingKitEntity kit = model.getData().get(index);
+                    kit.setFirstColors(firstColorTablePanel.getSelectedColors());
+                }
             }
         });
         panel.add(firstColorTablePanel);
 
         secondColorTablePanel = new ColorTablePanel("Blue", new ArrayList<>(secondColorSet));
-        secondColorTablePanel.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        secondColorTablePanel.getTable().getModel().addTableModelListener(new TableModelListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
-                saveKitColors();
+            public void tableChanged(TableModelEvent e) {
+                KitTableModel model = (KitTableModel) kitTablePanel.getTable().getModel();
+                int index = kitTablePanel.getTable().getSelectedRow();
+                if (index > -1) {
+                    FishingKitEntity kit = model.getData().get(index);
+                    kit.setSecondColors(secondColorTablePanel.getSelectedColors());
+                }
             }
         });
         panel.add(secondColorTablePanel);
 
         thirdColorTablePanel = new ColorTablePanel("WhYe", new ArrayList<>(thirdColorSet));
-        thirdColorTablePanel.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        thirdColorTablePanel.getTable().getModel().addTableModelListener(new TableModelListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
-                saveKitColors();
+            public void tableChanged(TableModelEvent e) {
+                KitTableModel model = (KitTableModel) kitTablePanel.getTable().getModel();
+                int index = kitTablePanel.getTable().getSelectedRow();
+                if (index > -1) {
+                    FishingKitEntity kit = model.getData().get(index);
+                    kit.setThirdColors(thirdColorTablePanel.getSelectedColors());
+                }
             }
         });
         panel.add(thirdColorTablePanel);
@@ -240,7 +257,8 @@ public class FishingOptionsDialog extends JDialog implements ActionListener {
         fireUpdate(optionsEntity, "saveOptions");
     }
 
-    public void saveKitColors() {
+    public void saveKitColors(ColorTablePanel colorTablePanel) {
+        System.out.println("save kit");
         KitTableModel model = (KitTableModel) kitTablePanel.getTable().getModel();
         int index = kitTablePanel.getTable().getSelectedRow();
         if (index > -1) {

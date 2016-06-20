@@ -22,7 +22,7 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
     private static final double FIRST_COLOR_TOLERANCE = 7;
     private static final double SECOND_COLOR_TOLERANCE = 6;
     private static final double THIRD_COLOR_TOLERANCE = 5;
-    private final int TRACKING_INTERVAL = 300;
+    private final int TRACKING_INTERVAL = 100;
     private final int SEARCH_SQUARE_X1_OFFSET = 400;
     private final int SEARCH_SQUARE_Y1_OFFSET = 100;
     private final int SEARCH_SQUARE_X2_OFFSET = 400;
@@ -37,8 +37,8 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
     public FishingAI(FishingOptionsEntity options) {
         this.fishKey = KeyStroke.getKeyStroke(options.getFishKey().charAt(0), 0).getKeyCode();
         this.failTryings = options.getFailTryings();
-        enabledKits = new ArrayList<>();
 
+        this.enabledKits = new ArrayList<>();
         for (FishingKitEntity kit : options.getKits()) {
             if (kit.getEnable()) {
                 enabledKits.add(kit);
