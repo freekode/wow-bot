@@ -73,11 +73,12 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
         c.gridy = 2;
         c.weightx = 0;
         c.weighty = 0;
-        c.fill = GridBagConstraints.NONE;
+        c.fill = GridBagConstraints.BOTH;
         pane.add(getColorList(), c);
 
         c.gridx = 0;
         c.gridy = 3;
+        c.fill = GridBagConstraints.NONE;
         pane.add(getControl(), c);
     }
 
@@ -85,48 +86,39 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
      * just simple configs inputs and labels
      */
     public JPanel getFirstPart() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-
+        JPanel fishButtonPanel = new JPanel();
 
         JLabel fishBtnLabel = new JLabel("Fish button");
         fishBtnLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        c.gridx = 0;
-        c.gridy = 0;
-        c.insets = new Insets(0, 0, 0, 10);
-        c.anchor = GridBagConstraints.LINE_END;
-        panel.add(fishBtnLabel, c);
+        fishButtonPanel.add(fishBtnLabel);
 
         try {
             fishKey = new JFormattedTextField(new MaskFormatter("*"));
             fishKey.setValue(optionsEntity.getFishKey());
-            fishKey.setPreferredSize(new Dimension(40, 20));
-            c.gridx = 1;
-            c.gridy = 0;
-            c.insets = new Insets(0, 0, 5, 0);
-            c.anchor = GridBagConstraints.LINE_START;
-            panel.add(fishKey, c);
+            fishKey.setColumns(3);
+            fishButtonPanel.add(fishKey);
         } catch (ParseException e) {
             logger.info("parse error", e);
         }
 
 
+        JPanel failsPanel = new JPanel();
+
         JLabel failTryingsLabel = new JLabel("Fail tryings");
         failTryingsLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        c.gridx = 0;
-        c.gridy = 1;
-        c.insets = new Insets(0, 0, 0, 10);
-        c.anchor = GridBagConstraints.LINE_END;
-        panel.add(failTryingsLabel, c);
+        failsPanel.add(failTryingsLabel);
 
         failTryings = new JFormattedTextField(NumberFormat.getNumberInstance());
-        failTryings.setPreferredSize(new Dimension(40, 20));
+        failTryings.setColumns(3);
         failTryings.setValue(optionsEntity.getFailTryings());
-        c.gridx = 1;
-        c.gridy = 1;
-        c.insets = new Insets(0, 0, 0, 0);
-        c.anchor = GridBagConstraints.LINE_START;
-        panel.add(failTryings, c);
+        failsPanel.add(failTryings);
+
+
+        JPanel panel = new JPanel();
+        panel.setBorder(BorderFactory.createTitledBorder("Main Settings"));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.add(fishButtonPanel);
+        panel.add(failsPanel);
 
 
         return panel;
@@ -136,14 +128,10 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
      * contains table with kits and enabling them
      */
     public JPanel getKitTable() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 3;
-        panel.add(new JLabel("Kit list"), c);
+        panel.setBorder(BorderFactory.createTitledBorder("Kit List"));
 
 
         KitTableModel model = new KitTableModel();
@@ -169,39 +157,29 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
         kitTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
         kitTable.setPreferredScrollableViewportSize(kitTable.getPreferredSize());
         kitTable.setFillsViewportHeight(true);
-        c.insets = new Insets(0, 0, 0, 0);
-        c.gridx = 0;
-        c.gridy = 1;
-        c.weightx = 1;
-        c.weighty = 1;
-        c.fill = GridBagConstraints.BOTH;
-        panel.add(new JScrollPane(kitTable), c);
+        panel.add(new JScrollPane(kitTable));
 
+
+        JPanel controlPanel = new JPanel();
+        controlPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JButton addButton = new JButton("Add");
         addButton.addActionListener(this);
         addButton.setActionCommand("addKit");
-        c.gridx = 0;
-        c.gridy = 2;
-        c.gridwidth = 1;
-        c.weightx = 1;
-        c.weighty = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(addButton, c);
+        controlPanel.add(addButton);
 
         JButton editButton = new JButton("Edit");
         editButton.addActionListener(this);
         editButton.setActionCommand("editKit");
-        c.gridx = 1;
-        c.gridy = 2;
-        panel.add(editButton, c);
+        controlPanel.add(editButton);
 
         JButton deleteButton = new JButton("Delete");
         deleteButton.addActionListener(this);
         deleteButton.setActionCommand("deleteKit");
-        c.gridx = 2;
-        c.gridy = 2;
-        panel.add(deleteButton, c);
+        controlPanel.add(deleteButton);
+
+
+        panel.add(controlPanel);
 
 
         return panel;
@@ -300,6 +278,7 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
             setVisible(false);
             dispose();
         } else if ("close".equals(e.getActionCommand())) {
+            setVisible(false);
             dispose();
         } else if ("addKit".equals(e.getActionCommand())) {
             addKit();
