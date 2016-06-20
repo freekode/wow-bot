@@ -10,6 +10,7 @@ import org.freekode.wowbot.tools.StaticFunc;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +29,7 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
     private final int SEARCH_SQUARE_Y2_OFFSET = 220;
     private Rectangle calculatedSearchSquare ;
     private FishingRecordEntity record;
-    private List<FishingKitEntity> kits;
+    private List<FishingKitEntity> enabledKits;
     private int fishKey;
     private int failTryings;
 
@@ -36,9 +37,15 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
     public FishingAI(FishingOptionsEntity options) {
         this.fishKey = KeyStroke.getKeyStroke(options.getFishKey().charAt(0), 0).getKeyCode();
         this.failTryings = options.getFailTryings();
-        this.kits = options.getKits();
+        enabledKits = new ArrayList<>();
 
-        logger.info("fish key = " + fishKey + "; fail tryings = " + failTryings + "; kits = " + kits.size());
+        for (FishingKitEntity kit : options.getKits()) {
+            if (kit.getEnable()) {
+                enabledKits.add(kit);
+            }
+        }
+
+        logger.info("fish key = " + fishKey + "; fail tryings = " + failTryings + "; enabledKits = " + enabledKits.size());
     }
 
     @Override
@@ -75,7 +82,7 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
             // lets find first color, and kit from which that red color
             int[] bobberPoint = null;
             FishingKitEntity currentKit = null;
-            for (FishingKitEntity kit : kits) {
+            for (FishingKitEntity kit : enabledKits) {
                 bobberPoint = findColor(image, kit.getFirstColors(), FIRST_COLOR_TOLERANCE);
                 if (bobberPoint != null) {
                     currentKit = kit;
