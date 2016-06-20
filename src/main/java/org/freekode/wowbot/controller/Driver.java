@@ -10,7 +10,6 @@ import java.awt.event.KeyEvent;
 
 public class Driver {
     private static final Logger logger = LogManager.getLogger(Driver.class);
-    private static final int AUTO_DELAY_MS = 40;
     private static Driver INSTANCE;
     /**
      * operated rectangle of window
@@ -84,7 +83,7 @@ public class Driver {
 
     public void mouse(int x, int y) throws InterruptedException {
         robot.mouseMove(x, y);
-        Thread.sleep(AUTO_DELAY_MS);
+        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
     }
 
     public void run(double distance) throws InterruptedException {
@@ -122,11 +121,11 @@ public class Driver {
         Point mousePoint = MouseInfo.getPointerInfo().getLocation();
 
         robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
-        Thread.sleep(AUTO_DELAY_MS);
+        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
         robot.mouseMove(mousePoint.x + interval, mousePoint.y);
-        Thread.sleep(AUTO_DELAY_MS);
+        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
         robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
-        Thread.sleep(AUTO_DELAY_MS);
+        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
     }
 
     public void pitchInit() throws InterruptedException {
@@ -141,32 +140,32 @@ public class Driver {
         Point mousePoint = MouseInfo.getPointerInfo().getLocation();
 
         robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
-        Thread.sleep(AUTO_DELAY_MS);
+        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
         robot.mouseMove(mousePoint.x, mousePoint.y + interval);
-        Thread.sleep(AUTO_DELAY_MS);
+        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
         robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
-        Thread.sleep(AUTO_DELAY_MS);
+        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
     }
 
     public void fpv() throws InterruptedException {
         robot.keyPress(KeyEvent.VK_END);
-        Thread.sleep(AUTO_DELAY_MS);
+        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
         robot.keyRelease(KeyEvent.VK_END);
 
         robot.keyPress(KeyEvent.VK_HOME);
-        Thread.sleep(AUTO_DELAY_MS);
+        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
         robot.keyRelease(KeyEvent.VK_HOME);
 
         robot.keyPress(KeyEvent.VK_HOME);
-        Thread.sleep(AUTO_DELAY_MS);
+        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
         robot.keyRelease(KeyEvent.VK_HOME);
 
         robot.keyPress(KeyEvent.VK_HOME);
-        Thread.sleep(AUTO_DELAY_MS);
+        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
         robot.keyRelease(KeyEvent.VK_HOME);
 
         robot.keyPress(KeyEvent.VK_HOME);
-        Thread.sleep(AUTO_DELAY_MS);
+        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
         robot.keyRelease(KeyEvent.VK_HOME);
 
         Thread.sleep(3500);
@@ -201,9 +200,9 @@ public class Driver {
 
     public void pressKey(int keyCode) throws InterruptedException {
         robot.keyPress(keyCode);
-        Thread.sleep(AUTO_DELAY_MS);
+        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
         robot.keyRelease(keyCode);
-        Thread.sleep(AUTO_DELAY_MS);
+        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
     }
 
     public Robot getRobot() {

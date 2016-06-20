@@ -4,33 +4,29 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.ai.FishingAI;
 import org.freekode.wowbot.ai.Intelligence;
-import org.freekode.wowbot.entity.fishing.FishingKitEntity;
 import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
 import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
 import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.StaticFunc;
 import org.freekode.wowbot.gui.UpdateListener;
 import org.freekode.wowbot.gui.dialogs.FishingOptionsDialog;
-import org.freekode.wowbot.gui.ui.FishingUI;
+import org.freekode.wowbot.gui.cards.FishingCardPanel;
 
-import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 public class FishingModule extends Module {
     private static final Logger logger = LogManager.getLogger(FishingModule.class);
     private FishingOptionsEntity optionsEntity;
-    private FishingUI ui;
+    private FishingCardPanel ui;
 
 
     public FishingModule() {
         Map<String, Object> config = StaticFunc.loadYaml(ConfigKeys.YAML_CONFIG_FILENAME, "fishing");
         optionsEntity = new FishingOptionsEntity(config);
 
-        ui = new FishingUI();
+        ui = new FishingCardPanel();
         ui.addUpdateListener(new UpdateListener() {
             @Override
             public void updated(Object object, String command) {
@@ -43,17 +39,7 @@ public class FishingModule extends Module {
 
     @Override
     public Intelligence buildAI() {
-        int fishButtonValue = KeyStroke.getKeyStroke(optionsEntity.getFishKey().charAt(0), 0).getKeyCode();
-        int failTryingsValue = optionsEntity.getFailTryings();
-
-        List<FishingKitEntity> enabledKits = new LinkedList<>();
-        for (FishingKitEntity kit : optionsEntity.getKits()) {
-            if (kit.getEnable()) {
-                enabledKits.add(kit);
-            }
-        }
-
-        return new FishingAI(fishButtonValue, failTryingsValue, enabledKits);
+        return new FishingAI(optionsEntity);
     }
 
     @Override

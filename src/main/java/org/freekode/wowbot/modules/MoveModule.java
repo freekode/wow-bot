@@ -8,7 +8,7 @@ import org.freekode.wowbot.ai.Intelligence;
 import org.freekode.wowbot.ai.MovingAI;
 import org.freekode.wowbot.ai.RecordingAI;
 import org.freekode.wowbot.entity.moving.CharacterRecordEntity;
-import org.freekode.wowbot.gui.ui.MapUI;
+import org.freekode.wowbot.gui.cards.MapCardPanel;
 import org.freekode.wowbot.gui.models.RecordTableModel;
 import org.freekode.wowbot.gui.renderers.DateRenderer;
 import org.freekode.wowbot.gui.renderers.DoubleRenderer;
@@ -315,7 +315,7 @@ public class MoveModule extends Module implements ActionListener {
         RecordTableModel model = (RecordTableModel) recordsTable.getModel();
         List<CharacterRecordEntity> records = model.getData();
 
-        MapUI optionsWindow = new MapUI();
+        MapCardPanel optionsWindow = new MapCardPanel();
         optionsWindow.init(records);
         optionsWindow.addPropertyChangeListener(this);
     }

@@ -1,4 +1,4 @@
-package org.freekode.wowbot.gui.ui;
+package org.freekode.wowbot.gui.cards;
 
 import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
 import org.freekode.wowbot.gui.UpdateListener;
@@ -17,16 +17,15 @@ import java.util.List;
 /**
  * ui for fishing module
  */
-public class FishingUI extends JPanel implements ActionListener {
+public class FishingCardPanel extends JPanel implements ActionListener {
     private List<UpdateListener> updateListeners = new ArrayList<>();
     private Integer bobberThrows = 0;
     private Integer catches = 0;
-    private Integer fails = 0;
     private JLabel statusLabel;
     private JTable recordsTable;
 
 
-    public FishingUI() {
+    public FishingCardPanel() {
         init();
     }
 
@@ -46,7 +45,7 @@ public class FishingUI extends JPanel implements ActionListener {
 
 
         // row 1
-        JLabel statusTitleLabel = new JLabel("Throws/Catches/Fails");
+        JLabel statusTitleLabel = new JLabel("Throws/Catches");
         statusTitleLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         c.gridx = 0;
         c.gridy = 0;
@@ -60,7 +59,7 @@ public class FishingUI extends JPanel implements ActionListener {
         c.insets = new Insets(0, 0, 0, 0);
         c.anchor = GridBagConstraints.LINE_START;
         add(statusLabel, c);
-        updateStatus(0, 0, 0);
+        updateStatus(0, 0);
 
 
         // row 3
@@ -81,22 +80,20 @@ public class FishingUI extends JPanel implements ActionListener {
         add(new JScrollPane(recordsTable), c);
     }
 
-    private void updateStatus(Integer bobberThrows, Integer catches, Integer fails) {
-        statusLabel.setText(bobberThrows.toString() + "/" + catches.toString() + "/" + fails.toString());
+    private void updateStatus(Integer bobberThrows, Integer catches) {
+        statusLabel.setText(bobberThrows.toString() + "/" + catches.toString());
     }
 
     public void updateRecordsTable(FishingRecordEntity record) {
         FishingTableModel model = (FishingTableModel) recordsTable.getModel();
 
-        bobberThrows++;
+        bobberThrows = model.getRowCount();
         if (record.getCaught() != null) {
             if (record.getCaught()) {
                 catches++;
-            } else {
-                fails++;
             }
         }
-        updateStatus(bobberThrows, catches, fails);
+        updateStatus(bobberThrows, catches);
 
 
         Integer index = model.updateOrAdd(record);

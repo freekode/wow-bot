@@ -3,9 +3,11 @@ package org.freekode.wowbot.ai;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.entity.fishing.FishingKitEntity;
+import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
 import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
 import org.freekode.wowbot.tools.StaticFunc;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
@@ -19,10 +21,11 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
     private static final double FIRST_COLOR_TOLERANCE = 7;
     private static final double SECOND_COLOR_TOLERANCE = 6;
     private static final double THIRD_COLOR_TOLERANCE = 5;
-    private int SEARCH_SQUARE_X1_OFFSET = 400;
-    private int SEARCH_SQUARE_Y1_OFFSET = 100;
-    private int SEARCH_SQUARE_X2_OFFSET = 400;
-    private int SEARCH_SQUARE_Y2_OFFSET = 220;
+    private final int TRACKING_INTERVAL = 300;
+    private final int SEARCH_SQUARE_X1_OFFSET = 400;
+    private final int SEARCH_SQUARE_Y1_OFFSET = 100;
+    private final int SEARCH_SQUARE_X2_OFFSET = 400;
+    private final int SEARCH_SQUARE_Y2_OFFSET = 220;
     private Rectangle calculatedSearchSquare ;
     private FishingRecordEntity record;
     private List<FishingKitEntity> kits;
@@ -30,10 +33,10 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
     private int failTryings;
 
 
-    public FishingAI(int fishKey, int failTryings, List<FishingKitEntity> kits) {
-        this.fishKey = fishKey;
-        this.failTryings = failTryings;
-        this.kits = kits;
+    public FishingAI(FishingOptionsEntity options) {
+        this.fishKey = KeyStroke.getKeyStroke(options.getFishKey().charAt(0), 0).getKeyCode();
+        this.failTryings = options.getFailTryings();
+        this.kits = options.getKits();
 
         logger.info("fish key = " + fishKey + "; fail tryings = " + failTryings + "; kits = " + kits.size());
     }
@@ -147,7 +150,7 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
                 checkIfCaught();
                 break;
             }
-            Thread.sleep(100);
+            Thread.sleep(TRACKING_INTERVAL);
         }
     }
 

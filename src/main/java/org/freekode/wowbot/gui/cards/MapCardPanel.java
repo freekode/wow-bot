@@ -1,4 +1,4 @@
-package org.freekode.wowbot.gui.ui;
+package org.freekode.wowbot.gui.cards;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
@@ -12,8 +12,8 @@ import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
 import java.util.List;
 
-public class MapUI extends JDialog implements ActionListener {
-    private static final Logger logger = LogManager.getLogger(MapUI.class);
+public class MapCardPanel extends JDialog implements ActionListener {
+    private static final Logger logger = LogManager.getLogger(MapCardPanel.class);
     private List<CharacterRecordEntity> records;
 
 

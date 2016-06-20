@@ -1,6 +1,8 @@
 package org.freekode.wowbot.ai;
 
 public class InfoAI extends Intelligence<InfoAI.InfoUpdate> {
+    public static final int UPDATE_INTERVAL = 200;
+
     @Override
     public Boolean processing() throws InterruptedException {
         while (true) {
@@ -17,7 +19,7 @@ public class InfoAI extends Intelligence<InfoAI.InfoUpdate> {
 
             send(new InfoUpdate(x, y, azimuth, pitch, inCombat, ore, herb, bagUpdate, hasTarget, inActionRange));
 
-            Thread.sleep(200);
+            Thread.sleep(UPDATE_INTERVAL);
         }
     }
 

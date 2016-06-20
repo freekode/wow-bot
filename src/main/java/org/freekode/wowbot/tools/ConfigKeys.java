@@ -1,7 +1,6 @@
 package org.freekode.wowbot.tools;
 
 public class ConfigKeys {
-    public static final String PROPERTIES_FILENAME = "wowbot.properties";
     public static final String YAML_CONFIG_FILENAME = "wowbot.yaml";
 
     public static final int ADDON_OFFSET_X = 0;
@@ -45,4 +44,9 @@ public class ConfigKeys {
 
     public static final String WINDOW_CLASS = "GxWindowClass";
     public static final String WINDOW_NAME = "World of Warcraft";
+
+    /**
+     * delay for driver
+     */
+    public static final int AUTO_DELAY_MS = 40;
 }
