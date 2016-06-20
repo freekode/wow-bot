@@ -13,6 +13,8 @@ import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -43,11 +45,12 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocation(50, 100);
 
-        buildInterface();
+        init();
+
         setVisible(true);
     }
 
-    public void buildInterface() {
+    public void init() {
         Container pane = getContentPane();
 
         pane.setLayout(new GridBagLayout());

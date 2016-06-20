@@ -4,10 +4,11 @@ import org.freekode.wowbot.ui.renderers.ColorCellRenderer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.List;
 
 /**
  * the table for choosing the colors
@@ -16,11 +17,14 @@ public class ColorTable extends JPanel {
     private JTable table;
 
 
-    public ColorTable(String title, java.util.List<Color> colors) {
+    public ColorTable(String title, List<Color> colors) {
+        init(title, colors);
+    }
+
+    public void init(String title, List<Color> colors) {
         setBorder(BorderFactory.createTitledBorder(title));
 
-        setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 
         ColorTableModel model = new ColorTableModel();
@@ -34,43 +38,33 @@ public class ColorTable extends JPanel {
         table.setTableHeader(null);
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setPreferredSize(new Dimension(160, 165));
-        c.insets = new Insets(0, 0, 0, 0);
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 2;
-        add(scrollPane, c);
+        add(scrollPane);
 
 
         ActionColorListener colorListener = new ActionColorListener();
+        JPanel controlPanel = new JPanel();
+        controlPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JButton addButton = new JButton("Add");
         addButton.addActionListener(colorListener);
         addButton.setActionCommand("add");
-//            addButton.setPreferredSize(new Dimension(20, 20));
-        addButton.setMargin(new Insets(0, 5, 0, 5));
-        c.anchor = GridBagConstraints.LINE_END;
-        c.gridx = 0;
-        c.gridy = 2;
-        c.gridwidth = 1;
-        add(addButton, c);
+        controlPanel.add(addButton);
 
         JButton deleteButton = new JButton("Del");
         deleteButton.addActionListener(colorListener);
         deleteButton.setActionCommand("delete");
-//            deleteButton.setPreferredSize(new Dimension(20, 20));
-        deleteButton.setMargin(new Insets(0, 5, 0, 5));
-        c.anchor = GridBagConstraints.CENTER;
-        c.gridx = 1;
-        c.gridy = 2;
-        add(deleteButton, c);
+        controlPanel.add(deleteButton);
+
+
+        add(controlPanel);
     }
 
-    public java.util.List<Color> getSelectedColors() {
+    public List<Color> getSelectedColors() {
         ColorTableModel model = (ColorTableModel) table.getModel();
         return model.getSelected();
     }
 
-    public void setSelectedColors(java.util.List<Color> colors) {
+    public void setSelectedColors(List<Color> colors) {
         ColorTableModel model = (ColorTableModel) table.getModel();
         model.setSelected(colors);
     }
