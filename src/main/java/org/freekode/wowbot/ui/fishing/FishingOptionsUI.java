@@ -13,8 +13,6 @@ import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -26,7 +24,7 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
     private List<UpdateListener> updateListeners = new ArrayList<>();
 
     private static final Logger logger = LogManager.getLogger(FishingOptionsUI.class);
-    private FishingOptionsEntity optionsModel;
+    private FishingOptionsEntity optionsEntity;
     private JFormattedTextField fishKey;
     private JFormattedTextField failTryings;
     private JTable kitTable;
@@ -36,7 +34,7 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
 
 
     public void init(FishingOptionsEntity optionsModel) {
-        this.optionsModel = optionsModel;
+        this.optionsEntity = optionsModel;
 
         setModal(true);
         setTitle("Fishing options");
@@ -45,12 +43,12 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocation(50, 100);
 
-        init();
+        build();
 
         setVisible(true);
     }
 
-    public void init() {
+    public void build() {
         Container pane = getContentPane();
 
         pane.setLayout(new GridBagLayout());
@@ -80,10 +78,6 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
 
         c.gridx = 0;
         c.gridy = 3;
-        pane.add(getKitControl(), c);
-
-        c.gridx = 0;
-        c.gridy = 4;
         pane.add(getControl(), c);
     }
 
@@ -105,7 +99,7 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
 
         try {
             fishKey = new JFormattedTextField(new MaskFormatter("*"));
-            fishKey.setValue(optionsModel.getFishKey());
+            fishKey.setValue(optionsEntity.getFishKey());
             fishKey.setPreferredSize(new Dimension(40, 20));
             c.gridx = 1;
             c.gridy = 0;
@@ -127,7 +121,7 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
 
         failTryings = new JFormattedTextField(NumberFormat.getNumberInstance());
         failTryings.setPreferredSize(new Dimension(40, 20));
-        failTryings.setValue(optionsModel.getFailTryings());
+        failTryings.setValue(optionsEntity.getFailTryings());
         c.gridx = 1;
         c.gridy = 1;
         c.insets = new Insets(0, 0, 0, 0);
@@ -153,7 +147,7 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
 
 
         KitTableModel model = new KitTableModel();
-        for (FishingKitEntity elem : optionsModel.getKits()) {
+        for (FishingKitEntity elem : optionsEntity.getKits()) {
             model.add(elem);
         }
         kitTable = new JTable(model);
@@ -170,9 +164,9 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
                 }
             }
         });
+        kitTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         kitTable.getColumnModel().getColumn(0).setPreferredWidth(26);
         kitTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
-        kitTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         kitTable.setPreferredScrollableViewportSize(kitTable.getPreferredSize());
         kitTable.setFillsViewportHeight(true);
         c.insets = new Insets(0, 0, 0, 0);
@@ -217,14 +211,14 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
      * colors of the kits with checkbox
      */
     public JPanel getColorList() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
+        JPanel panel = new JPanel();
 
 
+        // we need only unique colors in each set
         Set<Color> firstColorSet = new HashSet<>();
         Set<Color> secondColorSet = new HashSet<>();
         Set<Color> thirdColorSet = new HashSet<>();
-        for (FishingKitEntity kit : optionsModel.getKits()) {
+        for (FishingKitEntity kit : optionsEntity.getKits()) {
             for (Color color : kit.getFirstColors()) {
                 firstColorSet.add(color);
             }
@@ -240,41 +234,32 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
 
 
         firstColorTable = new ColorTable("Red", new ArrayList<>(firstColorSet));
-        c.gridx = 0;
-        c.gridy = 0;
-        c.insets = new Insets(0, 0, 0, 10);
-        panel.add(firstColorTable, c);
+        firstColorTable.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                saveKitColors();
+            }
+        });
+        panel.add(firstColorTable);
 
         secondColorTable = new ColorTable("Blue", new ArrayList<>(secondColorSet));
-        c.gridx = 1;
-        c.gridy = 0;
-        panel.add(secondColorTable, c);
+        secondColorTable.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                saveKitColors();
+            }
+        });
+        panel.add(secondColorTable);
 
         thirdColorTable = new ColorTable("WhYe", new ArrayList<>(thirdColorSet));
-        c.gridx = 2;
-        c.gridy = 0;
-        c.insets = new Insets(0, 0, 0, 0);
-        panel.add(thirdColorTable, c);
+        thirdColorTable.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                saveKitColors();
+            }
+        });
+        panel.add(thirdColorTable);
 
-
-        return panel;
-    }
-
-    /**
-     * save kit
-     * TODO remove it
-     */
-    public JPanel getKitControl() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-
-
-        JButton saveButton = new JButton("Save kit");
-        saveButton.addActionListener(this);
-        saveButton.setActionCommand("saveKit");
-        c.gridx = 0;
-        c.gridy = 0;
-        panel.add(saveButton, c);
 
         return panel;
     }
@@ -322,19 +307,17 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
             deleteKit();
         } else if ("editKit".equals(e.getActionCommand())) {
             editKit();
-        } else if ("saveKit".equals(e.getActionCommand())) {
-            saveKit();
         }
     }
 
     public void saveOptions() {
-        optionsModel.setFailTryings(Integer.valueOf(failTryings.getText()));
-        optionsModel.setFishKey(fishKey.getText());
+        optionsEntity.setFailTryings(Integer.valueOf(failTryings.getText()));
+        optionsEntity.setFishKey(fishKey.getText());
 
         KitTableModel model = (KitTableModel) kitTable.getModel();
-        optionsModel.setKits(model.getData());
+        optionsEntity.setKits(model.getData());
 
-        fireUpdate(optionsModel, "saveOptions");
+        fireUpdate(optionsEntity, "saveOptions");
     }
 
     public void addKit() {
@@ -363,7 +346,15 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
         }
     }
 
-    public void saveKit() {
+    public void deleteKit() {
+        int index = kitTable.getSelectedRow();
+        if (index > -1) {
+            KitTableModel model = (KitTableModel) kitTable.getModel();
+            model.delete(index);
+        }
+    }
+
+    public void saveKitColors() {
         KitTableModel model = (KitTableModel) kitTable.getModel();
         int index = kitTable.getSelectedRow();
         if (index > -1) {
@@ -371,14 +362,6 @@ public class FishingOptionsUI extends JDialog implements ActionListener {
             kit.setFirstColors(firstColorTable.getSelectedColors());
             kit.setSecondColors(secondColorTable.getSelectedColors());
             kit.setThirdColors(thirdColorTable.getSelectedColors());
-        }
-    }
-
-    public void deleteKit() {
-        int index = kitTable.getSelectedRow();
-        if (index > -1) {
-            KitTableModel model = (KitTableModel) kitTable.getModel();
-            model.delete(index);
         }
     }
 

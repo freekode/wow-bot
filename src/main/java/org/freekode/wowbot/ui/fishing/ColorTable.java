@@ -69,6 +69,10 @@ public class ColorTable extends JPanel {
         model.setSelected(colors);
     }
 
+    public JTable getTable() {
+        return table;
+    }
+
     public class ActionColorListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
