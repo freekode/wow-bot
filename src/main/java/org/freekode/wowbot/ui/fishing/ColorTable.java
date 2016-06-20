@@ -83,7 +83,9 @@ public class ColorTable extends JPanel {
             Color newColor = JColorChooser.showDialog(getParent(), "Add color", null);
             if (newColor != null) {
                 ColorTableModel model = (ColorTableModel) ColorTable.this.table.getModel();
-                model.add(true, newColor);
+                Integer index = model.add(true, newColor);
+                ColorTable.this.table.scrollRectToVisible(ColorTable.this.table.getCellRect(index, 0, true));
+
             }
         }
 
