@@ -1,4 +1,4 @@
-package org.freekode.wowbot.ui.moving;
+package org.freekode.wowbot.gui.models;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

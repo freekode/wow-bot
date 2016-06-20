@@ -1,10 +1,7 @@
 package org.freekode.wowbot;
 
-import org.freekode.wowbot.modules.TestModule;
-import org.freekode.wowbot.modules.TestMovingModule;
 import org.freekode.wowbot.modules.FishingModule;
-import org.freekode.wowbot.modules.MoveModule;
-import org.freekode.wowbot.ui.MainUI;
+import org.freekode.wowbot.gui.MainUI;
 
 public class Main {
     private static boolean hotKey;

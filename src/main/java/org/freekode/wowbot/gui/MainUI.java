@@ -1,11 +1,10 @@
-package org.freekode.wowbot.ui;
+package org.freekode.wowbot.gui;
 
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
 import com.melloware.jintellitype.JIntellitypeException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.ai.Intelligence;
 import org.freekode.wowbot.modules.InfoModule;
 import org.freekode.wowbot.modules.Module;
 

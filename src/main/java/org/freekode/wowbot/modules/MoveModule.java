@@ -8,10 +8,10 @@ import org.freekode.wowbot.ai.Intelligence;
 import org.freekode.wowbot.ai.MovingAI;
 import org.freekode.wowbot.ai.RecordingAI;
 import org.freekode.wowbot.entity.moving.CharacterRecordEntity;
-import org.freekode.wowbot.ui.moving.MapUI;
-import org.freekode.wowbot.ui.moving.RecordTableModel;
-import org.freekode.wowbot.ui.renderers.DateRenderer;
-import org.freekode.wowbot.ui.renderers.DoubleRenderer;
+import org.freekode.wowbot.gui.ui.MapUI;
+import org.freekode.wowbot.gui.models.RecordTableModel;
+import org.freekode.wowbot.gui.renderers.DateRenderer;
+import org.freekode.wowbot.gui.renderers.DoubleRenderer;
 import org.freekode.wowbot.tools.StaticFunc;
 
 import javax.swing.*;

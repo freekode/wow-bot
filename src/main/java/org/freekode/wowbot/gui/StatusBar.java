@@ -1,4 +1,4 @@
-package org.freekode.wowbot.ui;
+package org.freekode.wowbot.gui;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;

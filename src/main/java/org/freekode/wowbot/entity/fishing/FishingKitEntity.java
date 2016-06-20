@@ -1,8 +1,11 @@
 package org.freekode.wowbot.entity.fishing;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class FishingKitEntity {
     private String name;
@@ -11,6 +14,10 @@ public class FishingKitEntity {
     private List<Color> secondColors = new ArrayList<>();
     private List<Color> thirdColors = new ArrayList<>();
 
+
+    public FishingKitEntity(String name) {
+        this.name = name;
+    }
 
     public FishingKitEntity(Map<String, Object> config) {
         name = config.get("name").toString();
@@ -32,20 +39,12 @@ public class FishingKitEntity {
         }
     }
 
-    public FishingKitEntity(String name) {
-        this.name = name;
-    }
-
     public FishingKitEntity(String name, Boolean enable, List<Color> firstColors, List<Color> secondColors, List<Color> thirdColors) {
         this.name = name;
         this.enable = enable;
         this.firstColors = firstColors;
         this.secondColors = secondColors;
         this.thirdColors = thirdColors;
-    }
-
-    public FishingKitEntity copy() {
-        return new FishingKitEntity(name, enable, firstColors, secondColors, thirdColors);
     }
 
     public static FishingKitEntity getStandard() {
@@ -72,6 +71,10 @@ public class FishingKitEntity {
         mainKit.getThirdColors().add(Color.decode("#42453a"));
 
         return mainKit;
+    }
+
+    public FishingKitEntity copy() {
+        return new FishingKitEntity(name, enable, firstColors, secondColors, thirdColors);
     }
 
     public String getName() {

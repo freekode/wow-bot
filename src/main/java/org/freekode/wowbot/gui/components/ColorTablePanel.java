@@ -1,23 +1,22 @@
-package org.freekode.wowbot.ui.fishing;
+package org.freekode.wowbot.gui.components;
 
-import org.freekode.wowbot.ui.renderers.ColorCellRenderer;
+import org.freekode.wowbot.gui.models.ColorTableModel;
+import org.freekode.wowbot.gui.renderers.ColorCellRenderer;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.List;
 
 /**
  * the table for choosing the colors
  */
-public class ColorTable extends JPanel {
+public class ColorTablePanel extends JPanel {
     private JTable table;
 
 
-    public ColorTable(String title, List<Color> colors) {
+    public ColorTablePanel(String title, List<Color> colors) {
         init(title, colors);
     }
 
@@ -86,17 +85,17 @@ public class ColorTable extends JPanel {
         public void add() {
             Color newColor = JColorChooser.showDialog(getParent(), "Add color", null);
             if (newColor != null) {
-                ColorTableModel model = (ColorTableModel) ColorTable.this.table.getModel();
+                ColorTableModel model = (ColorTableModel) ColorTablePanel.this.table.getModel();
                 Integer index = model.add(true, newColor);
-                ColorTable.this.table.scrollRectToVisible(ColorTable.this.table.getCellRect(index, 0, true));
+                ColorTablePanel.this.table.scrollRectToVisible(ColorTablePanel.this.table.getCellRect(index, 0, true));
 
             }
         }
 
         public void delete() {
-            int index = ColorTable.this.table.getSelectedRow();
+            int index = ColorTablePanel.this.table.getSelectedRow();
             if (index > -1) {
-                ColorTableModel model = (ColorTableModel) ColorTable.this.table.getModel();
+                ColorTableModel model = (ColorTableModel) ColorTablePanel.this.table.getModel();
                 model.delete(index);
             }
         }

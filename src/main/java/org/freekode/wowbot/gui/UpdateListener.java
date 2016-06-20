@@ -1,4 +1,4 @@
-package org.freekode.wowbot.ui;
+package org.freekode.wowbot.gui;
 
 import java.util.EventListener;
 

@@ -1,4 +1,4 @@
-package org.freekode.wowbot.ui.renderers;
+package org.freekode.wowbot.gui.renderers;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;

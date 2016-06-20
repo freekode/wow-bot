@@ -1,9 +1,10 @@
-package org.freekode.wowbot.ui.fishing;
+package org.freekode.wowbot.gui.ui;
 
 import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
-import org.freekode.wowbot.ui.UpdateListener;
-import org.freekode.wowbot.ui.renderers.ColorCellRenderer;
-import org.freekode.wowbot.ui.renderers.DateRenderer;
+import org.freekode.wowbot.gui.UpdateListener;
+import org.freekode.wowbot.gui.models.FishingTableModel;
+import org.freekode.wowbot.gui.renderers.ColorCellRenderer;
+import org.freekode.wowbot.gui.renderers.DateRenderer;
 
 import javax.swing.*;
 import java.awt.*;

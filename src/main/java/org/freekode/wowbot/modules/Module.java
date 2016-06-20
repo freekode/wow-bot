@@ -1,7 +1,7 @@
 package org.freekode.wowbot.modules;
 
 import org.freekode.wowbot.ai.Intelligence;
-import org.freekode.wowbot.ui.UpdateListener;
+import org.freekode.wowbot.gui.UpdateListener;
 
 import javax.swing.*;
 import java.awt.*;

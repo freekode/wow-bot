@@ -9,9 +9,9 @@ import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
 import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
 import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.StaticFunc;
-import org.freekode.wowbot.ui.UpdateListener;
-import org.freekode.wowbot.ui.fishing.FishingOptionsUI;
-import org.freekode.wowbot.ui.fishing.FishingUI;
+import org.freekode.wowbot.gui.UpdateListener;
+import org.freekode.wowbot.gui.dialogs.FishingOptionsDialog;
+import org.freekode.wowbot.gui.ui.FishingUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -63,7 +63,7 @@ public class FishingModule extends Module {
     }
 
     public void showOptions() {
-        FishingOptionsUI optionsWindow = new FishingOptionsUI();
+        FishingOptionsDialog optionsWindow = new FishingOptionsDialog();
         optionsWindow.addUpdateListener(new UpdateListener() {
             @Override
             public void updated(Object object, String command) {

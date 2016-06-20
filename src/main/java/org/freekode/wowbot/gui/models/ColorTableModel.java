@@ -1,4 +1,4 @@
-package org.freekode.wowbot.ui.fishing;
+package org.freekode.wowbot.gui.models;
 
 import org.freekode.wowbot.tools.StaticFunc;
 

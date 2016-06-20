@@ -1,15 +1,14 @@
-package org.freekode.wowbot.ui.fishing;
+package org.freekode.wowbot.gui.models;
 
 import org.freekode.wowbot.entity.fishing.FishingKitEntity;
 
 import javax.swing.table.AbstractTableModel;
-import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 
 public class KitTableModel extends AbstractTableModel {
     private String[] columnNames = {"Enable", "Name"};
-    private Class[] columnClasses = {Boolean.class, Color.class};
+    private Class[] columnClasses = {Boolean.class, String.class};
     private List<FishingKitEntity> data = new LinkedList<>();
 
     @Override

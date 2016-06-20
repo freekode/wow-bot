@@ -1,4 +1,4 @@
-package org.freekode.wowbot.ui.moving;
+package org.freekode.wowbot.gui.ui;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
