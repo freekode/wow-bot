@@ -1,6 +1,6 @@
 package org.freekode.wowbot.gui.cards;
 
-import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
+import org.freekode.wowbot.entity.fishing.FishingUpdateEntity;
 import org.freekode.wowbot.gui.UpdateListener;
 import org.freekode.wowbot.gui.models.FishingTableModel;
 import org.freekode.wowbot.gui.renderers.ColorCellRenderer;
@@ -84,7 +84,7 @@ public class FishingCardPanel extends JPanel implements ActionListener {
         statusLabel.setText(bobberThrows.toString() + "/" + catches.toString());
     }
 
-    public void updateRecordsTable(FishingRecordEntity record) {
+    public void updateRecordsTable(FishingUpdateEntity record) {
         FishingTableModel model = (FishingTableModel) recordsTable.getModel();
 
         bobberThrows = model.getRowCount();

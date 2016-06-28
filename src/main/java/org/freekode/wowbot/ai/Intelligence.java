@@ -34,7 +34,9 @@ public abstract class Intelligence<T> extends SwingWorker<Boolean, Void> {
     public Boolean doInBackground() {
         logger.info("start");
         try {
-            controller = init(StaticFunc.findWindow(ConfigKeys.WINDOW_CLASS, ConfigKeys.WINDOW_NAME));
+            if (!testing) {
+                controller = init(StaticFunc.findWindow(ConfigKeys.WINDOW_CLASS, ConfigKeys.WINDOW_NAME));
+            }
 
             return processing();
         } catch (Exception e) {

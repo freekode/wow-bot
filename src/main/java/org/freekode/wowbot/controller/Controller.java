@@ -21,12 +21,12 @@ public class Controller {
     /**
      * to control the character
      */
-    private Driver driver;
+    private volatile Driver driver;
 
     /**
      * to receive the information
      */
-    private Receiver receiver;
+    private volatile Receiver receiver;
 
 
     public Controller(Rectangle window) {

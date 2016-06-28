@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.entity.fishing.FishingKitEntity;
 import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
-import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
+import org.freekode.wowbot.entity.fishing.FishingUpdateEntity;
 import org.freekode.wowbot.tools.StaticFunc;
 
 import javax.swing.*;
@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class FishingAI extends Intelligence<FishingRecordEntity> {
+public class FishingAI extends Intelligence<FishingUpdateEntity> {
     private static final Logger logger = LogManager.getLogger(FishingAI.class);
     private static final int FISHING_TIME_SEC = 20;
     private static final int CHECK_IF_CAUGHT_SEC = 2;
@@ -28,7 +28,7 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
     private final int SEARCH_SQUARE_X2_OFFSET = 400;
     private final int SEARCH_SQUARE_Y2_OFFSET = 220;
     private Rectangle calculatedSearchSquare ;
-    private FishingRecordEntity record;
+    private FishingUpdateEntity record;
     private List<FishingKitEntity> enabledKits;
     private int fishKey;
     private int failTryings;
@@ -74,7 +74,7 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
             mouseOut();
             fish();
 
-            record = new FishingRecordEntity(new Date());
+            record = new FishingUpdateEntity(new Date());
             send(record);
 
             BufferedImage image = StaticFunc.cutImage(imageRect);

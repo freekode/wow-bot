@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FishingRecordEntity {
+public class FishingUpdateEntity {
     private Date date;
     private String kitName;
     private Boolean caught;
@@ -14,7 +14,7 @@ public class FishingRecordEntity {
     private Color third;
 
 
-    public FishingRecordEntity(Date date) {
+    public FishingUpdateEntity(Date date) {
         this.date = date;
     }
 
@@ -79,7 +79,7 @@ public class FishingRecordEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        FishingRecordEntity that = (FishingRecordEntity) o;
+        FishingUpdateEntity that = (FishingUpdateEntity) o;
 
         return date.equals(that.date);
 

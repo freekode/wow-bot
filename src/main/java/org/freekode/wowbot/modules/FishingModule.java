@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.ai.FishingAI;
 import org.freekode.wowbot.ai.Intelligence;
 import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
-import org.freekode.wowbot.entity.fishing.FishingRecordEntity;
+import org.freekode.wowbot.entity.fishing.FishingUpdateEntity;
 import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.StaticFunc;
 import org.freekode.wowbot.gui.UpdateListener;
@@ -44,7 +44,7 @@ public class FishingModule extends Module {
 
     @Override
     public void customProperty(PropertyChangeEvent e) {
-        FishingRecordEntity record = (FishingRecordEntity) e.getNewValue();
+        FishingUpdateEntity record = (FishingUpdateEntity) e.getNewValue();
         ui.updateRecordsTable(record);
     }
 
