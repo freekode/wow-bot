@@ -61,13 +61,13 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
         logger.info("start fishing");
 
         // calculate search square, to work with different window sizes
-        int searchSquareWidth = (int) (getWindowArea().getWidth() - SEARCH_SQUARE_X1_OFFSET - SEARCH_SQUARE_X2_OFFSET);
-        int searchSquareHeight = (int) (getWindowArea().getHeight() - SEARCH_SQUARE_Y1_OFFSET - SEARCH_SQUARE_Y2_OFFSET);
+        int searchSquareWidth = (int) (getController().getWindow().getWidth() - SEARCH_SQUARE_X1_OFFSET - SEARCH_SQUARE_X2_OFFSET);
+        int searchSquareHeight = (int) (getController().getWindow().getHeight() - SEARCH_SQUARE_Y1_OFFSET - SEARCH_SQUARE_Y2_OFFSET);
         calculatedSearchSquare = new Rectangle(SEARCH_SQUARE_X1_OFFSET, SEARCH_SQUARE_Y2_OFFSET, searchSquareWidth, searchSquareHeight);
         logger.info("searching rectangle = " + calculatedSearchSquare);
 
         // fishing rectangle where is our bobber can be located in the window
-        Rectangle imageRect = StaticFunc.calculateCutSquare(getWindowArea(), calculatedSearchSquare);
+        Rectangle imageRect = StaticFunc.calculateCutSquare(getController().getWindow(), calculatedSearchSquare);
 
         for (int i = 0; i < failTryings; i++) {
             logger.info("try = " + i);
@@ -101,7 +101,7 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
 
             // lets find second color, and we must find it only within small rectangle
             Rectangle bobberSquare = new Rectangle(bobberPoint[0] - 30, bobberPoint[1] - 20, 80, 50);
-            Rectangle bobberRect = StaticFunc.calculateCutSquare(getWindowArea(),
+            Rectangle bobberRect = StaticFunc.calculateCutSquare(getController().getWindow(),
                     StaticFunc.calculateCutSquare(calculatedSearchSquare, bobberSquare));
             BufferedImage bobberImage = StaticFunc.cutImage(bobberRect);
             int[] bobberPart = findColor(bobberImage, currentKit.getSecondColors(), SECOND_COLOR_TOLERANCE);
@@ -127,7 +127,7 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
 
             // everything found, track for changes
             Rectangle stickSquare = new Rectangle(bobberCoordinates[0] - 10, bobberCoordinates[1] - 5, 22, 22);
-            Rectangle trackRect = StaticFunc.calculateCutSquare(getWindowArea(),
+            Rectangle trackRect = StaticFunc.calculateCutSquare(getController().getWindow(),
                     StaticFunc.calculateCutSquare(calculatedSearchSquare,
                             StaticFunc.calculateCutSquare(bobberSquare, stickSquare)));
 
@@ -179,8 +179,8 @@ public class FishingAI extends Intelligence<FishingRecordEntity> {
     }
 
     public void mouseOut() throws InterruptedException {
-        int x = (int) (getWindowArea().getX() + calculatedSearchSquare.getX() + calculatedSearchSquare.getWidth() + 20);
-        int y = (int) (getWindowArea().getY() + calculatedSearchSquare.getY());
+        int x = (int) (getController().getWindow().getX() + calculatedSearchSquare.getX() + calculatedSearchSquare.getWidth() + 20);
+        int y = (int) (getController().getWindow().getY() + calculatedSearchSquare.getY());
         getController().getDriver().mouse(x, y);
         Thread.sleep(100);
     }

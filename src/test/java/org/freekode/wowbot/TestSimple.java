@@ -12,7 +12,7 @@ import java.util.Map;
 public class TestSimple {
     @Test
     public void test() throws InvocationTargetException, IllegalAccessException {
-        Map<String, Object> config = StaticFunc.loadYaml(ConfigKeys.YAML_CONFIG_FILENAME, "fishing");
+        Map<String, Object> config = StaticFunc.loadYAML(ConfigKeys.YAML_CONFIG_FILENAME, "fishing");
         FishingOptionsEntity optionsEntity = new FishingOptionsEntity(config);
 
         for (FishingKitEntity kit : optionsEntity.getKits()) {

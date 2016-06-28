@@ -23,7 +23,7 @@ public class FishingModule extends Module {
 
 
     public FishingModule() {
-        Map<String, Object> config = StaticFunc.loadYaml(ConfigKeys.YAML_CONFIG_FILENAME, "fishing");
+        Map<String, Object> config = StaticFunc.loadYAML(ConfigKeys.YAML_CONFIG_FILENAME, "fishing");
         optionsEntity = new FishingOptionsEntity(config);
 
         ui = new FishingCardPanel();
@@ -63,7 +63,7 @@ public class FishingModule extends Module {
     }
 
     public void saveOptions(FishingOptionsEntity options) {
-        StaticFunc.saveYaml(ConfigKeys.YAML_CONFIG_FILENAME, "fishing", options.getMap());
+        StaticFunc.saveYAML(ConfigKeys.YAML_CONFIG_FILENAME, "fishing", options.getMap());
         optionsEntity = options;
         buildAI();
 

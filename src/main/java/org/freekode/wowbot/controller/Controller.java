@@ -14,6 +14,11 @@ public class Controller {
     private static final Logger logger = LogManager.getLogger(Controller.class);
 
     /**
+     * rectangle where window is
+     */
+    private Rectangle window;
+
+    /**
      * to control the character
      */
     private Driver driver;
@@ -25,8 +30,10 @@ public class Controller {
 
 
     public Controller(Rectangle window) {
-        driver = Driver.getInstance(window);
-        receiver = Receiver.getInstance(window);
+        this.window = window;
+
+        driver = Driver.getInstance(this.window);
+        receiver = Receiver.getInstance(this.window);
     }
 
     public Vector3D getCoordinates() {
@@ -307,5 +314,9 @@ public class Controller {
 
     public Receiver getReceiver() {
         return receiver;
+    }
+
+    public Rectangle getWindow() {
+        return window;
     }
 }

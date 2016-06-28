@@ -1,6 +1,5 @@
 package org.freekode.wowbot.ai;
 
-import com.sun.jna.platform.win32.WinUser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.controller.Controller;
@@ -13,16 +12,29 @@ import java.awt.*;
 public abstract class Intelligence<T> extends SwingWorker<Boolean, Void> {
     private static final Logger logger = LogManager.getLogger(Intelligence.class);
 
-    private Rectangle windowArea;
+    /**
+     * when we setting true, we do not need running game
+     */
+    private boolean testing = false;
+
+    /**
+     * controller to control the player, and read information
+     */
     private Controller controller;
 
+
+    public Intelligence() {
+    }
+
+    public Intelligence(boolean testing) {
+        this.testing = testing;
+    }
 
     @Override
     public Boolean doInBackground() {
         logger.info("start");
         try {
-            windowArea = findWindow();
-            init();
+            controller = init(StaticFunc.findWindow(ConfigKeys.WINDOW_CLASS, ConfigKeys.WINDOW_NAME));
 
             return processing();
         } catch (Exception e) {
@@ -31,18 +43,8 @@ public abstract class Intelligence<T> extends SwingWorker<Boolean, Void> {
         }
     }
 
-    public Rectangle findWindow() throws Exception {
-        WinUser.WINDOWINFO windowCoordinates = StaticFunc.upWindow(ConfigKeys.WINDOW_CLASS, ConfigKeys.WINDOW_NAME);
-
-        if (windowCoordinates == null) {
-            throw new Exception("there is no window");
-        }
-
-        return windowCoordinates.rcClient.toRectangle();
-    }
-
-    public void init() throws InterruptedException {
-        controller = new Controller(windowArea);
+    public Controller init(Rectangle rectangle) throws InterruptedException {
+        return new Controller(rectangle);
     }
 
     public void send(T object) {
@@ -66,10 +68,6 @@ public abstract class Intelligence<T> extends SwingWorker<Boolean, Void> {
     }
 
     public void terminating() {
-    }
-
-    public Rectangle getWindowArea() {
-        return windowArea;
     }
 
     public Controller getController() {

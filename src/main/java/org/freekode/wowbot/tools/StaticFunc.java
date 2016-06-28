@@ -15,9 +15,19 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +35,11 @@ public class StaticFunc {
     private static final Logger logger = LogManager.getLogger(StaticFunc.class);
 
 
+    /**
+     * get azimuth with two points
+     *
+     * @return rads
+     */
     public static double getAzimuth(Vector3D a, Vector3D b) {
         double bCt = (b.getY() - a.getY()) * -1;
         double cCt = Vector3D.distance(a, b);
@@ -40,6 +55,27 @@ public class StaticFunc {
         return azimuth;
     }
 
+    /**
+     * up and get window rectangle
+     *
+     * @return operating rectangle
+     * @throws Exception throws when not found
+     */
+    public static Rectangle findWindow(String windowClass, String windowName) throws Exception {
+        WinUser.WINDOWINFO windowInfo = StaticFunc.upWindow(windowClass, windowName);
+
+        if (windowInfo == null) {
+            throw new Exception("there is no window");
+        }
+
+        return windowInfo.rcClient.toRectangle();
+    }
+
+    /**
+     * up window from background
+     *
+     * @return info about window
+     */
     public static WinUser.WINDOWINFO upWindow(String windowClass, String windowName) {
         WinDef.HWND hwnd = User32.INSTANCE.FindWindow(windowClass, windowName);
 
@@ -102,6 +138,12 @@ public class StaticFunc {
         return result;
     }
 
+    /**
+     * convert image to 2d array with rgb colors
+     *
+     * @param image image to convert
+     * @return array with encoded colors
+     */
     public static int[][] convertTo2DUsingGetRGB(BufferedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
@@ -116,27 +158,10 @@ public class StaticFunc {
         return result;
     }
 
-    public static boolean isSimilarColor(Color first, Color second, double similarity) {
-        Vector3D firstVector = new Vector3D(first.getRed(), first.getGreen(), first.getBlue());
-        Vector3D secondVector = new Vector3D(second.getRed(), second.getGreen(), second.getBlue());
-
-        double distance = Vector3D.distance(firstVector, secondVector);
-        return distance <= similarity;
-    }
-
-    public static Rectangle calculateCutSquare(Rectangle main, Rectangle sub) {
-        int startX = (int) (main.getX() + sub.getX());
-        int startY = (int) (main.getY() + sub.getY());
-        int width = (int) sub.getWidth();
-        int height = (int) sub.getHeight();
-
-        return new Rectangle(startX, startY, width, height);
-    }
-
     /**
      * find a color in array of pixels
      *
-     * @param pixels
+     * @param pixels     array of encoded colors
      * @param colors     set of colors which need to find
      * @param similarity 0 exactly that color
      * @return array with coordinates and found color
@@ -156,6 +181,29 @@ public class StaticFunc {
         }
 
         return null;
+    }
+
+    /**
+     * checking is this is similar color
+     *
+     * @param similarity how color near from other color, 0 if they are identical
+     * @return true is similar
+     */
+    public static boolean isSimilarColor(Color first, Color second, double similarity) {
+        Vector3D firstVector = new Vector3D(first.getRed(), first.getGreen(), first.getBlue());
+        Vector3D secondVector = new Vector3D(second.getRed(), second.getGreen(), second.getBlue());
+
+        double distance = Vector3D.distance(firstVector, secondVector);
+        return distance <= similarity;
+    }
+
+    public static Rectangle calculateCutSquare(Rectangle main, Rectangle sub) {
+        int startX = (int) (main.getX() + sub.getX());
+        int startY = (int) (main.getY() + sub.getY());
+        int width = (int) sub.getWidth();
+        int height = (int) sub.getHeight();
+
+        return new Rectangle(startX, startY, width, height);
     }
 
     public static BufferedImage cutImage(Rectangle rectangle) {
@@ -221,7 +269,7 @@ public class StaticFunc {
         }
     }
 
-    public static Map<String, Object> loadYaml(String filename, String prefix) {
+    public static Map<String, Object> loadYAML(String filename, String prefix) {
         try {
             YamlReader reader = new YamlReader(new FileReader(filename));
             Map<String, Object> map = (Map<String, Object>) ((Map) reader.read()).get(prefix);
@@ -235,7 +283,7 @@ public class StaticFunc {
         return new HashMap<>();
     }
 
-    public static void saveYaml(String filename, String prefix, Map<String, Object> values) {
+    public static void saveYAML(String filename, String prefix, Map<String, Object> values) {
         try {
             Map<String, Object> map = new HashMap<>();
             map.put(prefix, values);
