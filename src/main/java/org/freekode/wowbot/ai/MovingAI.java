@@ -1,33 +1,31 @@
 package org.freekode.wowbot.ai;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.entity.moving.CharacterRecordEntity;
+import org.freekode.wowbot.entity.moving.CharacterUpdateEntity;
 
 import java.util.List;
 
-public class MovingAI extends Intelligence<CharacterRecordEntity> {
+public class MovingAI extends Intelligence<CharacterUpdateEntity> {
     private static final Logger logger = LogManager.getLogger(MovingAI.class);
-    private List<Vector3D> points;
+    private List<CharacterUpdateEntity> points;
 
 
-    public MovingAI(List<Vector3D> points) {
+    public MovingAI(List<CharacterUpdateEntity> points) {
         this.points = points;
     }
 
     @Override
     public Boolean processing() throws InterruptedException {
-        for (Vector3D point : points) {
-            CharacterRecordEntity record = new CharacterRecordEntity(point);
-            record.setState("started");
-            send(record);
+        for (CharacterUpdateEntity point : points) {
+            point.setState("started");
+            send(point);
 
             logger.info("move = " + point);
-            getController().moveTo(point);
+            getController().moveTo(point.getCoordinates());
 
-            record.setState("reached");
-            send(record);
+            point.setState("reached");
+            send(point);
         }
 
         return true;

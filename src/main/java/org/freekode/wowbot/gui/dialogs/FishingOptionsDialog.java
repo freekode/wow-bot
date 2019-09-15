@@ -207,7 +207,7 @@ public class FishingOptionsDialog extends JDialog implements ActionListener {
     }
 
     /**
-     * save and close without saving
+     * savePoints and close without saving
      */
     public JPanel getControl() {
         JPanel panel = new JPanel(new GridBagLayout());
@@ -258,7 +258,7 @@ public class FishingOptionsDialog extends JDialog implements ActionListener {
     }
 
     public void saveKitColors(ColorTablePanel colorTablePanel) {
-        System.out.println("save kit");
+        System.out.println("savePoints kit");
         KitTableModel model = (KitTableModel) kitTablePanel.getTable().getModel();
         int index = kitTablePanel.getTable().getSelectedRow();
         if (index > -1) {

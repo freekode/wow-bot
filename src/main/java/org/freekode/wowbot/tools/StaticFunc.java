@@ -9,7 +9,7 @@ import com.sun.jna.platform.win32.WinUser;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.entity.moving.CharacterRecordEntity;
+import org.freekode.wowbot.entity.moving.CharacterUpdateEntity;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -228,10 +228,10 @@ public class StaticFunc {
         return null;
     }
 
-    public static String buildCsvFile(List<CharacterRecordEntity> records) {
+    public static String buildCsvFile(List<CharacterUpdateEntity> records) {
         StringBuilder out = new StringBuilder();
 
-        for (CharacterRecordEntity record : records) {
+        for (CharacterUpdateEntity record : records) {
             out.append(record.getDate().getTime()).append(";")
                     .append(record.getCoordinates().getX()).append(";")
                     .append(record.getCoordinates().getY()).append(";")
@@ -241,9 +241,9 @@ public class StaticFunc {
         return out.toString();
     }
 
-    public static List<CharacterRecordEntity> parseCsvFile(File file) {
+    public static List<CharacterUpdateEntity> parseCsvFile(File file) {
         Pattern pattern = Pattern.compile("([\\d\\.]*);([\\d\\.]*);([\\d\\.]*);(.*)");
-        List<CharacterRecordEntity> records = new LinkedList<>();
+        List<CharacterUpdateEntity> records = new LinkedList<>();
 
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
@@ -257,9 +257,9 @@ public class StaticFunc {
                     Date date = new Date(new Long(matcher.group(1)));
                     Double x = new Double(matcher.group(2));
                     Double y = new Double(matcher.group(3));
-                    CharacterRecordEntity.Action action = CharacterRecordEntity.Action.valueOf(matcher.group(4));
+                    CharacterUpdateEntity.Action action = CharacterUpdateEntity.Action.valueOf(matcher.group(4));
 
-                    records.add(new CharacterRecordEntity(date, new Vector3D(x, y, 0), action));
+                    records.add(new CharacterUpdateEntity(date, new Vector3D(x, y, 0), action));
                 }
             }
 
@@ -289,6 +289,20 @@ public class StaticFunc {
             map.put(prefix, values);
 
             YamlWriter writer = new YamlWriter(new FileWriter(filename));
+            writer.write(map);
+            writer.close();
+        } catch (IOException e) {
+            logger.info("saving config has failed");
+        }
+
+    }
+
+    public static void saveYAML(File file, String prefix, Map<String, Object> values) {
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put(prefix, values);
+
+            YamlWriter writer = new YamlWriter(new FileWriter(file));
             writer.write(map);
             writer.close();
         } catch (IOException e) {

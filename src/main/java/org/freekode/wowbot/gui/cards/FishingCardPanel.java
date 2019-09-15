@@ -17,8 +17,7 @@ import java.util.List;
 /**
  * ui for fishing module
  */
-public class FishingCardPanel extends JPanel implements ActionListener {
-    private List<UpdateListener> updateListeners = new ArrayList<>();
+public class FishingCardPanel extends AbstractCardPanel implements ActionListener {
     private Integer bobberThrows = 0;
     private Integer catches = 0;
     private JLabel statusLabel;
@@ -98,16 +97,6 @@ public class FishingCardPanel extends JPanel implements ActionListener {
 
         Integer index = model.updateOrAdd(record);
         recordsTable.scrollRectToVisible(recordsTable.getCellRect(index, 0, true));
-    }
-
-    public void addUpdateListener(UpdateListener l) {
-        updateListeners.add(l);
-    }
-
-    public void fireUpdate(Object data, String command) {
-        for (UpdateListener listener : updateListeners) {
-            listener.updated(data, command);
-        }
     }
 
     @Override

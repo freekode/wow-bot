@@ -6,12 +6,12 @@ import com.melloware.jintellitype.JIntellitypeException;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.entity.moving.CharacterRecordEntity;
+import org.freekode.wowbot.entity.moving.CharacterUpdateEntity;
 
 import java.awt.*;
 import java.util.Date;
 
-public class RecordingAI extends Intelligence<CharacterRecordEntity> implements HotkeyListener {
+public class RecordingAI extends Intelligence<CharacterUpdateEntity> implements HotkeyListener {
     private static final Logger logger = LogManager.getLogger(RecordingAI.class);
     private static final int HOT_KEY_IDENTIFIER_MOVE = 100;
     private static final int HOT_KEY_IDENTIFIER_GATHER = 101;
@@ -69,8 +69,8 @@ public class RecordingAI extends Intelligence<CharacterRecordEntity> implements 
         }
 
         prevPoint = newPoint;
-        CharacterRecordEntity record = new CharacterRecordEntity(
-                new Date(), newPoint, CharacterRecordEntity.Action.MOVE);
+        CharacterUpdateEntity record = new CharacterUpdateEntity(
+                new Date(), newPoint, CharacterUpdateEntity.Action.MOVE);
 
         send(record);
     }
@@ -79,8 +79,8 @@ public class RecordingAI extends Intelligence<CharacterRecordEntity> implements 
         Double x = getController().getReceiver().getX();
         Double y = getController().getReceiver().getY();
 
-        CharacterRecordEntity record = new CharacterRecordEntity(
-                new Date(), new Vector3D(x, y, 0), CharacterRecordEntity.Action.GATHER);
+        CharacterUpdateEntity record = new CharacterUpdateEntity(
+                new Date(), new Vector3D(x, y, 0), CharacterUpdateEntity.Action.GATHER);
 
         send(record);
     }

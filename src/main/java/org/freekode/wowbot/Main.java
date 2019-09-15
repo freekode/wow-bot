@@ -2,6 +2,7 @@ package org.freekode.wowbot;
 
 import org.freekode.wowbot.modules.FishingModule;
 import org.freekode.wowbot.gui.MainUI;
+import org.freekode.wowbot.modules.MoveModule;
 
 public class Main {
     private static boolean hotKey;
@@ -10,10 +11,10 @@ public class Main {
         parseArgs(args);
 
         MainUI mainUI = new MainUI(hotKey);
-        mainUI.addModule(new FishingModule());
+//        mainUI.addModule(new FishingModule());
 //        mainUI.addModule(new TestModule());
 //        mainUI.addModule(new TestMovingModule());
-//        mainUI.addModule(new MoveModule());
+        mainUI.addModule(new MoveModule());
         mainUI.start();
     }
 

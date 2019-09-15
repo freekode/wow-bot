@@ -2,30 +2,30 @@ package org.freekode.wowbot.ai;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.freekode.wowbot.entity.moving.CharacterRecordEntity;
+import org.freekode.wowbot.entity.moving.CharacterUpdateEntity;
 
 import java.util.List;
 
-public class GatherAI extends Intelligence<CharacterRecordEntity> {
+public class GatherAI extends Intelligence<CharacterUpdateEntity> {
     private static final Logger logger = LogManager.getLogger(GatherAI.class);
-    private List<CharacterRecordEntity> points;
+    private List<CharacterUpdateEntity> points;
 
 
-    public GatherAI(List<CharacterRecordEntity> points) {
+    public GatherAI(List<CharacterUpdateEntity> points) {
         this.points = points;
     }
 
     @Override
     public Boolean processing() throws InterruptedException {
-        for (CharacterRecordEntity point : points) {
+        for (CharacterUpdateEntity point : points) {
             point.setState("started");
             send(point);
 
 
             logger.info("point = " + point);
-            if (point.getAction() == CharacterRecordEntity.Action.MOVE) {
+            if (point.getAction() == CharacterUpdateEntity.Action.MOVE) {
                 getController().moveTo(point.getCoordinates());
-            } else if (point.getAction() == CharacterRecordEntity.Action.GATHER) {
+            } else if (point.getAction() == CharacterUpdateEntity.Action.GATHER) {
                 getController().gatherSecond();
             }
 

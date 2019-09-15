@@ -1,0 +1,115 @@
+fishing: 
+   fishKey: =
+   failTryings: 5
+   kits: 
+   -  firstColors: 
+      - '#261207'
+      enable: false
+      thirdColors: 
+      - '#3C5955'
+      name: Stone Cairn Lake, evening, testing
+      secondColors: 
+      - '#0F1C2F'
+   -  firstColors: 
+      - '#3E0F07'
+      - '#491313'
+      enable: false
+      thirdColors: 
+      - '#F8AC78'
+      - '#CA8E69'
+      - '#958F83'
+      - '#949A8E'
+      name: Krasarang Wilds, 64:49, night
+      secondColors: 
+      - '#1E243E'
+      - '#202741'
+   -  firstColors: 
+      - '#501600'
+      - '#501703'
+      - '#511606'
+      - '#3E0F07'
+      - '#341209'
+      - '#4A1915'
+      enable: false
+      thirdColors: 
+      - '#CC985F'
+      - '#958F83'
+      - '#949A8E'
+      - '#E58E59'
+      - '#A07157'
+      name: Krasarang Wilds, 64:49, noon
+      secondColors: 
+      - '#1A1E3B'
+   -  firstColors: 
+      - '#EA351A'
+      - '#C62F12'
+      enable: false
+      thirdColors: 
+      - '#4A403F'
+      name: Dojani River, 62:28, evening
+      secondColors: 
+      - '#6E6371'
+   -  firstColors: 
+      - '#341209'
+      enable: false
+      thirdColors: 
+      - '#F8AC78'
+      - '#CA8E69'
+      - '#756051'
+      - '#CC985F'
+      name: Mossgreen Lake
+      secondColors: 
+      - '#1E2D4A'
+   -  firstColors: 
+      - '#5C1F1A'
+      - '#902723'
+      - '#390B0D'
+      enable: false
+      thirdColors: 
+      - '#4A3B58'
+      - '#40355F'
+      name: Gloomshade Grove; 36:12, noon
+      secondColors: 
+      - '#4141AF'
+      - '#2C3A9B'
+      - '#3E54C4'
+      - '#4E60D0'
+      - '#4255BE'
+   -  firstColors: 
+      - '#4D160E'
+      - '#4A1915'
+      enable: true
+      thirdColors: 
+      - '#544C73'
+      - '#4F3D53'
+      name: Garrison 51:15
+      secondColors: 
+      - '#1E2D4A'
+      - '#6E6371'
+   -  firstColors: 
+      - '#561907'
+      enable: false
+      thirdColors: 
+      - '#B56E68'
+      name: Talador 71:59
+      secondColors: 
+      - '#2E2D4D'
+   -  firstColors: 
+      - '#3A1213'
+      enable: false
+      thirdColors: 
+      - '#424649'
+      name: Needlereock Chasm
+      secondColors: 
+      - '#273359'
+   -  firstColors: 
+      - '#800E18'
+      - '#3E0F07'
+      - '#491313'
+      - '#341209'
+      enable: false
+      thirdColors: 
+      - '#A97B88'
+      name: Nagrand 86:67
+      secondColors: 
+      - '#332D5B'
