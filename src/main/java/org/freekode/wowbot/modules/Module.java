@@ -1,118 +1,118 @@
 package org.freekode.wowbot.modules;
 
-import org.freekode.wowbot.ai.Intelligence;
-import org.freekode.wowbot.gui.UpdateListener;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.swing.SwingWorker;
+import org.freekode.wowbot.ai.Intelligence;
+import org.freekode.wowbot.gui.UpdateListener;
 
 public abstract class Module implements PropertyChangeListener {
-    private List<UpdateListener> listeners = new ArrayList<>();
-    private Intelligence ai;
 
+	private List<UpdateListener> listeners = new ArrayList<>();
 
-    /**
-     * calling when we start our ai
-     */
-    public void startAI() {
-        ai = buildAI();
-        ai.addPropertyChangeListener(this);
+	private Intelligence ai;
 
-        if (!ai.isDone()) {
-            ai.execute();
-        }
-    }
+	/**
+	 * calling when we start our ai
+	 */
+	public void startAI() {
+		ai = buildAI();
+		ai.addPropertyChangeListener(this);
 
-    /**
-     * and stop ai
-     */
-    public void stopAI() {
-        ai.kill();
-    }
+		if (!ai.isDone()) {
+			ai.execute();
+		}
+	}
 
-    /**
-     * need to restart the thread after kill
-     */
-    public abstract Intelligence buildAI();
+	/**
+	 * and stop ai
+	 */
+	public void stopAI() {
+		ai.kill();
+	}
 
-    /**
-     * catch what ai send
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent e) {
-        switch (e.getPropertyName()) {
-            case "progress":
-                progress(e);
-                break;
-            case "custom":
-                customProperty(e);
-                break;
-            case "state":
-                switch ((SwingWorker.StateValue) e.getNewValue()) {
-                    case STARTED:
-                        started(e);
-                        break;
-                    case DONE:
-                        done(e);
-                        break;
-                    case PENDING:
-                        pending(e);
-                        break;
-                }
-                break;
-        }
-    }
+	/**
+	 * need to restart the thread after kill
+	 */
+	public abstract Intelligence buildAI();
 
-    public void progress(PropertyChangeEvent e) {
-        fireUpdate(e, "progress");
-    }
+	/**
+	 * catch what ai send
+	 */
+	@Override
+	public void propertyChange(PropertyChangeEvent e) {
+		switch (e.getPropertyName()) {
+			case "progress":
+				progress(e);
+				break;
+			case "custom":
+				customProperty(e);
+				break;
+			case "state":
+				switch ((SwingWorker.StateValue) e.getNewValue()) {
+					case STARTED:
+						started(e);
+						break;
+					case DONE:
+						done(e);
+						break;
+					case PENDING:
+						pending(e);
+						break;
+				}
+				break;
+		}
+	}
 
-    public void customProperty(PropertyChangeEvent e) {
-    }
+	public void progress(PropertyChangeEvent e) {
+		fireUpdate(e, "progress");
+	}
 
-    public void started(PropertyChangeEvent e) {
-        fireUpdate(e, "started");
-    }
+	public void customProperty(PropertyChangeEvent e) {
+	}
 
-    public void pending(PropertyChangeEvent e) {
-        fireUpdate(e, "pending");
-    }
+	public void started(PropertyChangeEvent e) {
+		fireUpdate(e, "started");
+	}
 
-    public void done(PropertyChangeEvent e) {
-        fireUpdate(e, "done");
-    }
+	public void pending(PropertyChangeEvent e) {
+		fireUpdate(e, "pending");
+	}
 
-    public void addUpdateListener(UpdateListener l) {
-        listeners.add(l);
-    }
+	public void done(PropertyChangeEvent e) {
+		fireUpdate(e, "done");
+	}
 
-    public void removeUpdateListener(UpdateListener l) {
-        Iterator<UpdateListener> iterator = listeners.iterator();
-        while (iterator.hasNext()) {
-            if (iterator.next().equals(l)) {
-                iterator.remove();
-            }
-        }
-    }
+	public void addUpdateListener(UpdateListener l) {
+		listeners.add(l);
+	}
 
-    public void fireUpdate(Object data, String command) {
-        for (UpdateListener listener : listeners) {
-            listener.updated(data, command);
-        }
-    }
+	public void removeUpdateListener(UpdateListener l) {
+		Iterator<UpdateListener> iterator = listeners.iterator();
+		while (iterator.hasNext()) {
+			if (iterator.next().equals(l)) {
+				iterator.remove();
+			}
+		}
+	}
 
-    /**
-     * interface for module
-     */
-    public abstract Component getUI();
+	public void fireUpdate(Object data, String command) {
+		for (UpdateListener listener : listeners) {
+			listener.updated(data, command);
+		}
+	}
 
-    /**
-     * module name
-     */
-    public abstract String getName();
+	/**
+	 * interface for module
+	 */
+	public abstract Component getUI();
+
+	/**
+	 * module name
+	 */
+	public abstract String getName();
 }

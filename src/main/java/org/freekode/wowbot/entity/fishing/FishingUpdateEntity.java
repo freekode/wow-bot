@@ -1,92 +1,101 @@
 package org.freekode.wowbot.entity.fishing;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 public class FishingUpdateEntity {
-    private Date date;
-    private String kitName;
-    private Boolean caught;
-    private Color first;
-    private Color second;
-    private Color third;
 
+	private Date date;
 
-    public FishingUpdateEntity(Date date) {
-        this.date = date;
-    }
+	private String kitName;
 
-    public Date getDate() {
-        return date;
-    }
+	private Boolean caught;
 
-    public Boolean getCaught() {
-        return caught;
-    }
+	private Color first;
 
-    public void setCaught(Boolean caught) {
-        this.caught = caught;
-    }
+	private Color second;
 
-    public Color getFirst() {
-        return first;
-    }
+	private Color third;
 
-    public void setFirst(Color first) {
-        this.first = first;
-    }
+	public FishingUpdateEntity(Date date) {
+		this.date = date;
+	}
 
-    public Color getSecond() {
-        return second;
-    }
+	public Date getDate() {
+		return date;
+	}
 
-    public void setSecond(Color second) {
-        this.second = second;
-    }
+	public Boolean getCaught() {
+		return caught;
+	}
 
-    public Color getThird() {
-        return third;
-    }
+	public void setCaught(Boolean caught) {
+		this.caught = caught;
+	}
 
-    public void setThird(Color third) {
-        this.third = third;
-    }
+	public Color getFirst() {
+		return first;
+	}
 
-    public String getKitName() {
-        return kitName;
-    }
+	public void setFirst(Color first) {
+		this.first = first;
+	}
 
-    public void setKitName(String kitName) {
-        this.kitName = kitName;
-    }
+	public Color getSecond() {
+		return second;
+	}
 
-    public List<Object> toList() {
-        List<Object> list = new LinkedList<>();
-        list.add(date);
-        list.add(kitName);
-        list.add(caught);
-        list.add(first);
-        list.add(second);
-        list.add(third);
+	public void setSecond(Color second) {
+		this.second = second;
+	}
 
-        return list;
-    }
+	public Color getThird() {
+		return third;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+	public void setThird(Color third) {
+		this.third = third;
+	}
 
-        FishingUpdateEntity that = (FishingUpdateEntity) o;
+	public String getKitName() {
+		return kitName;
+	}
 
-        return date.equals(that.date);
+	public void setKitName(String kitName) {
+		this.kitName = kitName;
+	}
 
-    }
+	public List<Object> toList() {
+		List<Object> list = new LinkedList<>();
+		list.add(date);
+		list.add(kitName);
+		list.add(caught);
+		list.add(first);
+		list.add(second);
+		list.add(third);
 
-    @Override
-    public int hashCode() {
-        return date.hashCode();
-    }
+		return list;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		FishingUpdateEntity that = (FishingUpdateEntity) o;
+
+		return date.equals(that.date);
+
+	}
+
+	@Override
+	public int hashCode() {
+		return date.hashCode();
+	}
 }

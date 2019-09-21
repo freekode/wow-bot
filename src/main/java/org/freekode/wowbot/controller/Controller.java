@@ -1,322 +1,321 @@
 package org.freekode.wowbot.controller;
 
+import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+import java.math.BigDecimal;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.StaticFunc;
 
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.math.BigDecimal;
-
 public class Controller {
-    private static final Logger logger = LogManager.getLogger(Controller.class);
 
-    /**
-     * rectangle where window is
-     */
-    private Rectangle window;
+	private static final Logger logger = LogManager.getLogger(Controller.class);
 
-    /**
-     * to control the character
-     */
-    private volatile Driver driver;
+	/**
+	 * rectangle where window is
+	 */
+	private Rectangle window;
 
-    /**
-     * to receive the information
-     */
-    private volatile Receiver receiver;
+	/**
+	 * to control the character
+	 */
+	private volatile Driver driver;
 
+	/**
+	 * to receive the information
+	 */
+	private volatile Receiver receiver;
 
-    public Controller(Rectangle window) {
-        this.window = window;
+	public Controller(Rectangle window) {
+		this.window = window;
 
-        driver = Driver.getInstance(this.window);
-        receiver = Receiver.getInstance(this.window);
-    }
+		driver = Driver.getInstance(this.window);
+		receiver = Receiver.getInstance(this.window);
+	}
 
-    public Vector3D getCoordinates() {
-        return new Vector3D(getReceiver().getX(), getReceiver().getY(), 0);
-    }
+	public Vector3D getCoordinates() {
+		return new Vector3D(getReceiver().getX(), getReceiver().getY(), 0);
+	}
 
-    public void init() throws InterruptedException {
-        driver.pitchInit();
-        pitch(ConfigKeys.STANDARD_PITCH);
-    }
+	public void init() throws InterruptedException {
+		driver.pitchInit();
+		pitch(ConfigKeys.STANDARD_PITCH);
+	}
 
-    /**
-     * move to exact point
-     * character automatically turned and run
-     *
-     * @param point distantion coordinates
-     */
-    public void moveTo(Vector3D point) throws InterruptedException {
-        // get the distance between character and destination
-        double distance = new BigDecimal(Vector3D.distance(getCoordinates(), point)).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
-        logger.info("distance = " + distance);
-        while (distance > ConfigKeys.DISTANCE_TOLERANCE) {
-//            if (receiver.isInCombat()) {
-//                fight();
-//            }
+	/**
+	 * move to exact point
+	 * character automatically turned and run
+	 *
+	 * @param point distantion coordinates
+	 */
+	public void moveTo(Vector3D point) throws InterruptedException {
+		// get the distance between character and destination
+		double distance = new BigDecimal(Vector3D.distance(getCoordinates(), point)).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
+		logger.info("distance = " + distance);
+		while (distance > ConfigKeys.DISTANCE_TOLERANCE) {
+			//            if (receiver.isInCombat()) {
+			//                fight();
+			//            }
 
-//            azimuth(StaticFunc.getAzimuth(getCoordinates(), point));
-            azimuthByKey(StaticFunc.getAzimuth(getCoordinates(), point));
+			//            azimuth(StaticFunc.getAzimuth(getCoordinates(), point));
+			azimuthByKey(StaticFunc.getAzimuth(getCoordinates(), point));
 
-            // we need to run less distance because azimuth angle has very poor results of correction
-            // so we run some meters, stop correct azimuth more precisely and run what left
-            if (distance > 1 + ConfigKeys.DISTANCE_TOLERANCE) {
-                distance -= 1;
-            }
+			// we need to run less distance because azimuth angle has very poor results of correction
+			// so we run some meters, stop correct azimuth more precisely and run what left
+			if (distance > 1 + ConfigKeys.DISTANCE_TOLERANCE) {
+				distance -= 1;
+			}
 
-            run(distance);
-            distance = new BigDecimal(Vector3D.distance(getCoordinates(), point)).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
-        }
-    }
+			run(distance);
+			distance = new BigDecimal(Vector3D.distance(getCoordinates(), point)).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
+		}
+	}
 
-    /**
-     * set new azimuth
-     *
-     * @param rad new azimuth in radians
-     */
-    public void azimuth(double rad) throws InterruptedException {
-        if (rad >= (Math.PI * 2)) {
-            return;
-        }
+	/**
+	 * set new azimuth
+	 *
+	 * @param rad new azimuth in radians
+	 */
+	public void azimuth(double rad) throws InterruptedException {
+		if (rad >= (Math.PI * 2)) {
+			return;
+		}
 
-        double currentAzimuth = getReceiver().getAzimuth();
-        while ((Math.abs(currentAzimuth - rad) > ConfigKeys.AZIMUTH_TOLERANCE)) {
-            cleanTarget();
+		double currentAzimuth = getReceiver().getAzimuth();
+		while ((Math.abs(currentAzimuth - rad) > ConfigKeys.AZIMUTH_TOLERANCE)) {
+			cleanTarget();
 
-            double changeRad = currentAzimuth - rad;
-            driver.mouseYaw(changeRad);
-            Thread.sleep(100);
+			double changeRad = currentAzimuth - rad;
+			driver.mouseYaw(changeRad);
+			Thread.sleep(100);
 
-            currentAzimuth = getReceiver().getAzimuth();
-        }
-    }
+			currentAzimuth = getReceiver().getAzimuth();
+		}
+	}
 
-    public void azimuthByKey(double rad) throws InterruptedException {
-        if (rad >= (Math.PI * 2)) {
-            return;
-        }
+	public void azimuthByKey(double rad) throws InterruptedException {
+		if (rad >= (Math.PI * 2)) {
+			return;
+		}
 
-        double currentAzimuth = getReceiver().getAzimuth();
-        while ((Math.abs(currentAzimuth - rad) > ConfigKeys.AZIMUTH_KEY_TOLERANCE)) {
-            double changeRad = currentAzimuth - rad;
+		double currentAzimuth = getReceiver().getAzimuth();
+		while ((Math.abs(currentAzimuth - rad) > ConfigKeys.AZIMUTH_KEY_TOLERANCE)) {
+			double changeRad = currentAzimuth - rad;
 
-            if (changeRad < 0) {
-                changeRad = changeRad * -1;
+			if (changeRad < 0) {
+				changeRad = changeRad * -1;
 
-                if (changeRad > Math.PI) {
-                    driver.keyRotateRight(changeRad - Math.PI);
-                } else {
-                    driver.keyRotateLeft(changeRad);
-                }
-            } else {
-                if (changeRad > Math.PI) {
-                    driver.keyRotateLeft(changeRad - Math.PI);
-                } else {
-                    driver.keyRotateRight(changeRad);
-                }
-            }
+				if (changeRad > Math.PI) {
+					driver.keyRotateRight(changeRad - Math.PI);
+				} else {
+					driver.keyRotateLeft(changeRad);
+				}
+			} else {
+				if (changeRad > Math.PI) {
+					driver.keyRotateLeft(changeRad - Math.PI);
+				} else {
+					driver.keyRotateRight(changeRad);
+				}
+			}
 
-            Thread.sleep(100);
-            currentAzimuth = getReceiver().getAzimuth();
-        }
-    }
+			Thread.sleep(100);
+			currentAzimuth = getReceiver().getAzimuth();
+		}
+	}
 
-    /**
-     * set new pitch
-     *
-     * @param rad new pitch in radians
-     */
-    public void pitch(double rad) throws InterruptedException {
-        double currentPitch = getReceiver().getPitch();
-        while (Math.abs(currentPitch - rad) > ConfigKeys.PITCH_TOLERANCE) {
-            Thread.sleep(20);
-            double changeRad = currentPitch - rad;
-            driver.mousePitch(changeRad);
+	/**
+	 * set new pitch
+	 *
+	 * @param rad new pitch in radians
+	 */
+	public void pitch(double rad) throws InterruptedException {
+		double currentPitch = getReceiver().getPitch();
+		while (Math.abs(currentPitch - rad) > ConfigKeys.PITCH_TOLERANCE) {
+			Thread.sleep(20);
+			double changeRad = currentPitch - rad;
+			driver.mousePitch(changeRad);
 
-            currentPitch = getReceiver().getPitch();
-        }
-    }
+			currentPitch = getReceiver().getPitch();
+		}
+	}
 
-    /**
-     * run exact distance
-     *
-     * @param distance distance
-     * @throws InterruptedException
-     */
-    public void run(double distance) throws InterruptedException {
-        double leftDistance = distance;
-        Vector3D currentLocation = getCoordinates();
+	/**
+	 * run exact distance
+	 *
+	 * @param distance distance
+	 * @throws InterruptedException
+	 */
+	public void run(double distance) throws InterruptedException {
+		double leftDistance = distance;
+		Vector3D currentLocation = getCoordinates();
 
-        while (leftDistance > ConfigKeys.DISTANCE_TOLERANCE) {
-            double alreadyRun = Vector3D.distance(currentLocation, getCoordinates());
-            leftDistance = distance - alreadyRun;
+		while (leftDistance > ConfigKeys.DISTANCE_TOLERANCE) {
+			double alreadyRun = Vector3D.distance(currentLocation, getCoordinates());
+			leftDistance = distance - alreadyRun;
 
-            if (leftDistance < 0) {
-                return;
-            }
+			if (leftDistance < 0) {
+				return;
+			}
 
-            if (leftDistance > 1 + ConfigKeys.DISTANCE_TOLERANCE) {
-                driver.run(1);
-            } else {
-                driver.run(leftDistance);
-            }
-            Thread.sleep(50);
-        }
-    }
+			if (leftDistance > 1 + ConfigKeys.DISTANCE_TOLERANCE) {
+				driver.run(1);
+			} else {
+				driver.run(leftDistance);
+			}
+			Thread.sleep(50);
+		}
+	}
 
-    public boolean gather() throws InterruptedException {
-        // first person view, to see clearly
-        driver.fpv();
-        if (!receiver.isHerb() || !receiver.isOre()) {
-            pitch(ConfigKeys.GATHER_PITCH);
-        }
+	public boolean gather() throws InterruptedException {
+		// first person view, to see clearly
+		driver.fpv();
+		if (!receiver.isHerb() || !receiver.isOre()) {
+			pitch(ConfigKeys.GATHER_PITCH);
+		}
 
-        // rotate the character and "scan" by mouse where is herb
-        Integer found = null;
-        int steps = 10;
-        outer:
-        for (int i = 0; i < 50; i++) {
-            // remove focus if we have
-            cleanTarget();
+		// rotate the character and "scan" by mouse where is herb
+		Integer found = null;
+		int steps = 10;
+		outer:
+		for (int i = 0; i < 50; i++) {
+			// remove focus if we have
+			cleanTarget();
 
-            // if someone attack us, all gathering will interrupted
-            // so fight, and gather again with beginning
-            if (receiver.isInCombat()) {
-                fight();
-                i = 0;
-            }
+			// if someone attack us, all gathering will interrupted
+			// so fight, and gather again with beginning
+			if (receiver.isInCombat()) {
+				fight();
+				i = 0;
+			}
 
-            // scan where is herb, there is a bug
-            // sometimes mouse not stopping where he found the herb
-            // it just make one step again, it is problem of later detection
-            for (int j = 0; j < steps; j++) {
-                driver.mouseForGather(j, steps);
+			// scan where is herb, there is a bug
+			// sometimes mouse not stopping where he found the herb
+			// it just make one step again, it is problem of later detection
+			for (int j = 0; j < steps; j++) {
+				driver.mouseForGather(j, steps);
 
-                Thread.sleep(50);
-                if (receiver.isHerb() || receiver.isOre()) {
-                    found = j;
-                    found++;
+				Thread.sleep(50);
+				if (receiver.isHerb() || receiver.isOre()) {
+					found = j;
+					found++;
 
-                    if (found > steps) {
-                        found = steps;
-                    }
+					if (found > steps) {
+						found = steps;
+					}
 
-                    logger.info("found j = " + found);
-                    break outer;
-                }
-            }
+					logger.info("found j = " + found);
+					break outer;
+				}
+			}
 
-            // rotate the character
-            driver.keyRotateLeft(0.5);
-        }
+			// rotate the character
+			driver.keyRotateLeft(0.5);
+		}
 
-        // if found gather
-        if (found != null) {
-            driver.mouseForGather(found, steps);
-            driver.gather();
-            Thread.sleep(3000);
-        }
+		// if found gather
+		if (found != null) {
+			driver.mouseForGather(found, steps);
+			driver.gather();
+			Thread.sleep(3000);
+		}
 
-        pitch(ConfigKeys.STANDARD_PITCH);
-        driver.third();
-        driver.centerMouse();
+		pitch(ConfigKeys.STANDARD_PITCH);
+		driver.third();
+		driver.centerMouse();
 
-        return found != null;
-    }
+		return found != null;
+	}
 
-    public boolean gatherSecond() throws InterruptedException {
-        // first person view, to see clearly
-        driver.centerMouse();
-//        driver.fpvByMouse();
-//        if (!receiver.isHerb() || !receiver.isOre()) {
-//            pitch(ConfigKeys.GATHER_PITCH);
-//        }
+	public boolean gatherSecond() throws InterruptedException {
+		// first person view, to see clearly
+		driver.centerMouse();
+		//        driver.fpvByMouse();
+		//        if (!receiver.isHerb() || !receiver.isOre()) {
+		//            pitch(ConfigKeys.GATHER_PITCH);
+		//        }
 
-        // rotate the character and "scan" by mouse where is herb
-        Integer found = null;
-        int steps = 4;
-        outer:
-        for (int i = 0; i < steps; i++) {
-            // if someone attack us, all gathering will interrupted
-            // so fight, and gather again with beginning
-            if (receiver.isInCombat()) {
-                fight();
-                i = 0;
-            }
+		// rotate the character and "scan" by mouse where is herb
+		Integer found = null;
+		int steps = 4;
+		outer:
+		for (int i = 0; i < steps; i++) {
+			// if someone attack us, all gathering will interrupted
+			// so fight, and gather again with beginning
+			if (receiver.isInCombat()) {
+				fight();
+				i = 0;
+			}
 
-            driver.mouseForGather(i, steps);
+			driver.mouseForGather(i, steps);
 
-            for (int j = 0; j < 30; j++) {
-                Thread.sleep(40);
-                if (receiver.isHerb() || receiver.isOre()) {
-                    found = i;
+			for (int j = 0; j < 30; j++) {
+				Thread.sleep(40);
+				if (receiver.isHerb() || receiver.isOre()) {
+					found = i;
 
-                    break outer;
-                }
-                driver.keyRotateLeft(1);
-            }
-        }
+					break outer;
+				}
+				driver.keyRotateLeft(1);
+			}
+		}
 
-        // if found gather
-        if (found != null) {
-            driver.mouseForGather(found, steps);
-            driver.gather();
-            Thread.sleep(3000);
-        }
+		// if found gather
+		if (found != null) {
+			driver.mouseForGather(found, steps);
+			driver.gather();
+			Thread.sleep(3000);
+		}
 
-        pitch(ConfigKeys.STANDARD_PITCH);
-//        driver.third();
-        driver.centerMouse();
+		pitch(ConfigKeys.STANDARD_PITCH);
+		//        driver.third();
+		driver.centerMouse();
 
-        return found != null;
-    }
+		return found != null;
+	}
 
-    /**
-     * try to fight as hard as you can
-     *
-     * @throws InterruptedException
-     */
-    public void fight() throws InterruptedException {
-        logger.info("fight!");
+	/**
+	 * try to fight as hard as you can
+	 *
+	 * @throws InterruptedException
+	 */
+	public void fight() throws InterruptedException {
+		logger.info("fight!");
 
-        while (receiver.isInCombat()) {
-            if (!receiver.isInActionRange()) {
-                cleanTarget();
-            }
+		while (receiver.isInCombat()) {
+			if (!receiver.isInActionRange()) {
+				cleanTarget();
+			}
 
-            driver.getRobot().keyPress(KeyEvent.VK_1);
-            driver.getRobot().keyRelease(KeyEvent.VK_1);
+			driver.getRobot().keyPress(KeyEvent.VK_1);
+			driver.getRobot().keyRelease(KeyEvent.VK_1);
 
-            driver.keyRotateLeft(0.3);
+			driver.keyRotateLeft(0.3);
 
-            Thread.sleep(700);
-        }
+			Thread.sleep(700);
+		}
 
-        cleanTarget();
-        logger.info("k.o.");
-    }
+		cleanTarget();
+		logger.info("k.o.");
+	}
 
-    public void cleanTarget() {
-        if (receiver.hasTarget()) {
-            driver.getRobot().keyPress(KeyEvent.VK_ESCAPE);
-            driver.getRobot().keyRelease(KeyEvent.VK_ESCAPE);
-        }
-    }
+	public void cleanTarget() {
+		if (receiver.hasTarget()) {
+			driver.getRobot().keyPress(KeyEvent.VK_ESCAPE);
+			driver.getRobot().keyRelease(KeyEvent.VK_ESCAPE);
+		}
+	}
 
-    public Driver getDriver() {
-        return driver;
-    }
+	public Driver getDriver() {
+		return driver;
+	}
 
-    public Receiver getReceiver() {
-        return receiver;
-    }
+	public Receiver getReceiver() {
+		return receiver;
+	}
 
-    public Rectangle getWindow() {
-        return window;
-    }
+	public Rectangle getWindow() {
+		return window;
+	}
 }

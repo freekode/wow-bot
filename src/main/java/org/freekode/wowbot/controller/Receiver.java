@@ -1,177 +1,184 @@
 package org.freekode.wowbot.controller;
 
+import java.awt.AWTException;
+import java.awt.Color;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.image.BufferedImage;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.tools.ConfigKeys;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 public class Receiver {
-    private static final Logger logger = LogManager.getLogger(Receiver.class);
-    private static Receiver INSTANCE;
-    private Integer startX;
-    private Integer startY;
-    private Integer sidePx;
-    private Integer columns;
-    private Integer rows;
 
-    private Color[][] colors;
+	private static final Logger logger = LogManager.getLogger(Receiver.class);
 
+	private static Receiver INSTANCE;
 
-    private Receiver(Integer startX, Integer startY, Integer sidePx, Integer columns, Integer rows) {
-        this.startX = startX;
-        this.startY = startY;
-        this.sidePx = sidePx;
-        this.columns = columns;
-        this.rows = rows;
+	private Integer startX;
 
-        colors = new Color[rows][columns];
-        updateColors();
-    }
+	private Integer startY;
 
-    public static Receiver getInstance(Rectangle windowArea) {
-        if (INSTANCE == null) {
+	private Integer sidePx;
 
-            INSTANCE = new Receiver(
-                    (int) (windowArea.getX() + ConfigKeys.ADDON_OFFSET_X),
-                    (int) (windowArea.getY() + ConfigKeys.ADDON_OFFSET_Y),
-                    ConfigKeys.ADDON_SIDE_PX, ConfigKeys.ADDON_COLUMNS, ConfigKeys.ADDON_ROWS);
-        }
+	private Integer columns;
 
-        return INSTANCE;
-    }
+	private Integer rows;
 
-    public void updateColors() {
-        try {
-//            while (true) {
-//                long currentUpdate = System.currentTimeMillis();
-//                if (currentUpdate > (lastUpdate + ConfigKeys.RECEIVER_UPDATE_INTERVAL_MS)) {
-//                    lastUpdate = currentUpdate;
-//                    break;
-//                } else {
-//                    if (wait) {
-//                        Thread.sleep(ConfigKeys.RECEIVER_UPDATE_INTERVAL_MS);
-//                    } else {
-//                        return;
-//                    }
-//                }
-//            }
+	private Color[][] colors;
 
-            Robot robot = new Robot();
-            Rectangle rect = new Rectangle(startX, startY, sidePx * columns, sidePx * rows);
-            BufferedImage image = robot.createScreenCapture(rect);
+	private Receiver(Integer startX, Integer startY, Integer sidePx, Integer columns, Integer rows) {
+		this.startX = startX;
+		this.startY = startY;
+		this.sidePx = sidePx;
+		this.columns = columns;
+		this.rows = rows;
 
+		colors = new Color[rows][columns];
+		updateColors();
+	}
 
-            Integer pointX = sidePx / 2;
-            Integer pointY = sidePx / 2;
+	public static Receiver getInstance(Rectangle windowArea) {
+		if (INSTANCE == null) {
 
-            for (int r = 0; r < rows; r++) {
-                for (int c = 0; c < columns; c++) {
-                    colors[r][c] = new Color(image.getRGB(pointX, pointY));
-                    pointX += sidePx;
-                }
-                pointY += sidePx;
-                pointX = sidePx / 2;
-            }
-        } catch (AWTException e) {
-            logger.error("during updating the colors was an exception ", e);
-        }
-    }
+			INSTANCE = new Receiver(
+				(int) (windowArea.getX() + ConfigKeys.ADDON_OFFSET_X),
+				(int) (windowArea.getY() + ConfigKeys.ADDON_OFFSET_Y),
+				ConfigKeys.ADDON_SIDE_PX, ConfigKeys.ADDON_COLUMNS, ConfigKeys.ADDON_ROWS);
+		}
 
-    public Double getX() {
-        updateColors();
+		return INSTANCE;
+	}
 
-        Color xColor = colors[0][0];
-        StringBuilder fullString = new StringBuilder();
-        fullString.append(new BigDecimal(xColor.getRed() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
-        fullString.append(new BigDecimal(xColor.getGreen() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
-        fullString.append(new BigDecimal(xColor.getBlue() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
+	public void updateColors() {
+		try {
+			//            while (true) {
+			//                long currentUpdate = System.currentTimeMillis();
+			//                if (currentUpdate > (lastUpdate + ConfigKeys.RECEIVER_UPDATE_INTERVAL_MS)) {
+			//                    lastUpdate = currentUpdate;
+			//                    break;
+			//                } else {
+			//                    if (wait) {
+			//                        Thread.sleep(ConfigKeys.RECEIVER_UPDATE_INTERVAL_MS);
+			//                    } else {
+			//                        return;
+			//                    }
+			//                }
+			//            }
 
-        return new Integer(fullString.toString()) / 10000d;
-    }
+			Robot robot = new Robot();
+			Rectangle rect = new Rectangle(startX, startY, sidePx * columns, sidePx * rows);
+			BufferedImage image = robot.createScreenCapture(rect);
 
-    public Double getY() {
-        updateColors();
-        Color yColor = colors[0][1];
+			Integer pointX = sidePx / 2;
+			Integer pointY = sidePx / 2;
 
-        StringBuilder fullString = new StringBuilder();
-        fullString.append(new BigDecimal(yColor.getRed() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
-        fullString.append(new BigDecimal(yColor.getGreen() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
-        fullString.append(new BigDecimal(yColor.getBlue() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
+			for (int r = 0; r < rows; r++) {
+				for (int c = 0; c < columns; c++) {
+					colors[r][c] = new Color(image.getRGB(pointX, pointY));
+					pointX += sidePx;
+				}
+				pointY += sidePx;
+				pointX = sidePx / 2;
+			}
+		} catch (AWTException e) {
+			logger.error("during updating the colors was an exception ", e);
+		}
+	}
 
-        return new Integer(fullString.toString()) / 10000d;
-    }
+	public Double getX() {
+		updateColors();
 
-    public Double getPitch() {
-        updateColors();
+		Color xColor = colors[0][0];
+		StringBuilder fullString = new StringBuilder();
+		fullString.append(new BigDecimal(xColor.getRed() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
+		fullString.append(new BigDecimal(xColor.getGreen() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
+		fullString.append(new BigDecimal(xColor.getBlue() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
 
-        Color pitchColor = colors[0][2];
-        StringBuilder fullString = new StringBuilder();
-        fullString.append(new BigDecimal(pitchColor.getGreen() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
-        fullString.append(new BigDecimal(pitchColor.getBlue() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
-        Double value = new Integer(fullString.toString()) / 1000d;
-        if (pitchColor.getRed() / 255 == 1) {
-            value *= -1;
-        }
+		return new Integer(fullString.toString()) / 10000d;
+	}
 
-        return value;
-    }
+	public Double getY() {
+		updateColors();
+		Color yColor = colors[0][1];
 
-    public Double getAzimuth() {
-        updateColors();
+		StringBuilder fullString = new StringBuilder();
+		fullString.append(new BigDecimal(yColor.getRed() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
+		fullString.append(new BigDecimal(yColor.getGreen() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
+		fullString.append(new BigDecimal(yColor.getBlue() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
 
-        Color azimuthColor = colors[0][3];
-        StringBuilder fullString = new StringBuilder();
-        fullString.append(new BigDecimal(azimuthColor.getRed() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
-        fullString.append(new BigDecimal(azimuthColor.getGreen() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
-        fullString.append(new BigDecimal(azimuthColor.getBlue() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
+		return new Integer(fullString.toString()) / 10000d;
+	}
 
-        return new Integer(fullString.toString()) / 100000d;
-    }
+	public Double getPitch() {
+		updateColors();
 
-    public Boolean isInCombat() {
-        updateColors();
+		Color pitchColor = colors[0][2];
+		StringBuilder fullString = new StringBuilder();
+		fullString.append(new BigDecimal(pitchColor.getGreen() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
+		fullString.append(new BigDecimal(pitchColor.getBlue() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
+		Double value = new Integer(fullString.toString()) / 1000d;
+		if (pitchColor.getRed() / 255 == 1) {
+			value *= -1;
+		}
 
-        Color color = colors[1][0];
-        return color.equals(Color.WHITE);
-    }
+		return value;
+	}
 
-    public Boolean isHerb() {
-        updateColors();
+	public Double getAzimuth() {
+		updateColors();
 
-        Color color = colors[2][0];
-        return color.equals(Color.WHITE);
-    }
+		Color azimuthColor = colors[0][3];
+		StringBuilder fullString = new StringBuilder();
+		fullString.append(new BigDecimal(azimuthColor.getRed() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
+		fullString.append(new BigDecimal(azimuthColor.getGreen() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
+		fullString.append(new BigDecimal(azimuthColor.getBlue() / 255d).setScale(2, RoundingMode.HALF_UP).toString().replaceAll("0\\.", ""));
 
-    public Boolean isOre() {
-        updateColors();
+		return new Integer(fullString.toString()) / 100000d;
+	}
 
-        Color oreColor = colors[2][1];
-        return oreColor.equals(Color.WHITE);
-    }
+	public Boolean isInCombat() {
+		updateColors();
 
-    public Boolean bagUpdated() {
-        updateColors();
+		Color color = colors[1][0];
+		return color.equals(Color.WHITE);
+	}
 
-        Color color = colors[3][0];
-        return color.equals(Color.WHITE);
-    }
+	public Boolean isHerb() {
+		updateColors();
 
-    public Boolean hasTarget() {
-        Color color = colors[1][1];
-        return color.equals(Color.WHITE);
-    }
+		Color color = colors[2][0];
+		return color.equals(Color.WHITE);
+	}
 
-    public Boolean isInActionRange() {
-        Color color = colors[1][2];
-        return color.equals(Color.WHITE);
-    }
+	public Boolean isOre() {
+		updateColors();
 
-    public String toString() {
-        return "Receiver[x=" + getX() + "; y=" + getY() + "; azimuth=" + getAzimuth() + "; pitch=" + getPitch() +
-                "; isOre=" + isOre() + "; isHerb=" + isHerb() + "; isInCombat=" + isInCombat() + "]";
-    }
+		Color oreColor = colors[2][1];
+		return oreColor.equals(Color.WHITE);
+	}
+
+	public Boolean bagUpdated() {
+		updateColors();
+
+		Color color = colors[3][0];
+		return color.equals(Color.WHITE);
+	}
+
+	public Boolean hasTarget() {
+		Color color = colors[1][1];
+		return color.equals(Color.WHITE);
+	}
+
+	public Boolean isInActionRange() {
+		Color color = colors[1][2];
+		return color.equals(Color.WHITE);
+	}
+
+	public String toString() {
+		return "Receiver[x=" + getX() + "; y=" + getY() + "; azimuth=" + getAzimuth() + "; pitch=" + getPitch() +
+			"; isOre=" + isOre() + "; isHerb=" + isHerb() + "; isInCombat=" + isInCombat() + "]";
+	}
 }

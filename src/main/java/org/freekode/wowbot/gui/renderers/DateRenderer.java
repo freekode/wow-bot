@@ -1,23 +1,24 @@
 package org.freekode.wowbot.gui.renderers;
 
-import javax.swing.table.DefaultTableCellRenderer;
 import java.text.SimpleDateFormat;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class DateRenderer extends DefaultTableCellRenderer {
-    private SimpleDateFormat formatter;
 
-    public DateRenderer() {
-        super();
-        formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-    }
+	private SimpleDateFormat formatter;
 
-    public DateRenderer(String format) {
-        super();
-        formatter = new SimpleDateFormat(format);
-    }
+	public DateRenderer() {
+		super();
+		formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+	}
 
-    @Override
-    protected void setValue(Object value) {
-        setText(formatter.format(value));
-    }
+	public DateRenderer(String format) {
+		super();
+		formatter = new SimpleDateFormat(format);
+	}
+
+	@Override
+	protected void setValue(Object value) {
+		setText(formatter.format(value));
+	}
 }

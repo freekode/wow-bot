@@ -1,211 +1,216 @@
 package org.freekode.wowbot.controller;
 
+import java.awt.AWTException;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.tools.ConfigKeys;
 
-import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-
 public class Driver {
-    private static final Logger logger = LogManager.getLogger(Driver.class);
-    private static Driver INSTANCE;
-    /**
-     * operated rectangle of window
-     */
-    private Rectangle window;
 
-    /**
-     * robot to use keyboard and mouse
-     */
-    private Robot robot;
+	private static final Logger logger = LogManager.getLogger(Driver.class);
 
+	private static Driver INSTANCE;
 
-    private Driver(Rectangle window) {
-        this.window = window;
+	/**
+	 * operated rectangle of window
+	 */
+	private Rectangle window;
 
-        try {
-            robot = new Robot();
-//            robot.setAutoDelay(50);
-        } catch (AWTException e) {
-            logger.error("exception during creating of robot", e);
-        }
-    }
+	/**
+	 * robot to use keyboard and mouse
+	 */
+	private Robot robot;
 
-    public static Driver getInstance(Rectangle window) {
-        if (INSTANCE == null) {
-            INSTANCE = new Driver(window);
-        }
+	private Driver(Rectangle window) {
+		this.window = window;
 
-        return INSTANCE;
-    }
+		try {
+			robot = new Robot();
+			//            robot.setAutoDelay(50);
+		} catch (AWTException e) {
+			logger.error("exception during creating of robot", e);
+		}
+	}
 
-    public void centerMouse() throws InterruptedException {
-        int centerX = (int) (window.getX() + window.getWidth() / 2);
-        int centerY = (int) (window.getY() + window.getHeight() / 2) - 11;
-        mouse(centerX, centerY);
-    }
+	public static Driver getInstance(Rectangle window) {
+		if (INSTANCE == null) {
+			INSTANCE = new Driver(window);
+		}
 
-    public void mouseForGather(int stepNum, Integer steps) throws InterruptedException {
-        if (steps == null) {
-            steps = 5;
-        }
+		return INSTANCE;
+	}
 
-        int centerX = (int) (window.getX() + window.getWidth() / 2);
-        int centerY = (int) (window.getY() + window.getHeight() / 2) - 11;
+	public void centerMouse() throws InterruptedException {
+		int centerX = (int) (window.getX() + window.getWidth() / 2);
+		int centerY = (int) (window.getY() + window.getHeight() / 2) - 11;
+		mouse(centerX, centerY);
+	}
 
-        int high = centerY;
-//        int high = (int) (centerY - centerY * 0.1);
-        int low = (int) (centerY + centerY * 0.35);
-        int stepPx = (low - high) / steps;
+	public void mouseForGather(int stepNum, Integer steps) throws InterruptedException {
+		if (steps == null) {
+			steps = 5;
+		}
 
-        centerY = high + stepNum * stepPx;
+		int centerX = (int) (window.getX() + window.getWidth() / 2);
+		int centerY = (int) (window.getY() + window.getHeight() / 2) - 11;
 
-        mouse(centerX, centerY);
-    }
+		int high = centerY;
+		//        int high = (int) (centerY - centerY * 0.1);
+		int low = (int) (centerY + centerY * 0.35);
+		int stepPx = (low - high) / steps;
 
-    /**
-     * gather herb, ore or fish
-     *
-     * @throws InterruptedException
-     */
-    public void gather() throws InterruptedException {
-        Thread.sleep(300);
-        robot.keyPress(KeyEvent.VK_SHIFT);
-        Thread.sleep(300);
-        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-        Thread.sleep(300);
-        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-        robot.keyRelease(KeyEvent.VK_SHIFT);
-        Thread.sleep(500);
-    }
+		centerY = high + stepNum * stepPx;
 
-    public void mouse(int x, int y) throws InterruptedException {
-        robot.mouseMove(x, y);
-        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
-    }
+		mouse(centerX, centerY);
+	}
 
-    public void run(double distance) throws InterruptedException {
-        int runMs = (int) (distance / 0.001 * ConfigKeys.RUN_DOUBLE_O_ONE);
-        robot.keyPress(KeyEvent.VK_W);
-        Thread.sleep(runMs);
-        robot.keyRelease(KeyEvent.VK_W);
-    }
+	/**
+	 * gather herb, ore or fish
+	 *
+	 * @throws InterruptedException
+	 */
+	public void gather() throws InterruptedException {
+		Thread.sleep(300);
+		robot.keyPress(KeyEvent.VK_SHIFT);
+		Thread.sleep(300);
+		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		Thread.sleep(300);
+		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+		robot.keyRelease(KeyEvent.VK_SHIFT);
+		Thread.sleep(500);
+	}
 
-    public void keyRotateRight(double rad) throws InterruptedException {
-        long runMs = ((long) (rad / 0.1)) * ConfigKeys.KEY_YAW_DOUBLE_O_ONE;
+	public void mouse(int x, int y) throws InterruptedException {
+		robot.mouseMove(x, y);
+		Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
+	}
 
-        robot.keyPress(KeyEvent.VK_D);
-        Thread.sleep(runMs);
-        robot.keyRelease(KeyEvent.VK_D);
-    }
+	public void run(double distance) throws InterruptedException {
+		int runMs = (int) (distance / 0.001 * ConfigKeys.RUN_DOUBLE_O_ONE);
+		robot.keyPress(KeyEvent.VK_W);
+		Thread.sleep(runMs);
+		robot.keyRelease(KeyEvent.VK_W);
+	}
 
-    public void keyRotateLeft(double rad) throws InterruptedException {
-        long runMs = ((long) (rad / 0.1)) * ConfigKeys.KEY_YAW_DOUBLE_O_ONE;
+	public void keyRotateRight(double rad) throws InterruptedException {
+		long runMs = ((long) (rad / 0.1)) * ConfigKeys.KEY_YAW_DOUBLE_O_ONE;
 
-        robot.keyPress(KeyEvent.VK_A);
-        Thread.sleep(runMs);
-        robot.keyRelease(KeyEvent.VK_A);
-    }
+		robot.keyPress(KeyEvent.VK_D);
+		Thread.sleep(runMs);
+		robot.keyRelease(KeyEvent.VK_D);
+	}
 
-    /**
-     * change azimuth by mouse
-     *
-     * @param rad difference of angle
-     */
-    public void mouseYaw(double rad) throws InterruptedException {
-        int interval = ((int) (rad / 0.005)) * ConfigKeys.MOUSE_YAW_DOUBLE_O_ONE;
+	public void keyRotateLeft(double rad) throws InterruptedException {
+		long runMs = ((long) (rad / 0.1)) * ConfigKeys.KEY_YAW_DOUBLE_O_ONE;
 
-        centerMouse();
-        Point mousePoint = MouseInfo.getPointerInfo().getLocation();
+		robot.keyPress(KeyEvent.VK_A);
+		Thread.sleep(runMs);
+		robot.keyRelease(KeyEvent.VK_A);
+	}
 
-        robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
-        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
-        robot.mouseMove(mousePoint.x + interval, mousePoint.y);
-        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
-        robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
-        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
-    }
+	/**
+	 * change azimuth by mouse
+	 *
+	 * @param rad difference of angle
+	 */
+	public void mouseYaw(double rad) throws InterruptedException {
+		int interval = ((int) (rad / 0.005)) * ConfigKeys.MOUSE_YAW_DOUBLE_O_ONE;
 
-    public void pitchInit() throws InterruptedException {
-        mousePitch(-0.01);
-        mousePitch(0.01);
-    }
+		centerMouse();
+		Point mousePoint = MouseInfo.getPointerInfo().getLocation();
 
-    public void mousePitch(double rad) throws InterruptedException {
-        int interval = ((int) (rad / 0.01)) * ConfigKeys.MOUSE_PITCH_DOUBLE_O_TWO;
+		robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
+		Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
+		robot.mouseMove(mousePoint.x + interval, mousePoint.y);
+		Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
+		robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
+		Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
+	}
 
-        centerMouse();
-        Point mousePoint = MouseInfo.getPointerInfo().getLocation();
+	public void pitchInit() throws InterruptedException {
+		mousePitch(-0.01);
+		mousePitch(0.01);
+	}
 
-        robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
-        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
-        robot.mouseMove(mousePoint.x, mousePoint.y + interval);
-        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
-        robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
-        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
-    }
+	public void mousePitch(double rad) throws InterruptedException {
+		int interval = ((int) (rad / 0.01)) * ConfigKeys.MOUSE_PITCH_DOUBLE_O_TWO;
 
-    public void fpv() throws InterruptedException {
-        robot.keyPress(KeyEvent.VK_END);
-        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
-        robot.keyRelease(KeyEvent.VK_END);
+		centerMouse();
+		Point mousePoint = MouseInfo.getPointerInfo().getLocation();
 
-        robot.keyPress(KeyEvent.VK_HOME);
-        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
-        robot.keyRelease(KeyEvent.VK_HOME);
+		robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
+		Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
+		robot.mouseMove(mousePoint.x, mousePoint.y + interval);
+		Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
+		robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
+		Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
+	}
 
-        robot.keyPress(KeyEvent.VK_HOME);
-        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
-        robot.keyRelease(KeyEvent.VK_HOME);
+	public void fpv() throws InterruptedException {
+		robot.keyPress(KeyEvent.VK_END);
+		Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
+		robot.keyRelease(KeyEvent.VK_END);
 
-        robot.keyPress(KeyEvent.VK_HOME);
-        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
-        robot.keyRelease(KeyEvent.VK_HOME);
+		robot.keyPress(KeyEvent.VK_HOME);
+		Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
+		robot.keyRelease(KeyEvent.VK_HOME);
 
-        robot.keyPress(KeyEvent.VK_HOME);
-        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
-        robot.keyRelease(KeyEvent.VK_HOME);
+		robot.keyPress(KeyEvent.VK_HOME);
+		Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
+		robot.keyRelease(KeyEvent.VK_HOME);
 
-        Thread.sleep(3500);
-    }
+		robot.keyPress(KeyEvent.VK_HOME);
+		Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
+		robot.keyRelease(KeyEvent.VK_HOME);
 
-    public void third() throws InterruptedException {
-        robot.keyPress(KeyEvent.VK_END);
-        robot.keyRelease(KeyEvent.VK_END);
+		robot.keyPress(KeyEvent.VK_HOME);
+		Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
+		robot.keyRelease(KeyEvent.VK_HOME);
 
-        robot.keyPress(KeyEvent.VK_END);
-        robot.keyRelease(KeyEvent.VK_END);
+		Thread.sleep(3500);
+	}
 
-        robot.keyPress(KeyEvent.VK_END);
-        robot.keyRelease(KeyEvent.VK_END);
+	public void third() throws InterruptedException {
+		robot.keyPress(KeyEvent.VK_END);
+		robot.keyRelease(KeyEvent.VK_END);
 
-        Thread.sleep(3000);
-    }
+		robot.keyPress(KeyEvent.VK_END);
+		robot.keyRelease(KeyEvent.VK_END);
 
-    public void fpvByMouse() throws InterruptedException {
-        for (int i = 0; i < 15; i++) {
-            robot.mouseWheel(-5);
-            Thread.sleep(10);
-        }
-    }
+		robot.keyPress(KeyEvent.VK_END);
+		robot.keyRelease(KeyEvent.VK_END);
 
-    public void thirdByMouse() throws InterruptedException {
-        for (int i = 0; i < 15; i++) {
-            robot.mouseWheel(5);
-            Thread.sleep(10);
-        }
-    }
+		Thread.sleep(3000);
+	}
 
-    public void pressKey(int keyCode) throws InterruptedException {
-        robot.keyPress(keyCode);
-        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
-        robot.keyRelease(keyCode);
-        Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
-    }
+	public void fpvByMouse() throws InterruptedException {
+		for (int i = 0; i < 15; i++) {
+			robot.mouseWheel(-5);
+			Thread.sleep(10);
+		}
+	}
 
-    public Robot getRobot() {
-        return robot;
-    }
+	public void thirdByMouse() throws InterruptedException {
+		for (int i = 0; i < 15; i++) {
+			robot.mouseWheel(5);
+			Thread.sleep(10);
+		}
+	}
+
+	public void pressKey(int keyCode) throws InterruptedException {
+		robot.keyPress(keyCode);
+		Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
+		robot.keyRelease(keyCode);
+		Thread.sleep(ConfigKeys.AUTO_DELAY_MS);
+	}
+
+	public Robot getRobot() {
+		return robot;
+	}
 }

@@ -1,50 +1,53 @@
 package org.freekode.wowbot.modules;
 
+import java.awt.Component;
+import java.awt.GridBagLayout;
+import java.beans.PropertyChangeEvent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.ai.Intelligence;
 import org.freekode.wowbot.ai.TestAI;
 
-import javax.swing.*;
-import java.awt.*;
-import java.beans.PropertyChangeEvent;
-
 public class TestModule extends Module {
-    private static final Logger logger = LogManager.getLogger(TestModule.class);
-    private JLabel testLabel;
-    private Component ui;
 
+	private static final Logger logger = LogManager.getLogger(TestModule.class);
 
-    public TestModule() {
-        ui = buildInterface();
-    }
+	private JLabel testLabel;
 
-    public Component buildInterface() {
-        JPanel panel = new JPanel(new GridBagLayout());
+	private Component ui;
 
-        testLabel = new JLabel("Test ready");
-        panel.add(testLabel);
+	public TestModule() {
+		ui = buildInterface();
+	}
 
-        return panel;
-    }
+	public Component buildInterface() {
+		JPanel panel = new JPanel(new GridBagLayout());
 
-    @Override
-    public Intelligence buildAI() {
-        return new TestAI();
-    }
+		testLabel = new JLabel("Test ready");
+		panel.add(testLabel);
 
-    @Override
-    public Component getUI() {
-        return ui;
-    }
+		return panel;
+	}
 
-    @Override
-    public String getName() {
-        return "Test";
-    }
+	@Override
+	public Intelligence buildAI() {
+		return new TestAI();
+	}
 
-    @Override
-    public void customProperty(PropertyChangeEvent e) {
-        testLabel.setText(e.getNewValue().toString());
-    }
+	@Override
+	public Component getUI() {
+		return ui;
+	}
+
+	@Override
+	public String getName() {
+		return "Test";
+	}
+
+	@Override
+	public void customProperty(PropertyChangeEvent e) {
+		testLabel.setText(e.getNewValue().toString());
+	}
 }

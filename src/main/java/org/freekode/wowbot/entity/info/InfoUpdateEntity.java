@@ -1,69 +1,78 @@
 package org.freekode.wowbot.entity.info;
 
 public class InfoUpdateEntity {
-    private Double x;
-    private Double y;
-    private Double azimuth;
-    private Double pitch;
-    private Boolean inCombat;
-    private Boolean ore;
-    private Boolean herb;
-    private Boolean bagUpdate;
-    private Boolean hasTarget;
-    private Boolean inRange;
 
+	private Double x;
 
-    public InfoUpdateEntity(Double x, Double y, Double azimuth, Double pitch, Boolean inCombat, Boolean ore,
-                            Boolean herb, Boolean bagUpdate, Boolean hasTarget, Boolean inRange) {
-        this.x = x;
-        this.y = y;
-        this.azimuth = azimuth;
-        this.pitch = pitch;
-        this.inCombat = inCombat;
-        this.ore = ore;
-        this.herb = herb;
-        this.bagUpdate = bagUpdate;
-        this.hasTarget = hasTarget;
-        this.inRange = inRange;
-    }
+	private Double y;
 
-    public Double getX() {
-        return x;
-    }
+	private Double azimuth;
 
-    public Double getY() {
-        return y;
-    }
+	private Double pitch;
 
-    public Double getAzimuth() {
-        return azimuth;
-    }
+	private Boolean inCombat;
 
-    public Double getPitch() {
-        return pitch;
-    }
+	private Boolean ore;
 
-    public Boolean getInCombat() {
-        return inCombat;
-    }
+	private Boolean herb;
 
-    public Boolean getOre() {
-        return ore;
-    }
+	private Boolean bagUpdate;
 
-    public Boolean getHerb() {
-        return herb;
-    }
+	private Boolean hasTarget;
 
-    public Boolean getBagUpdate() {
-        return bagUpdate;
-    }
+	private Boolean inRange;
 
-    public Boolean getHasTarget() {
-        return hasTarget;
-    }
+	public InfoUpdateEntity(Double x, Double y, Double azimuth, Double pitch, Boolean inCombat, Boolean ore,
+		Boolean herb, Boolean bagUpdate, Boolean hasTarget, Boolean inRange) {
+		this.x = x;
+		this.y = y;
+		this.azimuth = azimuth;
+		this.pitch = pitch;
+		this.inCombat = inCombat;
+		this.ore = ore;
+		this.herb = herb;
+		this.bagUpdate = bagUpdate;
+		this.hasTarget = hasTarget;
+		this.inRange = inRange;
+	}
 
-    public Boolean getInRange() {
-        return inRange;
-    }
+	public Double getX() {
+		return x;
+	}
+
+	public Double getY() {
+		return y;
+	}
+
+	public Double getAzimuth() {
+		return azimuth;
+	}
+
+	public Double getPitch() {
+		return pitch;
+	}
+
+	public Boolean getInCombat() {
+		return inCombat;
+	}
+
+	public Boolean getOre() {
+		return ore;
+	}
+
+	public Boolean getHerb() {
+		return herb;
+	}
+
+	public Boolean getBagUpdate() {
+		return bagUpdate;
+	}
+
+	public Boolean getHasTarget() {
+		return hasTarget;
+	}
+
+	public Boolean getInRange() {
+		return inRange;
+	}
 }

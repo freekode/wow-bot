@@ -1,82 +1,76 @@
 package org.freekode.wowbot.modules;
 
+import java.awt.Component;
+import java.beans.PropertyChangeEvent;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.ai.FishingAI;
 import org.freekode.wowbot.ai.Intelligence;
 import org.freekode.wowbot.entity.fishing.FishingOptionsEntity;
 import org.freekode.wowbot.entity.fishing.FishingUpdateEntity;
+import org.freekode.wowbot.gui.cards.FishingCardPanel;
+import org.freekode.wowbot.gui.dialogs.FishingOptionsDialog;
 import org.freekode.wowbot.tools.ConfigKeys;
 import org.freekode.wowbot.tools.StaticFunc;
-import org.freekode.wowbot.gui.UpdateListener;
-import org.freekode.wowbot.gui.dialogs.FishingOptionsDialog;
-import org.freekode.wowbot.gui.cards.FishingCardPanel;
-
-import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.util.Map;
 
 public class FishingModule extends Module {
-    private static final Logger logger = LogManager.getLogger(FishingModule.class);
-    private FishingOptionsEntity optionsEntity;
-    private FishingCardPanel ui;
 
+	private static final Logger logger = LogManager.getLogger(FishingModule.class);
 
-    public FishingModule() {
-        Map<String, Object> config = StaticFunc.loadYAML(ConfigKeys.YAML_CONFIG_FILENAME, "fishing");
-        optionsEntity = new FishingOptionsEntity(config);
+	private FishingOptionsEntity optionsEntity;
 
-        ui = new FishingCardPanel();
-        ui.addUpdateListener(new UpdateListener() {
-            @Override
-            public void updated(Object object, String command) {
-                if ("showOptions".equals(command)) {
-                    showOptions();
-                }
-            }
-        });
-    }
+	private FishingCardPanel ui;
 
-    @Override
-    public Intelligence buildAI() {
-        return new FishingAI(optionsEntity);
-    }
+	public FishingModule() {
+		Map<String, Object> config = StaticFunc.loadYAML(ConfigKeys.YAML_CONFIG_FILENAME, "fishing");
+		optionsEntity = new FishingOptionsEntity(config);
 
-    @Override
-    public void customProperty(PropertyChangeEvent e) {
-        FishingUpdateEntity record = (FishingUpdateEntity) e.getNewValue();
-        ui.updateRecordsTable(record);
-    }
+		ui = new FishingCardPanel();
+		ui.addUpdateListener((object, command) -> {
+			if ("showOptions".equals(command)) {
+				showOptions();
+			}
+		});
+	}
 
-    public void showOptions() {
-        FishingOptionsDialog optionsWindow = new FishingOptionsDialog();
-        optionsWindow.addUpdateListener(new UpdateListener() {
-            @Override
-            public void updated(Object object, String command) {
-                if ("saveOptions".equals(command)) {
-                    saveOptions((FishingOptionsEntity) object);
-                }
-            }
-        });
+	@Override
+	public Intelligence buildAI() {
+		return new FishingAI(optionsEntity);
+	}
 
-        optionsWindow.init(optionsEntity.copy());
-    }
+	@Override
+	public void customProperty(PropertyChangeEvent e) {
+		FishingUpdateEntity record = (FishingUpdateEntity) e.getNewValue();
+		ui.updateRecordsTable(record);
+	}
 
-    public void saveOptions(FishingOptionsEntity options) {
-        StaticFunc.saveYAML(ConfigKeys.YAML_CONFIG_FILENAME, "fishing", options.getMap());
-        optionsEntity = options;
-        buildAI();
+	private void showOptions() {
+		FishingOptionsDialog optionsWindow = new FishingOptionsDialog();
+		optionsWindow.addUpdateListener((object, command) -> {
+			if ("saveOptions".equals(command)) {
+				saveOptions((FishingOptionsEntity) object);
+			}
+		});
 
-        logger.info("options saved");
-    }
+		optionsWindow.init(optionsEntity.copy());
+	}
 
-    @Override
-    public Component getUI() {
-        return ui;
-    }
+	private void saveOptions(FishingOptionsEntity options) {
+		StaticFunc.saveYAML(ConfigKeys.YAML_CONFIG_FILENAME, "fishing", options.getMap());
+		optionsEntity = options;
+		buildAI();
 
-    @Override
-    public String getName() {
-        return "Fishing";
-    }
+		logger.info("options saved");
+	}
+
+	@Override
+	public Component getUI() {
+		return ui;
+	}
+
+	@Override
+	public String getName() {
+		return "Fishing";
+	}
 }

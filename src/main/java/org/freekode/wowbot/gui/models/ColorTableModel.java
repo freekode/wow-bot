@@ -1,151 +1,158 @@
 package org.freekode.wowbot.gui.models;
 
-import org.freekode.wowbot.tools.StaticFunc;
-
-import javax.swing.table.AbstractTableModel;
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import javax.swing.table.AbstractTableModel;
+import org.freekode.wowbot.tools.StaticFunc;
 
 public class ColorTableModel extends AbstractTableModel {
-    private Class[] columnClasses = {Boolean.class, Color.class, String.class};
-    private List<Record> data = new LinkedList<>();
 
-    @Override
-    public int getRowCount() {
-        return data.size();
-    }
+	private Class[] columnClasses = {Boolean.class, Color.class, String.class};
 
-    @Override
-    public int getColumnCount() {
-        return columnClasses.length;
-    }
+	private List<Record> data = new LinkedList<>();
 
-    @Override
-    public String getColumnName(int column) {
-        return null;
-    }
+	@Override
+	public int getRowCount() {
+		return data.size();
+	}
 
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        return data.get(rowIndex).toList().get(columnIndex);
-    }
+	@Override
+	public int getColumnCount() {
+		return columnClasses.length;
+	}
 
-    @Override
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        data.get(rowIndex).setState((Boolean) aValue);
-        fireTableCellUpdated(rowIndex, columnIndex);
-    }
+	@Override
+	public String getColumnName(int column) {
+		return null;
+	}
 
-    @Override
-    public Class<?> getColumnClass(int columnIndex) {
-        return columnClasses[columnIndex];
-    }
+	@Override
+	public Object getValueAt(int rowIndex, int columnIndex) {
+		return data.get(rowIndex).toList().get(columnIndex);
+	}
 
-    @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return getColumnClass(columnIndex) == Boolean.class;
-    }
+	@Override
+	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+		data.get(rowIndex).setState((Boolean) aValue);
+		fireTableCellUpdated(rowIndex, columnIndex);
+	}
 
-    public Integer add(Boolean state, Color color) {
-        Record record = new Record(state, color);
-        if (!data.contains(record)) {
-            data.add(record);
-            fireTableRowsInserted(data.size(), data.size());
-            return data.size();
-        }
+	@Override
+	public Class<?> getColumnClass(int columnIndex) {
+		return columnClasses[columnIndex];
+	}
 
-        return null;
-    }
+	@Override
+	public boolean isCellEditable(int rowIndex, int columnIndex) {
+		return getColumnClass(columnIndex) == Boolean.class;
+	}
 
-    public void delete(int index) {
-        data.remove(index);
-        fireTableRowsDeleted(index, index);
-    }
+	public Integer add(Boolean state, Color color) {
+		Record record = new Record(state, color);
+		if (!data.contains(record)) {
+			data.add(record);
+			fireTableRowsInserted(data.size(), data.size());
+			return data.size();
+		}
 
-    public List<Color> getSelected() {
-        List<Color> colors = new ArrayList<>();
-        for (Record record : data) {
-            if (record.getState()) {
-                colors.add(record.getColor());
-            }
-        }
+		return null;
+	}
 
-        return colors;
-    }
+	public void delete(int index) {
+		data.remove(index);
+		fireTableRowsDeleted(index, index);
+	}
 
-    public void setSelected(List<Color> colors) {
-        for (Record record : data) {
-            if (colors.contains(record.getColor())) {
-                record.setState(true);
-            } else {
-                record.setState(false);
-            }
-        }
+	public List<Color> getSelected() {
+		List<Color> colors = new ArrayList<>();
+		for (Record record : data) {
+			if (record.getState()) {
+				colors.add(record.getColor());
+			}
+		}
 
-        fireTableRowsUpdated(0, data.size());
-    }
+		return colors;
+	}
 
-    public class Record {
-        private Boolean state;
-        private Color color;
-        private String title;
+	public void setSelected(List<Color> colors) {
+		for (Record record : data) {
+			if (colors.contains(record.getColor())) {
+				record.setState(true);
+			} else {
+				record.setState(false);
+			}
+		}
 
+		fireTableRowsUpdated(0, data.size());
+	}
 
-        public Record(Boolean state, Color color) {
-            this.state = state;
-            this.color = color;
-            this.title = StaticFunc.encodeColor(color);
-        }
+	public class Record {
 
-        public Boolean getState() {
-            return state;
-        }
+		private Boolean state;
 
-        public void setState(Boolean state) {
-            this.state = state;
-        }
+		private Color color;
 
-        public Color getColor() {
-            return color;
-        }
+		private String title;
 
-        public void setColor(Color color) {
-            this.color = color;
-        }
+		public Record(Boolean state, Color color) {
+			this.state = state;
+			this.color = color;
+			this.title = StaticFunc.encodeColor(color);
+		}
 
-        public List<Object> toList() {
-            List<Object> list = new LinkedList<>();
-            list.add(state);
-            list.add(color);
-            list.add(title);
+		public Boolean getState() {
+			return state;
+		}
 
-            return list;
-        }
+		public void setState(Boolean state) {
+			this.state = state;
+		}
 
-        public String getTitle() {
-            return title;
-        }
+		public Color getColor() {
+			return color;
+		}
 
-        public void setTitle(String title) {
-            this.title = title;
-        }
+		public void setColor(Color color) {
+			this.color = color;
+		}
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+		public List<Object> toList() {
+			List<Object> list = new LinkedList<>();
+			list.add(state);
+			list.add(color);
+			list.add(title);
 
-            Record record = (Record) o;
+			return list;
+		}
 
-            return color.equals(record.color);
+		public String getTitle() {
+			return title;
+		}
 
-        }
+		public void setTitle(String title) {
+			this.title = title;
+		}
 
-        @Override
-        public int hashCode() {
-            return color.hashCode();
-        }
-    }
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) {
+				return true;
+			}
+			if (o == null || getClass() != o.getClass()) {
+				return false;
+			}
+
+			Record record = (Record) o;
+
+			return color.equals(record.color);
+
+		}
+
+		@Override
+		public int hashCode() {
+			return color.hashCode();
+		}
+	}
 }

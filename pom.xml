@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.freekode</groupId>
-    <artifactId>wowbot</artifactId>
+    <artifactId>wow-bot</artifactId>
     <version>0.2</version>
 
     <dependencies>
@@ -52,13 +52,13 @@
     </dependencies>
 
     <build>
-        <finalName>wowbot</finalName>
+        <finalName>wow-bot</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>

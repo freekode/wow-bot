@@ -1,5 +1,10 @@
 package org.freekode.wowbot.modules;
 
+import java.awt.Component;
+import java.beans.PropertyChangeEvent;
+import java.io.File;
+import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.freekode.wowbot.ai.GatherAI;
@@ -9,82 +14,74 @@ import org.freekode.wowbot.ai.RecordingAI;
 import org.freekode.wowbot.entity.moving.CharacterUpdateEntity;
 import org.freekode.wowbot.gui.UpdateListener;
 import org.freekode.wowbot.gui.cards.MoveCardPanel;
-import org.freekode.wowbot.tools.StaticFunc;
-
-import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.io.File;
-import java.util.List;
-import java.util.Map;
 
 public class MoveModule extends Module {
-    private static final Logger logger = LogManager.getLogger(MoveModule.class);
-    private ModuleType currentType = ModuleType.RECORD;
-    private MoveCardPanel ui;
 
+	private static final Logger logger = LogManager.getLogger(MoveModule.class);
 
-    public MoveModule() {
-        ui = new MoveCardPanel();
-        ui.addUpdateListener(new UpdateListener() {
-            @Override
-            public void updated(Object object, String command) {
-                if ("savePoints".equals(command)) {
-                    Map<String, Object> map = (Map<String, Object>) object;
-                    File file = (File) map.get("file");
-                    List<CharacterUpdateEntity> points = (List<CharacterUpdateEntity>) map.get("data");
+	private ModuleType currentType = ModuleType.RECORD;
 
-                    savePoints(file, points);
-                }
-            }
-        });
-    }
+	private MoveCardPanel ui;
 
-    @Override
-    public Intelligence buildAI() {
-        if (currentType == ModuleType.RECORD) {
-            return buildRecordAI();
-        } else if (currentType == ModuleType.MOVE) {
-            return buildMoveAI();
-        } else {
-            return buildGatherAI();
-        }
-    }
+	public MoveModule() {
+		ui = new MoveCardPanel();
+		ui.addUpdateListener((object, command) -> {
+			if ("savePoints".equals(command)) {
+				Map<String, Object> map = (Map<String, Object>) object;
+				File file = (File) map.get("file");
+				List<CharacterUpdateEntity> points = (List<CharacterUpdateEntity>) map.get("data");
 
-    public Intelligence buildRecordAI() {
-        return new RecordingAI();
-    }
+				savePoints(file, points);
+			}
+		});
+	}
 
-    public Intelligence buildMoveAI() {
-        return new MovingAI(ui.getPointList());
-    }
+	@Override
+	public Intelligence buildAI() {
+		if (currentType == ModuleType.RECORD) {
+			return buildRecordAI();
+		} else if (currentType == ModuleType.MOVE) {
+			return buildMoveAI();
+		} else {
+			return buildGatherAI();
+		}
+	}
 
-    public Intelligence buildGatherAI() {
-        return new GatherAI(ui.getPointList());
-    }
+	public Intelligence buildRecordAI() {
+		return new RecordingAI();
+	}
 
-    public void savePoints(File file, List<CharacterUpdateEntity> list) {
-        StaticFunc.saveYAML(file, null, list);
-    }
+	public Intelligence buildMoveAI() {
+		return new MovingAI(ui.getPointList());
+	}
 
-    @Override
-    public void customProperty(PropertyChangeEvent e) {
-        CharacterUpdateEntity record = (CharacterUpdateEntity) e.getNewValue();
-        ui.update(record);
-    }
+	public Intelligence buildGatherAI() {
+		return new GatherAI(ui.getPointList());
+	}
 
-    @Override
-    public Component getUI() {
-        return ui;
-    }
+	public void savePoints(File file, List<CharacterUpdateEntity> list) {
+		//        StaticFunc.saveYAML(file, null, list);
+	}
 
-    @Override
-    public String getName() {
-        return "Move";
-    }
+	@Override
+	public void customProperty(PropertyChangeEvent e) {
+		CharacterUpdateEntity record = (CharacterUpdateEntity) e.getNewValue();
+		ui.update(record);
+	}
 
-    public enum ModuleType {
-        RECORD,
-        MOVE,
-        GATHER
-    }
+	@Override
+	public Component getUI() {
+		return ui;
+	}
+
+	@Override
+	public String getName() {
+		return "Move";
+	}
+
+	public enum ModuleType {
+		RECORD,
+		MOVE,
+		GATHER
+	}
 }
